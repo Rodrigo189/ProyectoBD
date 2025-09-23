@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Datos Médica - SQL Básico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .sql-button {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .sql-button.insert { background: #28a745; }
+        .sql-button.select { background: #007bff; }
+        .sql-button.update { background: #ffc107; color: #000; }
+        .sql-button.delete { background: #dc3545; }
+        .sql-button.create { background: #6f42c1; }
+        .sql-button.drop { background: #fd7e14; }
+        
+        .sql-button:hover {
+            opacity: 0.8;
+        }
+        
+        .sql-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .query-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .query-section.active {
+            display: block;
+        }
+        
+        .sql-code {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        
+        .execute-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        
+        .execute-btn:hover {
+            background: #0056b3;
+        }
+        
+        .result-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f8f9fa;
+        }
+        
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .populate-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sistema de Base de Datos Médica</h1>
+            <p>Práctica de SQL - Operaciones Básicas</p>
+        </div>
+
+        <button class="populate-btn" onclick="populateDatabase()">Cargar Datos de Ejemplo</button>
+
+        <div class="buttons-grid">
+            <button class="sql-button insert" onclick="showQuery('insert')">INSERT - Insertar</button>
+            <button class="sql-button select" onclick="showQuery('select')">SELECT - Consultar</button>
+            <button class="sql-button update" onclick="showQuery('update')">UPDATE - Actualizar</button>
+            <button class="sql-button delete" onclick="showQuery('delete')">DELETE - Eliminar</button>
+            <button class="sql-button create" onclick="showQuery('create')">CREATE - Crear Tabla</button>
+            <button class="sql-button drop" onclick="showQuery('drop')">DROP - Eliminar Tabla</button>
+        </div>
+
+        <!-- INSERT Query -->
+        <div id="insert-query" class="query-section">
+            <h3>INSERT - Insertar Nuevo Registro</h3>
+            <div class="sql-code" id="insert-sql">INSERT INTO residentes (rut, nombre, fecha_nacimiento, fecha_ingreso, medico_tratante, diagnostico, proximo_control) 
+VALUES ('19876543-2', 'Carlos Silva', '1955-08-20', '2024-01-15', 'Dr. López', 'Diabetes', '2024-07-15');</div>
+            <button class="execute-btn" onclick="executeQuery('insert')">Ejecutar INSERT</button>
+            <div class="result-area" id="insert-result"></div>
+        </div>
+
+        <!-- SELECT Query -->
+        <div id="select-query" class="query-section">
+            <h3>SELECT - Consultar Datos</h3>
+            <div class="sql-code" id="select-sql">SELECT * FROM residentes ORDER BY nombre;</div>
+            <button class="execute-btn" onclick="executeQuery('select')">Ejecutar SELECT</button>
+            <div class="result-area" id="select-result"></div>
+        </div>
+
+        <!-- UPDATE Query -->
+        <div id="update-query" class="query-section">
+            <h3>UPDATE - Actualizar Registro</h3>
+            <div class="sql-code" id="update-sql">UPDATE residentes 
+SET diagnostico = 'Diabetes controlada', proximo_control = '2024-12-15' 
+WHERE rut = '19876543-2';</div>
+            <button class="execute-btn" onclick="executeQuery('update')">Ejecutar UPDATE</button>
+            <div class="result-area" id="update-result"></div>
+        </div>
+
+        <!-- DELETE Query -->
+        <div id="delete-query" class="query-section">
+            <h3>DELETE - Eliminar Registro</h3>
+            <div class="sql-code" id="delete-sql">DELETE FROM residentes WHERE rut = '19876543-2';</div>
+            <button class="execute-btn" onclick="executeQuery('delete')">Ejecutar DELETE</button>
+            <div class="result-area" id="delete-result"></div>
+        </div>
+
+        <!-- CREATE Query -->
+        <div id="create-query" class="query-section">
+            <h3>CREATE - Crear Nueva Tabla</h3>
+            <div class="sql-code" id="create-sql">CREATE TABLE nueva_tabla (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL,
+    fecha DATE
+);</div>
+            <button class="execute-btn" onclick="executeQuery('create')">Ejecutar CREATE</button>
+            <div class="result-area" id="create-result"></div>
+        </div>
+
+        <!-- DROP Query -->
+        <div id="drop-query" class="query-section">
+            <h3>DROP - Eliminar Tabla</h3>
+            <div class="sql-code" id="drop-sql">DROP TABLE IF EXISTS nueva_tabla;</div>
+            <button class="execute-btn" onclick="executeQuery('drop')">Ejecutar DROP</button>
+            <div class="result-area" id="drop-result"></div>
+        </div>
+    </div>
+
+    <script>
+        let isExecuting = false;
+
+        function showQuery(type) {
+            document.querySelectorAll('.query-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(type + '-query').classList.add('active');
+        }
+
+        function resetButton(buttonId) {
+            const button = document.querySelector(`#${buttonId} .execute-btn`);
+            if (button) {
+                button.disabled = false;
+                button.textContent = button.textContent.replace(' (Ejecutando...)', '');
+            }
+        }
+
+        async function executeQuery(type) {
+            if (isExecuting) {
+                alert('Ya hay una consulta en ejecución. Espera a que termine.');
+                return;
+            }
+
+            isExecuting = true;
+            const button = document.querySelector(`#${type}-query .execute-btn`);
+            button.disabled = true;
+            button.textContent = button.textContent + ' (Ejecutando...)';
+
+            const query = document.getElementById(type + '-sql').textContent;
+            const resultDiv = document.getElementById(type + '-result');
+            
+            resultDiv.innerHTML = '<p>Ejecutando consulta...</p>';
+
+            try {
+                const response = await fetch('/api/execute-sql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    resultDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                } else if (data.data) {
+                    resultDiv.innerHTML = createTable(data.data) + `<p class="success">Registros encontrados: ${data.count}</p>`;
+                } else if (data.affected_rows !== undefined) {
+                    resultDiv.innerHTML = `<p class="success">Operación exitosa. Filas afectadas: ${data.affected_rows}</p>`;
+                } else {
+                    resultDiv.innerHTML = '<p class="success">Operación completada exitosamente</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">Error de conexión: ${error.message}</p>`;
+            } finally {
+                isExecuting = false;
+                resetButton(type + '-query');
+            }
+        }
+
+        function createTable(data) {
+            if (!data || data.length === 0) {
+                return '<p>No se encontraron datos</p>';
+            }
+
+            const headers = Object.keys(data[0]);
+            let html = '<table><thead><tr>';
+            headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            data.forEach(row => {
+                html += '<tr>';
+                headers.forEach(header => {
+                    html += `<td>${row[header] || ''}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            return html;
+        }
+
+        async function populateDatabase() {
+            try {
+                const response = await fetch('/api/populate-db', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Datos cargados correctamente');
+                } else {
+                    alert('Error al cargar datos: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error de conexión: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
