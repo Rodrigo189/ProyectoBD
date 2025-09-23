@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Base de Datos Médica - SQL Básico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .info-box h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .sql-button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .sql-button.insert { background: #007bff; }
+        .sql-button.select { background: #28a745; }
+        .sql-button.update { background: #fd7e14; }
+        .sql-button.delete { background: #e83e8c; }
+        .sql-button.create { background: #6f42c1; }
+        .sql-button.drop { background: #dc3545; }
+        
+        .sql-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .query-section {
+            display: none;
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .query-section.active {
+            display: block;
+        }
+        
+        .query-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .execute-btn, .execute-btn-sql, .copy-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .execute-btn, .execute-btn-sql {
+            background: #28a745;
+            color: white;
+        }
+        
+        .copy-btn {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .execute-btn:hover, .execute-btn-sql:hover {
+            background: #218838;
+        }
+        
+        .copy-btn:hover {
+            background: #5a6268;
+        }
+        
+        .sql-code {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 15px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        .result-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 100px;
+        }
+        
+        .result-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .result-box th,
+        .result-box td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #dee2e6;
+        }
+        
+        .result-box th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .result-box tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sistema de Base de Datos Médica</h1>
+            <p>Consultas SQL Básicas - Práctica Estudiantil</p>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <h3>Instrucciones</h3>
+                <p>Haz clic en cualquier botón para ver y ejecutar consultas SQL básicas. Estas consultas te permiten realizar operaciones fundamentales en la base de datos médica.</p>
+                <p><strong>Nota:</strong> Si es la primera vez que usas el sistema, haz clic en "Cargar Datos" para cargar datos de ejemplo.</p>
+                <button class="execute-btn" onclick="populateDatabase(event)" style="margin-top: 10px;">Cargar Datos</button>
+                <div id="populate-result" style="margin-top: 10px; font-weight: bold;"></div>
+            </div>
+            
+            <div class="section">
+                <h2>Operaciones SQL Básicas</h2>
+                <div class="buttons-grid">
+                    <button class="sql-button insert" onclick="showQuery('insert')">
+                        INSERT - Insertar Datos
+                    </button>
+                    <button class="sql-button select" onclick="showQuery('select')">
+                        SELECT - Consultar Datos
+                    </button>
+                    <button class="sql-button update" onclick="showQuery('update')">
+                        UPDATE - Actualizar Datos
+                    </button>
+                    <button class="sql-button delete" onclick="showQuery('delete')">
+                        DELETE - Eliminar Datos
+                    </button>
+                    <button class="sql-button create" onclick="showQuery('create')">
+                        CREATE - Crear Tabla
+                    </button>
+                    <button class="sql-button drop" onclick="showQuery('drop')">
+                        DROP - Eliminar Tabla
+                    </button>
+                </div>
+            </div>
+            
+            <!-- SELECT Query Section -->
+            <div id="select-section" class="query-section">
+                <h3>SELECT - Consultar Pacientes</h3>
+                
+                <div class="form-group">
+                    <label>Tipo de Consulta:</label>
+                    <select id="select-type" onchange="generateSelectQuery()">
+                        <option value="all">Todos los pacientes</option>
+                        <option value="by-doctor">Por médico tratante</option>
+                        <option value="by-age">Pacientes mayores de 80 años</option>
+                        <option value="recent">Ingresos recientes (30 días)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Parámetro (si aplica):</label>
+                    <input type="text" id="select-param" placeholder="Dr. Ricardo Martínez" onchange="generateSelectQuery()">
+                </div>
+                
+                <button class="execute-btn" onclick="generateSelectQuery()">Generar Query SELECT</button>
+                <div class="sql-code" id="select-sql"></div>
+                <button class="copy-btn" onclick="copyToClipboard('select-sql')">Copiar</button>
+                <button class="execute-btn-sql" onclick="executeQuery('select-sql', 'select-result', event)">Ejecutar</button>
+                <div class="result-box" id="select-result"></div>
+            </div>
+            
+            <!-- INSERT Query Section -->
+            <div id="insert-section" class="query-section">
+                <h3>INSERT - Insertar Nuevo Paciente</h3>
+                
+                <div class="form-group">
+                    <label>RUT del Paciente:</label>
+                    <input type="text" id="insert-rut" placeholder="12345678-9" onchange="generateInsertQuery()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Nombre Completo:</label>
+                    <input type="text" id="insert-nombre" placeholder="Juan Pérez García" onchange="generateInsertQuery()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Fecha de Nacimiento:</label>
+                    <input type="date" id="insert-nacimiento" onchange="generateInsertQuery()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Fecha de Ingreso:</label>
+                    <input type="date" id="insert-ingreso" onchange="generateInsertQuery()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Médico Tratante:</label>
+                    <input type="text" id="insert-medico" placeholder="Dr. Ricardo Martínez" onchange="generateInsertQuery()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Próximo Control:</label>
+                    <input type="date" id="insert-control" onchange="generateInsertQuery()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Diagnóstico:</label>
+                    <textarea id="insert-diagnostico" placeholder="Hipertensión arterial, Control cardiológico" onchange="generateInsertQuery()"></textarea>
+                </div>
+                
+                <button class="execute-btn" onclick="generateInsertQuery()">Generar Query INSERT</button>
+                <div class="sql-code" id="insert-sql"></div>
+                <button class="copy-btn" onclick="copyToClipboard('insert-sql')">Copiar</button>
+                <button class="execute-btn-sql" onclick="executeQuery('insert-sql', 'insert-result', event)">Ejecutar</button>
+                <div class="result-box" id="insert-result"></div>
+            </div>
+            
+            <!-- UPDATE Query Section -->
+            <div id="update-section" class="query-section">
+                <h3>UPDATE - Actualizar Información del Paciente</h3>
+                
+                <div class="form-group">
+                    <label>RUT del Paciente a Actualizar:</label>
+                    <input type="text" id="update-rut" placeholder="12345678-9" onchange="generateUpdateQuery()">
+                </div>
+                
+                <div class="form-group">
+                    <label>Campo a Actualizar:</label>
+                    <select id="update-field" onchange="generateUpdateQuery()">
+                        <option value="nombre">Nombre</option>
+                        <option value="medico_tratante">Médico Tratante</option>
+                        <option value="diagnostico">Diagnóstico</option>
+                        <option value="proximo_control">Próximo Control</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nuevo Valor:</label>
+                    <input type="text" id="update-value" placeholder="Nuevo valor" onchange="generateUpdateQuery()">
+                </div>
+                
+                <button class="execute-btn" onclick="generateUpdateQuery()">Generar Query UPDATE</button>
+                <div class="sql-code" id="update-sql"></div>
+                <button class="copy-btn" onclick="copyToClipboard('update-sql')">Copiar</button>
+                <button class="execute-btn-sql" onclick="executeQuery('update-sql', 'update-result', event)">Ejecutar</button>
+                <div class="result-box" id="update-result"></div>
+            </div>
+            
+            <!-- DELETE Query Section -->
+            <div id="delete-section" class="query-section">
+                <h3>DELETE - Eliminar Registros</h3>
+                
+                <div class="form-group">
+                    <label>Tipo de Eliminación:</label>
+                    <select id="delete-type" onchange="generateDeleteQuery()">
+                        <option value="patient">Eliminar paciente específico</option>
+                        <option value="old-records">Eliminar registros vitales antiguos</option>
+                        <option value="expired-meds">Eliminar medicamentos vencidos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Parámetro:</label>
+                    <input type="text" id="delete-param" placeholder="21281802-k" onchange="generateDeleteQuery()">
+                </div>
+                
+                <button class="execute-btn" onclick="generateDeleteQuery()">Generar Query DELETE</button>
+                <div class="sql-code" id="delete-sql"></div>
+                <button class="copy-btn" onclick="copyToClipboard('delete-sql')">Copiar</button>
+                <button class="execute-btn-sql" onclick="executeQuery('delete-sql', 'delete-result', event)">Ejecutar</button>
+                <div class="result-box" id="delete-result"></div>
+            </div>
+            
+            <!-- CREATE Query Section -->
+            <div id="create-section" class="query-section">
+                <h3>CREATE TABLE - Crear Nueva Tabla</h3>
+                
+                <div class="form-group">
+                    <label>Tipo de Tabla a Crear:</label>
+                    <select id="create-type" onchange="generateCreateQuery()">
+                        <option value="alergias">Tabla de Alergias</option>
+                        <option value="funcionarios">Tabla de Funcionarios</option>
+                        <option value="habitaciones">Tabla de Habitaciones</option>
+                    </select>
+                </div>
+                
+                <button class="execute-btn" onclick="generateCreateQuery()">Generar Query CREATE</button>
+                <div class="sql-code" id="create-sql"></div>
+                <button class="copy-btn" onclick="copyToClipboard('create-sql')">Copiar</button>
+                <button class="execute-btn-sql" onclick="executeQuery('create-sql', 'create-result', event)">Ejecutar</button>
+                <div class="result-box" id="create-result"></div>
+            </div>
+            
+            <!-- DROP Query Section -->
+            <div id="drop-section" class="query-section">
+                <h3>DROP TABLE - Eliminar Tabla Completa</h3>
+                
+                <div class="form-group">
+                    <label>Tabla a Eliminar:</label>
+                    <select id="drop-table" onchange="generateDropQuery()">
+                        <option value="alergias">alergias</option>
+                        <option value="funcionarios">funcionarios</option>
+                        <option value="habitaciones">habitaciones</option>
+                    </select>
+                </div>
+                
+                <button class="execute-btn" onclick="generateDropQuery()">Generar Query DROP</button>
+                <div class="sql-code" id="drop-sql"></div>
+                <button class="copy-btn" onclick="copyToClipboard('drop-sql')">Copiar</button>
+                <button class="execute-btn-sql" onclick="executeQuery('drop-sql', 'drop-result', event)">Ejecutar</button>
+                <div class="result-box" id="drop-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showQuery(type) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.query-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Mostrar la sección seleccionada
+            const targetSection = document.getElementById(type + '-section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // Generar consulta inicial si existe la función
+                const functionName = 'generate' + type.charAt(0).toUpperCase() + type.slice(1) + 'Query';
+                if (typeof window[functionName] === 'function') {
+                    window[functionName]();
+                }
+            }
+        }
+
+        function generateSelectQuery() {
+            const type = document.getElementById('select-type').value;
+            const param = document.getElementById('select-param').value;
+            let query = '';
+            
+            switch(type) {
+                case 'all':
+                    query = `-- Consultar todos los pacientes con información completa
+SELECT rut, 
+       nombre, 
+       fecha_nacimiento, 
+       (strftime('%Y', 'now') - strftime('%Y', fecha_nacimiento)) AS edad,
+       fecha_ingreso,
+       medico_tratante, 
+       diagnostico,
+       proximo_control
+FROM residentes 
+ORDER BY nombre;`;
+                    break;
+                case 'by-doctor':
+                    query = `-- Consultar pacientes por médico con información completa
+SELECT rut, 
+       nombre, 
+       fecha_nacimiento,
+       (strftime('%Y', 'now') - strftime('%Y', fecha_nacimiento)) AS edad,
+       fecha_ingreso, 
+       diagnostico,
+       proximo_control
+FROM residentes 
+WHERE medico_tratante = '${param}'
+ORDER BY fecha_ingreso DESC;`;
+                    break;
+                case 'by-age':
+                    query = `-- Consultar pacientes mayores de 80 años con información completa
+SELECT rut, 
+       nombre, 
+       fecha_nacimiento,
+       (strftime('%Y', 'now') - strftime('%Y', fecha_nacimiento)) AS edad,
+       fecha_ingreso,
+       medico_tratante,
+       diagnostico,
+       proximo_control
+FROM residentes 
+WHERE (strftime('%Y', 'now') - strftime('%Y', fecha_nacimiento)) > 80
+ORDER BY fecha_nacimiento;`;
+                    break;
+                case 'recent':
+                    query = `-- Consultar ingresos recientes (últimos 30 días) con información completa
+SELECT rut, 
+       nombre, 
+       fecha_nacimiento,
+       (strftime('%Y', 'now') - strftime('%Y', fecha_nacimiento)) AS edad,
+       fecha_ingreso, 
+       medico_tratante, 
+       diagnostico,
+       proximo_control
+FROM residentes 
+WHERE fecha_ingreso >= date('now', '-30 days')
+ORDER BY fecha_ingreso DESC;`;
+                    break;
+            }
+            
+            document.getElementById('select-sql').textContent = query;
+        }
+
+        function generateInsertQuery() {
+            const rut = document.getElementById('insert-rut').value;
+            const nombre = document.getElementById('insert-nombre').value;
+            const nacimiento = document.getElementById('insert-nacimiento').value;
+            const ingreso = document.getElementById('insert-ingreso').value;
+            const medico = document.getElementById('insert-medico').value;
+            const control = document.getElementById('insert-control').value;
+            const diagnostico = document.getElementById('insert-diagnostico').value;
+            
+            const query = `-- Insertar nuevo paciente
+INSERT INTO residentes (rut, nombre, fecha_nacimiento, fecha_ingreso, medico_tratante, proximo_control, diagnostico)
+VALUES (
+    '${rut}',
+    '${nombre}',
+    '${nacimiento}',
+    '${ingreso}',
+    '${medico}',
+    '${control}',
+    '${diagnostico}'
+);`;
+            
+            document.getElementById('insert-sql').textContent = query;
+        }
+
+        function generateUpdateQuery() {
+            const rut = document.getElementById('update-rut').value;
+            const field = document.getElementById('update-field').value;
+            const value = document.getElementById('update-value').value;
+            
+            const query = `-- Actualizar información del paciente
+UPDATE residentes 
+SET ${field} = '${value}'
+WHERE rut = '${rut}';`;
+            
+            document.getElementById('update-sql').textContent = query;
+        }
+
+        function generateDeleteQuery() {
+            const type = document.getElementById('delete-type').value;
+            const param = document.getElementById('delete-param').value;
+            let query = '';
+            
+            switch(type) {
+                case 'patient':
+                    query = `-- Eliminar paciente (primero eliminar registros relacionados manualmente)
+-- Para eliminar un paciente completamente, ejecutar en este orden:
+-- 1. DELETE FROM registros_vitales WHERE rut_residente = '${param}';
+-- 2. DELETE FROM medicamentos WHERE rut_residente = '${param}';
+-- 3. DELETE FROM residentes WHERE rut = '${param}';
+
+-- Esta consulta solo elimina el paciente (puede fallar si hay registros relacionados)
+DELETE FROM residentes WHERE rut = '${param}';`;
+                    break;
+                case 'old-records':
+                    query = `-- Eliminar registros vitales antiguos (más de 1 año)
+DELETE FROM registros_vitales 
+WHERE fecha < date('now', '-1 year');`;
+                    break;
+                case 'expired-meds':
+                    query = `-- Eliminar medicamentos vencidos
+DELETE FROM medicamentos 
+WHERE fecha_termino IS NOT NULL 
+AND fecha_termino < date('now', '-6 months');`;
+                    break;
+            }
+            
+            document.getElementById('delete-sql').textContent = query;
+        }
+
+        function generateCreateQuery() {
+            const type = document.getElementById('create-type').value;
+            let query = '';
+            
+            switch(type) {
+                case 'alergias':
+                    query = `-- Crear tabla de alergias de pacientes
+CREATE TABLE IF NOT EXISTS alergias (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rut_residente TEXT,
+    alergia TEXT NOT NULL,
+    gravedad TEXT CHECK (gravedad IN ('leve', 'moderada', 'severa')),
+    fecha_registro DATE DEFAULT CURRENT_DATE,
+    FOREIGN KEY (rut_residente) REFERENCES residentes(rut)
+);`;
+                    break;
+                case 'funcionarios':
+                    query = `-- Crear tabla de funcionarios del centro médico
+CREATE TABLE IF NOT EXISTS funcionarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    rut TEXT UNIQUE,
+    nombre TEXT NOT NULL,
+    cargo TEXT,
+    area TEXT,
+    fecha_ingreso DATE,
+    activo BOOLEAN DEFAULT 1
+);`;
+                    break;
+                case 'habitaciones':
+                    query = `-- Crear tabla de habitaciones
+CREATE TABLE IF NOT EXISTS habitaciones (
+    numero INTEGER PRIMARY KEY,
+    tipo TEXT CHECK (tipo IN ('individual', 'compartida', 'suite')),
+    capacidad INTEGER,
+    ocupada BOOLEAN DEFAULT 0,
+    rut_residente TEXT,
+    FOREIGN KEY (rut_residente) REFERENCES residentes(rut)
+);`;
+                    break;
+            }
+            
+            document.getElementById('create-sql').textContent = query;
+        }
+
+        function generateDropQuery() {
+            const table = document.getElementById('drop-table').value;
+            
+            const query = `-- PELIGRO: Eliminar tabla completa con todos sus datos
+-- Esta operación NO se puede deshacer
+DROP TABLE IF EXISTS ${table};`;
+            
+            document.getElementById('drop-sql').textContent = query;
+        }
+
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Consulta SQL copiada al portapapeles');
+            });
+        }
+
+        // Variable global para controlar ejecuciones múltiples
+        let isExecuting = false;
+        
+        async function executeQuery(sqlElementId, resultElementId, event) {
+            // Prevenir ejecuciones múltiples
+            if (isExecuting) {
+                console.log('Ya hay una consulta ejecutándose...');
+                return;
+            }
+            
+            isExecuting = true;
+            
+            const sqlElement = document.getElementById(sqlElementId);
+            const resultElement = document.getElementById(resultElementId);
+            const query = sqlElement.textContent.trim();
+            
+            // Encontrar el botón correspondiente y desactivarlo
+            const button = event ? event.target : null;
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+                button.textContent = 'Ejecutando...';
+            }
+            
+            if (!query) {
+                resultElement.innerHTML = '<div style="color: red;"><strong>Error:</strong> No hay consulta para ejecutar</div>';
+                resetButton(button);
+                isExecuting = false;
+                return;
+            }
+            
+            try {
+                resultElement.innerHTML = '<strong>Paso 1:</strong> Enviando consulta al servidor...';
+                
+                const response = await fetch('/api/execute-sql', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+                
+                resultElement.innerHTML = '<strong>Paso 2:</strong> Procesando consulta en la base de datos...';
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.data && result.data.length > 0) {
+                        // Mostrar proceso para SELECT con tabla HTML
+                        let output = `<div style="margin-bottom: 15px;">`;
+                        output += `<strong>Paso 3:</strong> Consulta SELECT ejecutada exitosamente<br>`;
+                        output += `<strong>Paso 4:</strong> Se encontraron ${result.count} registros<br>`;
+                        output += `<strong>Paso 5:</strong> Procesando datos...<br>`;
+                        output += `<strong>Paso 6:</strong> Mostrando resultados en tabla:<br>`;
+                        output += `</div>`;
+                        
+                        // Crear tabla HTML
+                        output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 10px;">`;
+                        
+                        // Encabezados de la tabla
+                        if (result.data.length > 0) {
+                            output += `<thead style="background-color: #f8f9fa;"><tr>`;
+                            Object.keys(result.data[0]).forEach(key => {
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">${key}</th>`;
+                            });
+                            output += `</tr></thead>`;
+                        }
+                        
+                        // Filas de datos
+                        output += `<tbody>`;
+                        result.data.forEach((row, index) => {
+                            output += `<tr style="background-color: ${index % 2 === 0 ? '#ffffff' : '#f8f9fa'};">`;
+                            Object.values(row).forEach(value => {
+                                output += `<td style="padding: 8px; border: 1px solid #dee2e6;">${value || 'NULL'}</td>`;
+                            });
+                            output += `</tr>`;
+                        });
+                        output += `</tbody></table>`;
+                        
+                        output += `<div style="margin-top: 10px; font-style: italic; color: #666;">`;
+                        output += `✅ Consulta completada exitosamente - ${result.data.length} registro(s) mostrado(s)`;
+                        output += `</div>`;
+                        
+                        resultElement.innerHTML = output;
+                    } else if (result.count === 0) {
+                        // Proceso para consultas sin resultados
+                        let output = `<div style="margin-bottom: 15px;">`;
+                        output += `<strong>Paso 3:</strong> Consulta ejecutada exitosamente<br>`;
+                        output += `<strong>Paso 4:</strong> No se encontraron registros<br>`;
+                        output += `<strong>Paso 5:</strong> La tabla está vacía o no coincide con los criterios<br><br>`;
+                        output += `<em>Sugerencia: Si es la primera vez, haz clic en "Cargar Datos"</em>`;
+                        output += `</div>`;
+                        resultElement.innerHTML = output;
+                    } else {
+                        // Verificar tipo de operación con seguimiento
+                        if (result.update_tracking && result.before_data && result.after_data) {
+                            // Mostrar proceso de UPDATE con antes/después
+                            let output = `<div style="margin-bottom: 15px;">`;
+                            output += `<strong>Paso 3:</strong> Consulta UPDATE ejecutada exitosamente<br>`;
+                            output += `<strong>Paso 4:</strong> Filas afectadas: ${result.affected_rows || 0}<br>`;
+                            output += `<strong>Paso 5:</strong> Verificando cambios realizados...<br>`;
+                            output += `<strong>Paso 6:</strong> Mostrando comparación ANTES vs DESPUÉS:<br>`;
+                            output += `</div>`;
+                            
+                            // Crear tabla de comparación
+                            output += `<div style="display: flex; gap: 20px; margin-top: 10px;">`;
+                            
+                            // ANTES
+                            output += `<div style="flex: 1;">`;
+                            output += `<h4 style="background: #ffebee; padding: 10px; margin: 0; border-radius: 5px;">🔴 ANTES del UPDATE</h4>`;
+                            output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                            output += `<thead style="background-color: #ffebee;"><tr>`;
+                            Object.keys(result.before_data).forEach(key => {
+                                output += `<th style="padding: 6px; font-size: 0.9em; border: 1px solid #dee2e6;">${key}</th>`;
+                            });
+                            output += `</tr></thead><tbody><tr>`;
+                            Object.values(result.before_data).forEach(value => {
+                                output += `<td style="padding: 6px; font-size: 0.9em; border: 1px solid #dee2e6;">${value || 'NULL'}</td>`;
+                            });
+                            output += `</tr></tbody></table></div>`;
+                            
+                            // DESPUÉS
+                            output += `<div style="flex: 1;">`;
+                            output += `<h4 style="background: #e8f5e8; padding: 10px; margin: 0; border-radius: 5px;">🟢 DESPUÉS del UPDATE</h4>`;
+                            output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                            output += `<thead style="background-color: #e8f5e8;"><tr>`;
+                            Object.keys(result.after_data).forEach(key => {
+                                output += `<th style="padding: 6px; font-size: 0.9em; border: 1px solid #dee2e6;">${key}</th>`;
+                            });
+                            output += `</tr></thead><tbody><tr>`;
+                            Object.values(result.after_data).forEach((value, index) => {
+                                const beforeValue = Object.values(result.before_data)[index];
+                                const isChanged = value !== beforeValue;
+                                const bgColor = isChanged ? '#ffffcc' : '';
+                                output += `<td style="padding: 6px; font-size: 0.9em; border: 1px solid #dee2e6; background: ${bgColor}; ${isChanged ? 'font-weight: bold;' : ''}">${value || 'NULL'}</td>`;
+                            });
+                            output += `</tr></tbody></table></div>`;
+                            output += `</div>`;
+                            
+                            // Resumen de cambios
+                            output += `<div style="margin-top: 15px; padding: 10px; background: #e8f5e8; border-radius: 5px;">`;
+                            output += `<strong>✅ Resumen:</strong> Los datos del paciente RUT ${result.rut} han sido actualizados exitosamente. `;
+                            output += `Los campos modificados están resaltados en amarillo.`;
+                            output += `</div>`;
+                            
+                            resultElement.innerHTML = output;
+                        } else if (result.insert_tracking && result.inserted_data) {
+                            // Mostrar proceso de INSERT con datos insertados
+                            let output = `<div style="margin-bottom: 15px;">`;
+                            output += `<strong>Paso 3:</strong> Consulta INSERT ejecutada exitosamente<br>`;
+                            output += `<strong>Paso 4:</strong> Filas insertadas: ${result.affected_rows || 0}<br>`;
+                            output += `<strong>Paso 5:</strong> Verificando registro insertado...<br>`;
+                            output += `<strong>Paso 6:</strong> Mostrando TODOS los datos de la base después del INSERT:<br>`;
+                            output += `</div>`;
+                            
+                            // Mostrar TODOS los datos de la base después del INSERT
+                            if (result.all_data && result.all_data.length > 0) {
+                                output += `<h4 style="background: #e8f5e8; padding: 10px; margin: 0; border-radius: 5px;">� ESTADO ACTUAL DE LA BASE DE DATOS (${result.count} registros)</h4>`;
+                                output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                                output += `<thead style="background-color: #e8f5e8;"><tr>`;
+                                Object.keys(result.all_data[0]).forEach(key => {
+                                    output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">${key}</th>`;
+                                });
+                                output += `</tr></thead><tbody>`;
+                                
+                                result.all_data.forEach((row, index) => {
+                                    const isNewRecord = result.rut && row.rut === result.rut;
+                                    const bgColor = isNewRecord ? '#ffffcc' : (index % 2 === 0 ? '#ffffff' : '#f8f9fa');
+                                    output += `<tr style="background-color: ${bgColor};">`;
+                                    Object.values(row).forEach(value => {
+                                        output += `<td style="padding: 8px; border: 1px solid #dee2e6; ${isNewRecord ? 'font-weight: bold;' : ''}">${value || 'NULL'}</td>`;
+                                    });
+                                    output += `</tr>`;
+                                });
+                                output += `</tbody></table>`;
+                                
+                                output += `<div style="margin-top: 15px; padding: 10px; background: #e8f5e8; border-radius: 5px;">`;
+                                output += `<strong>✅ Resumen:</strong> Nuevo paciente agregado exitosamente. `;
+                                output += `El registro resaltado en amarillo es el que acabas de insertar.`;
+                                output += `</div>`;
+                            }
+                            
+                            resultElement.innerHTML = output;
+                        } else if (result.delete_tracking) {
+                            // Mostrar proceso de DELETE con TODOS los datos restantes
+                            let output = `<div style="margin-bottom: 15px;">`;
+                            output += `<strong>Paso 3:</strong> Consulta DELETE ejecutada exitosamente<br>`;
+                            output += `<strong>Paso 4:</strong> Filas eliminadas: ${result.affected_rows || 0}<br>`;
+                            output += `<strong>Paso 5:</strong> Verificando datos restantes...<br>`;
+                            output += `<strong>Paso 6:</strong> Mostrando TODOS los datos restantes en la base:<br>`;
+                            output += `</div>`;
+                            
+                            // Mostrar TODOS los datos restantes después de DELETE
+                            if (result.all_data && result.all_data.length > 0) {
+                                output += `<h4 style="background: #fff3cd; padding: 10px; margin: 0; border-radius: 5px;">� ESTADO ACTUAL DE LA BASE DE DATOS (${result.count} registros restantes)</h4>`;
+                                output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                                output += `<thead style="background-color: #fff3cd;"><tr>`;
+                                Object.keys(result.all_data[0]).forEach(key => {
+                                    output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">${key}</th>`;
+                                });
+                                output += `</tr></thead><tbody>`;
+                                
+                                result.all_data.forEach((row, index) => {
+                                    const bgColor = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
+                                    output += `<tr style="background-color: ${bgColor};">`;
+                                    Object.values(row).forEach(value => {
+                                        output += `<td style="padding: 8px; border: 1px solid #dee2e6;">${value || 'NULL'}</td>`;
+                                    });
+                                    output += `</tr>`;
+                                });
+                                output += `</tbody></table>`;
+                                
+                                output += `<div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 5px;">`;
+                                output += `<strong>✅ Resumen:</strong> Se eliminaron ${result.affected_rows} registros. `;
+                                output += `Arriba se muestran todos los registros que quedan en la base de datos.`;
+                                output += `</div>`;
+                            } else {
+                                output += `<h4 style="background: #f8d7da; padding: 10px; margin: 0; border-radius: 5px;">📊 ESTADO ACTUAL DE LA BASE DE DATOS</h4>`;
+                                output += `<div style="margin-top: 15px; padding: 10px; background: #f8d7da; border-radius: 5px;">`;
+                                output += `<strong>✅ Resumen:</strong> Se eliminaron ${result.affected_rows} registros. `;
+                                output += `No quedan registros en la tabla.`;
+                                output += `</div>`;
+                            }
+                            
+                            resultElement.innerHTML = output;
+                        } else if (result.create_tracking) {
+                            // Mostrar proceso de CREATE TABLE con lista de todas las tablas
+                            let output = `<div style="margin-bottom: 15px;">`;
+                            output += `<strong>Paso 3:</strong> Consulta CREATE TABLE ejecutada exitosamente<br>`;
+                            output += `<strong>Paso 4:</strong> Tabla "${result.table_name}" creada<br>`;
+                            output += `<strong>Paso 5:</strong> Verificando estructura de la tabla...<br>`;
+                            output += `<strong>Paso 6:</strong> Mostrando TODAS las tablas actuales en la base:<br>`;
+                            output += `</div>`;
+                            
+                            // Mostrar estructura de la tabla creada
+                            if (result.table_structure && result.table_structure.length > 0) {
+                                output += `<h4 style="background: #e3f2fd; padding: 10px; margin: 0; border-radius: 5px;">🏗️ TABLA CREADA: ${result.table_name}</h4>`;
+                                output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                                output += `<thead style="background-color: #e3f2fd;"><tr>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Columna</th>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Tipo</th>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">No Nulo</th>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Valor Por Defecto</th>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Clave Primaria</th>`;
+                                output += `</tr></thead><tbody>`;
+                                
+                                result.table_structure.forEach(column => {
+                                    output += `<tr>`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6; background: #ffffcc; font-weight: bold;">${column.name}</td>`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6;">${column.type}</td>`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6;">${column.notnull ? 'Sí' : 'No'}</td>`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6;">${column.dflt_value || 'NULL'}</td>`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6;">${column.pk ? 'Sí' : 'No'}</td>`;
+                                    output += `</tr>`;
+                                });
+                                output += `</tbody></table>`;
+                            }
+                            
+                            // Mostrar TODAS las tablas en la base de datos
+                            if (result.all_tables && result.all_tables.length > 0) {
+                                output += `<h4 style="background: #e8f5e8; padding: 10px; margin: 15px 0 0 0; border-radius: 5px;">📊 TODAS LAS TABLAS EN LA BASE DE DATOS</h4>`;
+                                output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                                output += `<thead style="background-color: #e8f5e8;"><tr>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Tabla</th>`;
+                                output += `</tr></thead><tbody>`;
+                                
+                                result.all_tables.forEach((table, index) => {
+                                    const isNewTable = table === result.table_name;
+                                    const bgColor = isNewTable ? '#ffffcc' : (index % 2 === 0 ? '#ffffff' : '#f8f9fa');
+                                    output += `<tr style="background-color: ${bgColor};">`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6; ${isNewTable ? 'font-weight: bold;' : ''}">${table}</td>`;
+                                    output += `</tr>`;
+                                });
+                                output += `</tbody></table>`;
+                            }
+                            
+                            output += `<div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 5px;">`;
+                            output += `<strong>✅ Resumen:</strong> Tabla "${result.table_name}" creada exitosamente con ${result.table_structure ? result.table_structure.length : 0} columnas. `;
+                            output += `La tabla resaltada en amarillo es la que acabas de crear.`;
+                            output += `</div>`;
+                            
+                            resultElement.innerHTML = output;
+                        } else if (result.drop_tracking) {
+                            // Mostrar proceso de DROP TABLE con tablas restantes
+                            let output = `<div style="margin-bottom: 15px;">`;
+                            output += `<strong>Paso 3:</strong> Consulta DROP TABLE ejecutada exitosamente<br>`;
+                            output += `<strong>Paso 4:</strong> Tabla "${result.table_name}" eliminada<br>`;
+                            output += `<strong>Paso 5:</strong> Verificando datos eliminados...<br>`;
+                            output += `<strong>Paso 6:</strong> Mostrando TODAS las tablas restantes en la base:<br>`;
+                            output += `</div>`;
+                            
+                            output += `<h4 style="background: #ffebee; padding: 10px; margin: 0; border-radius: 5px;">❌ TABLA ELIMINADA: ${result.table_name}</h4>`;
+                            
+                            if (result.table_structure && result.table_structure.length > 0) {
+                                output += `<p style="margin: 10px 0;"><strong>Estructura eliminada:</strong></p>`;
+                                output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                                output += `<thead style="background-color: #ffebee;"><tr>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Columna</th>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Tipo</th>`;
+                                output += `</tr></thead><tbody>`;
+                                
+                                result.table_structure.forEach(column => {
+                                    output += `<tr>`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6; background: #ffcccc; text-decoration: line-through;">${column.name}</td>`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6; background: #ffcccc; text-decoration: line-through;">${column.type}</td>`;
+                                    output += `</tr>`;
+                                });
+                                output += `</tbody></table>`;
+                            }
+                            
+                            // Mostrar TODAS las tablas restantes en la base de datos
+                            if (result.remaining_tables && result.remaining_tables.length > 0) {
+                                output += `<h4 style="background: #e8f5e8; padding: 10px; margin: 15px 0 0 0; border-radius: 5px;">📊 TABLAS RESTANTES EN LA BASE DE DATOS</h4>`;
+                                output += `<table border="1" style="width: 100%; border-collapse: collapse; margin-top: 5px;">`;
+                                output += `<thead style="background-color: #e8f5e8;"><tr>`;
+                                output += `<th style="padding: 8px; text-align: left; border: 1px solid #dee2e6;">Tabla</th>`;
+                                output += `</tr></thead><tbody>`;
+                                
+                                result.remaining_tables.forEach((table, index) => {
+                                    const bgColor = index % 2 === 0 ? '#ffffff' : '#f8f9fa';
+                                    output += `<tr style="background-color: ${bgColor};">`;
+                                    output += `<td style="padding: 8px; border: 1px solid #dee2e6;">${table}</td>`;
+                                    output += `</tr>`;
+                                });
+                                output += `</tbody></table>`;
+                            } else {
+                                output += `<h4 style="background: #f8d7da; padding: 10px; margin: 15px 0 0 0; border-radius: 5px;">📊 ESTADO DE LA BASE DE DATOS</h4>`;
+                                output += `<div style="margin-top: 15px; padding: 10px; background: #f8d7da; border-radius: 5px;">`;
+                                output += `<strong>⚠️ No hay más tablas en la base de datos.</strong>`;
+                                output += `</div>`;
+                            }
+                            
+                            output += `<div style="margin-top: 15px; padding: 10px; background: #ffebee; border-radius: 5px;">`;
+                            output += `<strong>⚠️ Resumen:</strong> Tabla "${result.table_name}" eliminada permanentemente. `;
+                            output += `Se perdieron ${result.records_deleted || 0} registros de datos.`;
+                            output += `</div>`;
+                            
+                            resultElement.innerHTML = output;
+                            
+                            resultElement.innerHTML = output;
+                        } else {
+                            // Proceso para operaciones normales sin seguimiento específico
+                            let output = `<div style="margin-bottom: 15px;">`;
+                            output += `<strong>Paso 3:</strong> Consulta ejecutada exitosamente<br>`;
+                            output += `<strong>Paso 4:</strong> Operación completada<br>`;
+                            output += `<strong>Paso 5:</strong> Filas afectadas: ${result.affected_rows || 0}<br>`;
+                            if (query.toUpperCase().includes('INSERT')) {
+                                output += `<strong>Paso 6:</strong> Nuevo registro agregado a la base de datos`;
+                            } else if (query.toUpperCase().includes('UPDATE')) {
+                                output += `<strong>Paso 6:</strong> Registro actualizado en la base de datos`;
+                            } else if (query.toUpperCase().includes('DELETE')) {
+                                output += `<strong>Paso 6:</strong> Registro eliminado de la base de datos`;
+                            } else if (query.toUpperCase().includes('CREATE')) {
+                                output += `<strong>Paso 6:</strong> Nueva tabla creada en la base de datos`;
+                            } else if (query.toUpperCase().includes('DROP')) {
+                                output += `<strong>Paso 6:</strong> Tabla eliminada de la base de datos`;
+                            }
+                            output += `</div>`;
+                            resultElement.innerHTML = output;
+                        }
+                    }
+                } else {
+                    // Manejar errores específicos con explicaciones claras
+                    let errorMessage = result.error;
+                    let explanation = '';
+                    
+                    if (result.error.includes('no existe')) {
+                        explanation = '<br><strong>💡 Explicación:</strong> No se puede eliminar una tabla que no existe en la base de datos.';
+                    } else if (result.error.includes('ya existe')) {
+                        explanation = '<br><strong>💡 Explicación:</strong> No se puede crear una tabla que ya existe. Use "CREATE TABLE IF NOT EXISTS" para evitar este error.';
+                    } else if (result.affected_rows === 0) {
+                        explanation = '<br><strong>💡 Explicación:</strong> La operación se ejecutó pero no afectó ningún registro. Verifique las condiciones WHERE.';
+                    }
+                    
+                    resultElement.innerHTML = `<div style="color: red; padding: 10px; background: #ffebee; border-radius: 5px;">
+                        <strong>⚠️ Operación no completada:</strong> ${errorMessage}${explanation}
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultElement.innerHTML = `<div style="color: red;"><strong>Error en Paso 1:</strong> No se pudo conectar al servidor - ${error.message}</div>`;
+            } finally {
+                // Siempre restaurar el botón y el estado al finalizar
+                resetButton(button);
+                isExecuting = false;
+            }
+        }
+        
+        // Función auxiliar para restaurar el estado del botón
+        function resetButton(button) {
+            if (button) {
+                // Agregar un pequeño delay antes de reactivar para evitar clics accidentales
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                    button.textContent = 'Ejecutar';
+                }, 500); // 500ms de delay
+            }
+        }
+        
+        // Prevenir que se ejecuten múltiples consultas al mismo tiempo al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            isExecuting = false;
+        });
+
+        async function populateDatabase(event) {
+            // Prevenir ejecuciones múltiples
+            if (isExecuting) {
+                console.log('Ya hay una operación ejecutándose...');
+                return;
+            }
+            
+            isExecuting = true;
+            
+            const button = event ? event.target : null;
+            if (button) {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+                button.textContent = 'Cargando...';
+            }
+            
+            const resultDiv = document.getElementById('populate-result');
+            resultDiv.innerHTML = 'Cargando datos de ejemplo... ⏳';
+            resultDiv.style.color = '#007bff';
+
+            try {
+                const response = await fetch('/api/populate-db', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    resultDiv.innerHTML = '✅ Base de datos cargada exitosamente con datos de ejemplo';
+                    resultDiv.style.color = '#28a745';
+                } else {
+                    resultDiv.innerHTML = 'Error: ' + result.error;
+                    resultDiv.style.color = 'red';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = 'Error de conexión: ' + error.message;
+                resultDiv.style.color = 'red';
+            } finally {
+                // Restaurar botón
+                if (button) {
+                    setTimeout(() => {
+                        button.disabled = false;
+                        button.style.opacity = '1';
+                        button.textContent = 'Cargar Datos';
+                        isExecuting = false;
+                    }, 1000); // 1 segundo de delay para esta operación
+                } else {
+                    isExecuting = false;
+                }
+            }
+        }
+
+        // Generar consulta SELECT inicial al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            generateSelectQuery();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Base de Datos Médica - SQL Relacionado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e17055 0%, #f39c12 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #e17055;
+            padding-bottom: 10px;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .sql-button {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .sql-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .sql-button.join-inner { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); }
+        .sql-button.join-left { background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%); }
+        .sql-button.join-subquery { background: linear-gradient(135deg, #00b894 0%, #55efc4 100%); }
+        .sql-button.join-aggregate { background: linear-gradient(135deg, #e17055 0%, #fab1a0 100%); }
+        .sql-button.join-complex { background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%); }
+        .sql-button.join-view { background: linear-gradient(135deg, #00cec9 0%, #81ecec 100%); }
+        
+        .query-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #e17055;
+        }
+        
+        .query-container h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .sql-query {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        
+        .result-area {
+            background: white;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        
+        .copy-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: #229954;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .execute-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .execute-btn:hover {
+            background: #c0392b;
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #e17055;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-box h3 {
+            color: #d68910;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #e17055;
+        }
+        
+        .navigation {
+            background: #2c3e50;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: #34495e;
+            transition: background 0.3s;
+        }
+        
+        .nav-link:hover {
+            background: #e17055;
+        }
+        
+        .complexity-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        
+        .complexity-badge.medium { background: #f39c12; }
+        .complexity-badge.advanced { background: #e74c3c; }
+        .complexity-badge.expert { background: #8e44ad; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 Gestor de Base de Datos Médica</h1>
+            <p>Panel de Consultas SQL Relacionadas (JOINs y Subconsultas)</p>
+        </div>
+        
+        <div class="navigation">
+            <a href="sql_basico.html" class="nav-link">🔧 SQL Básico</a>
+            <a href="sql_relacionado.html" class="nav-link">🔗 SQL Relacionado</a>
+            <a href="#" class="nav-link">📊 Reportes</a>
+            <a href="#" class="nav-link">⚙️ Configuración</a>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <h3>🎯 Consultas SQL Avanzadas</h3>
+                <p>Estas consultas utilizan JOINs, subconsultas y funciones agregadas para obtener información relacionada entre las diferentes tablas de la base de datos médica. Ideal para reportes y análisis complejos.</p>
+                <p><strong>Tip:</strong> Las consultas están ordenadas por complejidad, desde básicas hasta expertas.</p>
+            </div>
+            
+            <div class="section">
+                <h2>🔗 Operaciones SQL Relacionadas</h2>
+                <div class="buttons-grid">
+                    <button class="sql-button join-inner" onclick="showQuery('inner-join')">
+                        🔄 INNER JOIN - Pacientes con Medicamentos
+                        <span class="complexity-badge medium">Medio</span>
+                    </button>
+                    <button class="sql-button join-left" onclick="showQuery('left-join')">
+                        ↪️ LEFT JOIN - Todos los Pacientes
+                        <span class="complexity-badge medium">Medio</span>
+                    </button>
+                    <button class="sql-button join-subquery" onclick="showQuery('subquery')">
+                        📊 Subconsultas - Análisis Avanzado
+                        <span class="complexity-badge advanced">Avanzado</span>
+                    </button>
+                    <button class="sql-button join-aggregate" onclick="showQuery('aggregate')">
+                        📈 Funciones Agregadas - Estadísticas
+                        <span class="complexity-badge advanced">Avanzado</span>
+                    </button>
+                    <button class="sql-button join-complex" onclick="showQuery('complex')">
+                        🎯 Consultas Complejas - Multi-tabla
+                        <span class="complexity-badge expert">Experto</span>
+                    </button>
+                    <button class="sql-button join-view" onclick="showQuery('views')">
+                        👁️ Vistas y Procedimientos
+                        <span class="complexity-badge expert">Experto</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Query Containers -->
+            <div id="inner-join-query" class="query-container hidden">
+                <h3>🔄 INNER JOIN - Pacientes con Medicamentos Activos</h3>
+                <div class="form-group">
+                    <label>Filtrar por:</label>
+                    <select id="inner-filter" onchange="generateInnerJoinQuery()">
+                        <option value="all">Todos los pacientes con medicamentos</option>
+                        <option value="doctor">Por médico específico</option>
+                        <option value="medication">Por tipo de medicamento</option>
+                        <option value="sos">Solo medicamentos SOS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Parámetro de búsqueda:</label>
+                    <input type="text" id="inner-param" placeholder="Ej: Dr. Ricardo Martínez o Losartán" value="Dr. Ricardo Martínez">
+                </div>
+                <button class="execute-btn" onclick="generateInnerJoinQuery()">Generar Query INNER JOIN</button>
+                <div class="sql-query" id="inner-join-sql">
+-- INNER JOIN: Pacientes con medicamentos activos
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    r.medico_tratante,
+    m.nombre AS medicamento,
+    m.dosis,
+    m.caso_sos,
+    m.fecha_inicio
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE m.fecha_termino IS NULL OR m.fecha_termino > CURDATE()
+ORDER BY r.nombre, m.nombre;
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('inner-join-sql')">📋 Copiar SQL</button>
+                <div class="result-area" id="inner-join-result">
+📊 Esta consulta muestra solo los pacientes que tienen medicamentos asignados, relacionando las tablas 'residentes' y 'medicamentos'.
+                </div>
+            </div>
+            
+            <div id="left-join-query" class="query-container hidden">
+                <h3>↪️ LEFT JOIN - Todos los Pacientes (con o sin medicamentos)</h3>
+                <div class="form-group">
+                    <label>Tipo de reporte:</label>
+                    <select id="left-type" onchange="generateLeftJoinQuery()">
+                        <option value="medications">Pacientes y sus medicamentos</option>
+                        <option value="vitals">Pacientes y registros vitales</option>
+                        <option value="both">Pacientes con medicamentos y signos vitales</option>
+                        <option value="no-meds">Pacientes sin medicamentos</option>
+                    </select>
+                </div>
+                <button class="execute-btn" onclick="generateLeftJoinQuery()">Generar Query LEFT JOIN</button>
+                <div class="sql-query" id="left-join-sql">
+-- LEFT JOIN: Todos los pacientes con o sin medicamentos
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    r.diagnostico,
+    COUNT(m.id) AS total_medicamentos,
+    GROUP_CONCAT(m.nombre SEPARATOR ', ') AS medicamentos
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+GROUP BY r.rut, r.nombre, r.diagnostico
+ORDER BY total_medicamentos DESC, r.nombre;
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('left-join-sql')">📋 Copiar SQL</button>
+                <div class="result-area" id="left-join-result">
+📊 LEFT JOIN incluye TODOS los pacientes, incluso aquellos que no tienen medicamentos asignados.
+                </div>
+            </div>
+            
+            <div id="subquery-query" class="query-container hidden">
+                <h3>📊 Subconsultas - Análisis Avanzado de Datos</h3>
+                <div class="form-group">
+                    <label>Tipo de análisis:</label>
+                    <select id="subquery-type" onchange="generateSubqueryQuery()">
+                        <option value="most-meds">Paciente con más medicamentos</option>
+                        <option value="above-average">Pacientes con medicamentos sobre el promedio</option>
+                        <option value="recent-vitals">Pacientes con signos vitales recientes</option>
+                        <option value="no-recent-vitals">Pacientes sin control reciente</option>
+                    </select>
+                </div>
+                <button class="execute-btn" onclick="generateSubqueryQuery()">Generar Subconsulta</button>
+                <div class="sql-query" id="subquery-sql">
+-- Subconsulta: Pacientes con más medicamentos que el promedio
+SELECT 
+    r.rut,
+    r.nombre,
+    r.diagnostico,
+    COUNT(m.id) as total_medicamentos
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+GROUP BY r.rut, r.nombre, r.diagnostico
+HAVING COUNT(m.id) > (
+    SELECT AVG(med_count) 
+    FROM (
+        SELECT COUNT(*) as med_count 
+        FROM medicamentos 
+        GROUP BY rut_residente
+    ) AS avg_meds
+)
+ORDER BY total_medicamentos DESC;
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('subquery-sql')">📋 Copiar SQL</button>
+                <div class="result-area" id="subquery-result">
+🎯 Las subconsultas permiten comparar datos con promedios, máximos o condiciones calculadas dinámicamente.
+                </div>
+            </div>
+            
+            <div id="aggregate-query" class="query-container hidden">
+                <h3>📈 Funciones Agregadas - Estadísticas Médicas</h3>
+                <div class="form-group">
+                    <label>Tipo de estadística:</label>
+                    <select id="aggregate-type" onchange="generateAggregateQuery()">
+                        <option value="by-doctor">Estadísticas por médico</option>
+                        <option value="by-month">Ingresos por mes</option>
+                        <option value="age-groups">Distribución por grupos de edad</option>
+                        <option value="medication-stats">Estadísticas de medicamentos</option>
+                    </select>
+                </div>
+                <button class="execute-btn" onclick="generateAggregateQuery()">Generar Query con Agregados</button>
+                <div class="sql-query" id="aggregate-sql">
+-- Estadísticas por médico tratante
+SELECT 
+    medico_tratante,
+    COUNT(*) as total_pacientes,
+    AVG(YEAR(CURDATE()) - YEAR(fecha_nacimiento)) as edad_promedio,
+    MIN(fecha_ingreso) as primer_ingreso,
+    MAX(fecha_ingreso) as ultimo_ingreso,
+    COUNT(DISTINCT 
+        CASE WHEN proximo_control <= CURDATE() 
+             THEN rut END
+    ) as controles_pendientes
+FROM residentes 
+GROUP BY medico_tratante
+ORDER BY total_pacientes DESC;
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('aggregate-sql')">📋 Copiar SQL</button>
+                <div class="result-area" id="aggregate-result">
+📊 Las funciones agregadas (COUNT, AVG, MIN, MAX, SUM) proporcionan estadísticas valiosas para la gestión médica.
+                </div>
+            </div>
+            
+            <div id="complex-query" class="query-container hidden">
+                <h3>🎯 Consultas Complejas - Análisis Multi-tabla</h3>
+                <div class="form-group">
+                    <label>Reporte complejo:</label>
+                    <select id="complex-type" onchange="generateComplexQuery()">
+                        <option value="full-patient">Perfil completo del paciente</option>
+                        <option value="medication-adherence">Adherencia a medicamentos</option>
+                        <option value="workload-analysis">Análisis de carga de trabajo</option>
+                        <option value="risk-assessment">Evaluación de riesgo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>RUT del paciente (para perfil completo):</label>
+                    <input type="text" id="complex-rut" placeholder="12345678-9" value="12345678-9">
+                </div>
+                <button class="execute-btn" onclick="generateComplexQuery()">Generar Consulta Compleja</button>
+                <div class="sql-query" id="complex-sql">
+-- Perfil completo del paciente con toda su información relacionada
+SELECT 
+    r.rut,
+    r.nombre,
+    r.fecha_nacimiento,
+    YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) AS edad,
+    r.fecha_ingreso,
+    DATEDIFF(CURDATE(), r.fecha_ingreso) AS dias_internado,
+    r.medico_tratante,
+    r.diagnostico,
+    
+    -- Estadísticas de medicamentos
+    COUNT(DISTINCT m.id) AS total_medicamentos,
+    SUM(CASE WHEN m.caso_sos = 1 THEN 1 ELSE 0 END) AS medicamentos_sos,
+    
+    -- Último registro vital
+    (SELECT rv.fecha 
+     FROM registros_vitales rv 
+     WHERE rv.rut_residente = r.rut 
+     ORDER BY rv.fecha DESC, rv.hora DESC 
+     LIMIT 1) AS ultimo_registro_vital,
+     
+    -- Próximo control
+    CASE 
+        WHEN r.proximo_control <= CURDATE() THEN 'VENCIDO'
+        WHEN r.proximo_control <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) THEN 'PRÓXIMO'
+        ELSE 'FUTURO'
+    END AS estado_control
+
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE r.rut = '12345678-9'
+GROUP BY r.rut, r.nombre, r.fecha_nacimiento, r.fecha_ingreso, r.medico_tratante, r.diagnostico, r.proximo_control;
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('complex-sql')">📋 Copiar SQL</button>
+                <div class="result-area" id="complex-result">
+🎯 Las consultas complejas combinan múltiples JOINs, subconsultas y funciones para obtener información integral.
+                </div>
+            </div>
+            
+            <div id="views-query" class="query-container hidden">
+                <h3>👁️ Vistas y Procedimientos Almacenados</h3>
+                <div class="form-group">
+                    <label>Tipo de objeto:</label>
+                    <select id="views-type" onchange="generateViewsQuery()">
+                        <option value="create-view">Crear vista de resumen de pacientes</option>
+                        <option value="create-procedure">Crear procedimiento para registrar signos</option>
+                        <option value="create-function">Crear función de edad</option>
+                        <option value="create-trigger">Crear trigger de auditoría</option>
+                    </select>
+                </div>
+                <button class="execute-btn" onclick="generateViewsQuery()">Generar Código</button>
+                <div class="sql-query" id="views-sql">
+-- Crear vista para resumen de pacientes
+CREATE OR REPLACE VIEW vista_resumen_pacientes AS
+SELECT 
+    r.rut,
+    r.nombre,
+    YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) AS edad,
+    r.medico_tratante,
+    r.diagnostico,
+    COUNT(DISTINCT m.id) AS total_medicamentos,
+    COUNT(DISTINCT rv.id) AS total_registros_vitales,
+    MAX(rv.fecha) AS ultimo_registro,
+    CASE 
+        WHEN r.proximo_control <= CURDATE() THEN 'Control Vencido'
+        WHEN r.proximo_control <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) THEN 'Control Próximo'
+        ELSE 'Control Futuro'
+    END AS estado_control
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+LEFT JOIN registros_vitales rv ON r.rut = rv.rut_residente
+GROUP BY r.rut, r.nombre, r.fecha_nacimiento, r.medico_tratante, r.diagnostico, r.proximo_control;
+
+-- Usar la vista
+SELECT * FROM vista_resumen_pacientes 
+WHERE estado_control = 'Control Vencido';
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('views-sql')">📋 Copiar SQL</button>
+                <div class="result-area" id="views-result">
+👁️ Las vistas simplifican consultas complejas y los procedimientos automatizan tareas repetitivas.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showQuery(type) {
+            // Ocultar todos los containers
+            const containers = document.querySelectorAll('.query-container');
+            containers.forEach(container => {
+                container.classList.add('hidden');
+            });
+            
+            // Mostrar el container seleccionado
+            const selectedContainer = document.getElementById(type + '-query');
+            selectedContainer.classList.remove('hidden');
+            
+            // Scroll suave al container
+            selectedContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function generateInnerJoinQuery() {
+            const filter = document.getElementById('inner-filter').value;
+            const param = document.getElementById('inner-param').value;
+            let query = '';
+            
+            switch(filter) {
+                case 'all':
+                    query = `-- INNER JOIN: Pacientes con medicamentos activos
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    r.medico_tratante,
+    m.nombre AS medicamento,
+    m.dosis,
+    m.caso_sos,
+    m.fecha_inicio
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE m.fecha_termino IS NULL OR m.fecha_termino > CURDATE()
+ORDER BY r.nombre, m.nombre;`;
+                    break;
+                case 'doctor':
+                    query = `-- INNER JOIN: Pacientes de un médico específico con sus medicamentos
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    r.diagnostico,
+    m.nombre AS medicamento,
+    m.dosis,
+    m.medico_indicador
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE r.medico_tratante = '${param}'
+ORDER BY r.nombre, m.nombre;`;
+                    break;
+                case 'medication':
+                    query = `-- INNER JOIN: Pacientes que toman un medicamento específico
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    r.edad,
+    m.nombre AS medicamento,
+    m.dosis,
+    m.fecha_inicio
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE m.nombre LIKE '%${param}%'
+ORDER BY m.fecha_inicio DESC;`;
+                    break;
+                case 'sos':
+                    query = `-- INNER JOIN: Pacientes con medicamentos SOS (según necesidad)
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    m.nombre AS medicamento_sos,
+    m.dosis,
+    m.medico_indicador
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE m.caso_sos = TRUE
+ORDER BY r.nombre;`;
+                    break;
+            }
+            
+            document.getElementById('inner-join-sql').textContent = query;
+            document.getElementById('inner-join-result').textContent = `🔗 INNER JOIN retorna solo los registros que tienen coincidencias en ambas tablas (residentes Y medicamentos).`;
+        }
+        
+        function generateLeftJoinQuery() {
+            const type = document.getElementById('left-type').value;
+            let query = '';
+            
+            switch(type) {
+                case 'medications':
+                    query = `-- LEFT JOIN: Todos los pacientes con o sin medicamentos
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    r.diagnostico,
+    COUNT(m.id) AS total_medicamentos,
+    COALESCE(GROUP_CONCAT(m.nombre SEPARATOR ', '), 'Sin medicamentos') AS medicamentos
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+GROUP BY r.rut, r.nombre, r.diagnostico
+ORDER BY total_medicamentos DESC, r.nombre;`;
+                    break;
+                case 'vitals':
+                    query = `-- LEFT JOIN: Pacientes con registros vitales
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    COUNT(rv.id) AS total_registros,
+    MAX(rv.fecha) AS ultimo_registro,
+    COALESCE(MAX(rv.tipo_signo_vital), 'Sin registros') AS ultimo_signo
+FROM residentes r
+LEFT JOIN registros_vitales rv ON r.rut = rv.rut_residente
+GROUP BY r.rut, r.nombre
+ORDER BY ultimo_registro DESC NULLS LAST;`;
+                    break;
+                case 'both':
+                    query = `-- LEFT JOIN: Pacientes con medicamentos y signos vitales
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    COUNT(DISTINCT m.id) AS medicamentos,
+    COUNT(DISTINCT rv.id) AS registros_vitales,
+    MAX(rv.fecha) AS ultimo_control
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+LEFT JOIN registros_vitales rv ON r.rut = rv.rut_residente
+GROUP BY r.rut, r.nombre
+ORDER BY ultimo_control DESC NULLS LAST;`;
+                    break;
+                case 'no-meds':
+                    query = `-- LEFT JOIN: Pacientes SIN medicamentos asignados
+SELECT 
+    r.rut,
+    r.nombre AS paciente,
+    r.fecha_ingreso,
+    r.medico_tratante,
+    r.diagnostico
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE m.id IS NULL
+ORDER BY r.fecha_ingreso DESC;`;
+                    break;
+            }
+            
+            document.getElementById('left-join-sql').textContent = query;
+            document.getElementById('left-join-result').textContent = `↪️ LEFT JOIN incluye TODOS los registros de la tabla izquierda (residentes), incluso si no tienen coincidencias en la tabla derecha.`;
+        }
+        
+        function generateSubqueryQuery() {
+            const type = document.getElementById('subquery-type').value;
+            let query = '';
+            
+            switch(type) {
+                case 'most-meds':
+                    query = `-- Subconsulta: Paciente(s) con más medicamentos
+SELECT 
+    r.rut,
+    r.nombre,
+    COUNT(m.id) as total_medicamentos
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+GROUP BY r.rut, r.nombre
+HAVING COUNT(m.id) = (
+    SELECT MAX(med_count) 
+    FROM (
+        SELECT COUNT(*) as med_count 
+        FROM medicamentos 
+        GROUP BY rut_residente
+    ) AS max_meds
+);`;
+                    break;
+                case 'above-average':
+                    query = `-- Subconsulta: Pacientes con medicamentos sobre el promedio
+SELECT 
+    r.rut,
+    r.nombre,
+    r.diagnostico,
+    COUNT(m.id) as total_medicamentos
+FROM residentes r
+INNER JOIN medicamentos m ON r.rut = m.rut_residente
+GROUP BY r.rut, r.nombre, r.diagnostico
+HAVING COUNT(m.id) > (
+    SELECT AVG(med_count) 
+    FROM (
+        SELECT COUNT(*) as med_count 
+        FROM medicamentos 
+        GROUP BY rut_residente
+    ) AS avg_meds
+)
+ORDER BY total_medicamentos DESC;`;
+                    break;
+                case 'recent-vitals':
+                    query = `-- Subconsulta: Pacientes con signos vitales en los últimos 7 días
+SELECT 
+    r.rut,
+    r.nombre,
+    r.medico_tratante
+FROM residentes r
+WHERE r.rut IN (
+    SELECT DISTINCT rv.rut_residente
+    FROM registros_vitales rv
+    WHERE rv.fecha >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+)
+ORDER BY r.nombre;`;
+                    break;
+                case 'no-recent-vitals':
+                    query = `-- Subconsulta: Pacientes SIN signos vitales recientes (últimos 30 días)
+SELECT 
+    r.rut,
+    r.nombre,
+    r.medico_tratante,
+    (SELECT MAX(rv.fecha) 
+     FROM registros_vitales rv 
+     WHERE rv.rut_residente = r.rut) AS ultimo_registro
+FROM residentes r
+WHERE r.rut NOT IN (
+    SELECT DISTINCT rv.rut_residente
+    FROM registros_vitales rv
+    WHERE rv.fecha >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+    AND rv.rut_residente IS NOT NULL
+)
+ORDER BY ultimo_registro NULLS LAST;`;
+                    break;
+            }
+            
+            document.getElementById('subquery-sql').textContent = query;
+            document.getElementById('subquery-result').textContent = `🎯 Las subconsultas permiten realizar comparaciones dinámicas y filtrar datos basándose en cálculos de otras consultas.`;
+        }
+        
+        function generateAggregateQuery() {
+            const type = document.getElementById('aggregate-type').value;
+            let query = '';
+            
+            switch(type) {
+                case 'by-doctor':
+                    query = `-- Estadísticas por médico tratante
+SELECT 
+    medico_tratante,
+    COUNT(*) as total_pacientes,
+    ROUND(AVG(YEAR(CURDATE()) - YEAR(fecha_nacimiento)), 1) as edad_promedio,
+    MIN(fecha_ingreso) as primer_ingreso,
+    MAX(fecha_ingreso) as ultimo_ingreso,
+    COUNT(CASE WHEN proximo_control <= CURDATE() THEN 1 END) as controles_vencidos
+FROM residentes 
+GROUP BY medico_tratante
+ORDER BY total_pacientes DESC;`;
+                    break;
+                case 'by-month':
+                    query = `-- Ingresos de pacientes por mes
+SELECT 
+    YEAR(fecha_ingreso) as año,
+    MONTH(fecha_ingreso) as mes,
+    MONTHNAME(fecha_ingreso) as nombre_mes,
+    COUNT(*) as total_ingresos,
+    AVG(YEAR(CURDATE()) - YEAR(fecha_nacimiento)) as edad_promedio_ingresados
+FROM residentes 
+WHERE fecha_ingreso >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY YEAR(fecha_ingreso), MONTH(fecha_ingreso)
+ORDER BY año DESC, mes DESC;`;
+                    break;
+                case 'age-groups':
+                    query = `-- Distribución por grupos de edad
+SELECT 
+    CASE 
+        WHEN YEAR(CURDATE()) - YEAR(fecha_nacimiento) < 65 THEN 'Menos de 65'
+        WHEN YEAR(CURDATE()) - YEAR(fecha_nacimiento) BETWEEN 65 AND 75 THEN '65-75 años'
+        WHEN YEAR(CURDATE()) - YEAR(fecha_nacimiento) BETWEEN 76 AND 85 THEN '76-85 años'
+        ELSE 'Más de 85 años'
+    END as grupo_edad,
+    COUNT(*) as total_pacientes,
+    ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM residentes), 2) as porcentaje
+FROM residentes
+GROUP BY 
+    CASE 
+        WHEN YEAR(CURDATE()) - YEAR(fecha_nacimiento) < 65 THEN 'Menos de 65'
+        WHEN YEAR(CURDATE()) - YEAR(fecha_nacimiento) BETWEEN 65 AND 75 THEN '65-75 años'
+        WHEN YEAR(CURDATE()) - YEAR(fecha_nacimiento) BETWEEN 76 AND 85 THEN '76-85 años'
+        ELSE 'Más de 85 años'
+    END
+ORDER BY MIN(YEAR(CURDATE()) - YEAR(fecha_nacimiento));`;
+                    break;
+                case 'medication-stats':
+                    query = `-- Estadísticas de medicamentos más utilizados
+SELECT 
+    m.nombre as medicamento,
+    COUNT(*) as total_prescripciones,
+    COUNT(DISTINCT m.rut_residente) as pacientes_unicos,
+    SUM(CASE WHEN m.caso_sos = 1 THEN 1 ELSE 0 END) as prescripciones_sos,
+    COUNT(DISTINCT m.medico_indicador) as medicos_prescriptores
+FROM medicamentos m
+GROUP BY m.nombre
+HAVING COUNT(*) >= 2
+ORDER BY total_prescripciones DESC, pacientes_unicos DESC;`;
+                    break;
+            }
+            
+            document.getElementById('aggregate-sql').textContent = query;
+            document.getElementById('aggregate-result').textContent = `📊 Las funciones agregadas (COUNT, AVG, MIN, MAX, SUM) proporcionan estadísticas valiosas para la toma de decisiones médicas.`;
+        }
+        
+        function generateComplexQuery() {
+            const type = document.getElementById('complex-type').value;
+            const rut = document.getElementById('complex-rut').value;
+            let query = '';
+            
+            switch(type) {
+                case 'full-patient':
+                    query = `-- Perfil completo del paciente con toda su información relacionada
+SELECT 
+    -- Datos básicos del paciente
+    r.rut,
+    r.nombre,
+    r.fecha_nacimiento,
+    YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) AS edad,
+    r.fecha_ingreso,
+    DATEDIFF(CURDATE(), r.fecha_ingreso) AS dias_internado,
+    r.medico_tratante,
+    r.diagnostico,
+    
+    -- Estadísticas de medicamentos
+    COUNT(DISTINCT m.id) AS total_medicamentos,
+    SUM(CASE WHEN m.caso_sos = 1 THEN 1 ELSE 0 END) AS medicamentos_sos,
+    GROUP_CONCAT(DISTINCT m.nombre ORDER BY m.nombre SEPARATOR ', ') AS lista_medicamentos,
+    
+    -- Último registro vital
+    (SELECT CONCAT(rv.tipo_signo_vital, ': ', rv.valor, ' ', COALESCE(rv.unidad, ''))
+     FROM registros_vitales rv 
+     WHERE rv.rut_residente = r.rut 
+     ORDER BY rv.fecha DESC, rv.hora DESC 
+     LIMIT 1) AS ultimo_signo_vital,
+     
+    -- Estado del próximo control
+    r.proximo_control,
+    CASE 
+        WHEN r.proximo_control <= CURDATE() THEN 'VENCIDO'
+        WHEN r.proximo_control <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) THEN 'PRÓXIMO (7 días)'
+        WHEN r.proximo_control <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'PRÓXIMO (30 días)'
+        ELSE 'FUTURO'
+    END AS estado_control
+
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+WHERE r.rut = '${rut}'
+GROUP BY r.rut, r.nombre, r.fecha_nacimiento, r.fecha_ingreso, r.medico_tratante, r.diagnostico, r.proximo_control;`;
+                    break;
+                case 'medication-adherence':
+                    query = `-- Análisis de adherencia a medicamentos
+SELECT 
+    r.nombre AS paciente,
+    r.rut,
+    COUNT(m.id) AS medicamentos_totales,
+    SUM(CASE WHEN m.fecha_termino IS NULL THEN 1 ELSE 0 END) AS medicamentos_activos,
+    SUM(CASE WHEN m.fecha_termino IS NOT NULL AND m.fecha_termino < CURDATE() THEN 1 ELSE 0 END) AS medicamentos_terminados,
+    
+    -- Días desde último registro vital
+    COALESCE(DATEDIFF(CURDATE(), 
+        (SELECT MAX(rv.fecha) FROM registros_vitales rv WHERE rv.rut_residente = r.rut)
+    ), 999) AS dias_sin_registro,
+    
+    -- Evaluación de riesgo
+    CASE 
+        WHEN COUNT(m.id) = 0 THEN 'SIN MEDICAMENTOS'
+        WHEN COALESCE(DATEDIFF(CURDATE(), 
+            (SELECT MAX(rv.fecha) FROM registros_vitales rv WHERE rv.rut_residente = r.rut)
+        ), 999) > 30 THEN 'ALTO RIESGO - Sin control reciente'
+        WHEN COUNT(m.id) > 5 THEN 'RIESGO MODERADO - Polimedicado'
+        ELSE 'RIESGO BAJO'
+    END AS evaluacion_riesgo
+
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+GROUP BY r.rut, r.nombre
+ORDER BY 
+    CASE 
+        WHEN COUNT(m.id) = 0 THEN 3
+        WHEN COALESCE(DATEDIFF(CURDATE(), 
+            (SELECT MAX(rv.fecha) FROM registros_vitales rv WHERE rv.rut_residente = r.rut)
+        ), 999) > 30 THEN 1
+        WHEN COUNT(m.id) > 5 THEN 2
+        ELSE 4
+    END, r.nombre;`;
+                    break;
+                case 'workload-analysis':
+                    query = `-- Análisis de carga de trabajo por funcionario
+SELECT 
+    f.nombre AS funcionario,
+    f.cargo,
+    
+    -- Actividad en registros vitales
+    COUNT(rv.id) AS total_registros_vitales,
+    COUNT(DISTINCT rv.rut_residente) AS pacientes_atendidos,
+    COUNT(DISTINCT DATE(rv.fecha)) AS dias_trabajados,
+    
+    -- Distribución por turno
+    SUM(CASE WHEN rv.turno = 'Mañana' THEN 1 ELSE 0 END) AS turno_mañana,
+    SUM(CASE WHEN rv.turno = 'Tarde' THEN 1 ELSE 0 END) AS turno_tarde,
+    SUM(CASE WHEN rv.turno = 'Noche' THEN 1 ELSE 0 END) AS turno_noche,
+    
+    -- Promedio diario
+    ROUND(COUNT(rv.id) / NULLIF(COUNT(DISTINCT DATE(rv.fecha)), 0), 1) AS registros_promedio_dia
+
+FROM funcionarios f
+LEFT JOIN registros_vitales rv ON f.nombre = rv.registrado_por
+WHERE f.cargo LIKE '%Enferm%'
+GROUP BY f.rut, f.nombre, f.cargo
+ORDER BY total_registros_vitales DESC;`;
+                    break;
+                case 'risk-assessment':
+                    query = `-- Evaluación de riesgo integral de pacientes
+SELECT 
+    r.rut,
+    r.nombre,
+    YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) AS edad,
+    
+    -- Factores de riesgo
+    CASE WHEN YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) > 80 THEN 2 ELSE 0 END +
+    CASE WHEN COUNT(m.id) > 5 THEN 2 ELSE 0 END +
+    CASE WHEN COUNT(m.id) = 0 THEN 1 ELSE 0 END +
+    CASE WHEN COALESCE(DATEDIFF(CURDATE(), 
+        (SELECT MAX(rv.fecha) FROM registros_vitales rv WHERE rv.rut_residente = r.rut)
+    ), 999) > 15 THEN 3 ELSE 0 END +
+    CASE WHEN r.proximo_control < CURDATE() THEN 2 ELSE 0 END AS puntaje_riesgo,
+    
+    -- Desglose de factores
+    CASE WHEN YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) > 80 THEN 'Edad avanzada; ' ELSE '' END ||
+    CASE WHEN COUNT(m.id) > 5 THEN 'Polimedicado; ' ELSE '' END ||
+    CASE WHEN COUNT(m.id) = 0 THEN 'Sin medicamentos; ' ELSE '' END ||
+    CASE WHEN COALESCE(DATEDIFF(CURDATE(), 
+        (SELECT MAX(rv.fecha) FROM registros_vitales rv WHERE rv.rut_residente = r.rut)
+    ), 999) > 15 THEN 'Sin control reciente; ' ELSE '' END ||
+    CASE WHEN r.proximo_control < CURDATE() THEN 'Control vencido; ' ELSE '' END AS factores_riesgo,
+    
+    -- Clasificación final
+    CASE 
+        WHEN 
+            CASE WHEN YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) > 80 THEN 2 ELSE 0 END +
+            CASE WHEN COUNT(m.id) > 5 THEN 2 ELSE 0 END +
+            CASE WHEN COUNT(m.id) = 0 THEN 1 ELSE 0 END +
+            CASE WHEN COALESCE(DATEDIFF(CURDATE(), 
+                (SELECT MAX(rv.fecha) FROM registros_vitales rv WHERE rv.rut_residente = r.rut)
+            ), 999) > 15 THEN 3 ELSE 0 END +
+            CASE WHEN r.proximo_control < CURDATE() THEN 2 ELSE 0 END >= 5 
+        THEN 'ALTO RIESGO'
+        WHEN 
+            CASE WHEN YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) > 80 THEN 2 ELSE 0 END +
+            CASE WHEN COUNT(m.id) > 5 THEN 2 ELSE 0 END +
+            CASE WHEN COUNT(m.id) = 0 THEN 1 ELSE 0 END +
+            CASE WHEN COALESCE(DATEDIFF(CURDATE(), 
+                (SELECT MAX(rv.fecha) FROM registros_vitales rv WHERE rv.rut_residente = r.rut)
+            ), 999) > 15 THEN 3 ELSE 0 END +
+            CASE WHEN r.proximo_control < CURDATE() THEN 2 ELSE 0 END >= 3 
+        THEN 'RIESGO MODERADO'
+        ELSE 'RIESGO BAJO'
+    END AS clasificacion_riesgo
+
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+GROUP BY r.rut, r.nombre, r.fecha_nacimiento, r.proximo_control
+ORDER BY puntaje_riesgo DESC, r.nombre;`;
+                    break;
+            }
+            
+            document.getElementById('complex-sql').textContent = query;
+            document.getElementById('complex-result').textContent = `🎯 Las consultas complejas integran múltiples aspectos de los datos para proporcionar información completa y análisis profundos.`;
+        }
+        
+        function generateViewsQuery() {
+            const type = document.getElementById('views-type').value;
+            let query = '';
+            
+            switch(type) {
+                case 'create-view':
+                    query = `-- Crear vista para resumen de pacientes
+CREATE OR REPLACE VIEW vista_resumen_pacientes AS
+SELECT 
+    r.rut,
+    r.nombre,
+    YEAR(CURDATE()) - YEAR(r.fecha_nacimiento) AS edad,
+    r.medico_tratante,
+    r.diagnostico,
+    COUNT(DISTINCT m.id) AS total_medicamentos,
+    COUNT(DISTINCT rv.id) AS total_registros_vitales,
+    MAX(rv.fecha) AS ultimo_registro,
+    CASE 
+        WHEN r.proximo_control <= CURDATE() THEN 'Control Vencido'
+        WHEN r.proximo_control <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) THEN 'Control Próximo'
+        ELSE 'Control Futuro'
+    END AS estado_control
+FROM residentes r
+LEFT JOIN medicamentos m ON r.rut = m.rut_residente
+LEFT JOIN registros_vitales rv ON r.rut = rv.rut_residente
+GROUP BY r.rut, r.nombre, r.fecha_nacimiento, r.medico_tratante, r.diagnostico, r.proximo_control;
+
+-- Ejemplos de uso de la vista
+SELECT * FROM vista_resumen_pacientes WHERE estado_control = 'Control Vencido';
+SELECT medico_tratante, COUNT(*) as pacientes FROM vista_resumen_pacientes GROUP BY medico_tratante;`;
+                    break;
+                case 'create-procedure':
+                    query = `-- Crear procedimiento para registrar signos vitales
+DELIMITER //
+
+CREATE PROCEDURE RegistrarSignoVital(
+    IN p_rut VARCHAR(12),
+    IN p_tipo_signo VARCHAR(50),
+    IN p_valor VARCHAR(20),
+    IN p_unidad VARCHAR(10),
+    IN p_registrado_por VARCHAR(100),
+    IN p_turno VARCHAR(20),
+    IN p_observaciones TEXT
+)
+BEGIN
+    DECLARE v_existe INT DEFAULT 0;
+    
+    -- Verificar que el paciente existe
+    SELECT COUNT(*) INTO v_existe FROM residentes WHERE rut = p_rut;
+    
+    IF v_existe = 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'El paciente no existe';
+    ELSE
+        INSERT INTO registros_vitales (
+            rut_residente, fecha, hora, tipo_signo_vital, valor, unidad,
+            registrado_por, cargo, turno, observaciones
+        ) VALUES (
+            p_rut, CURDATE(), CURTIME(), p_tipo_signo, p_valor, p_unidad,
+            p_registrado_por, 
+            (SELECT cargo FROM funcionarios WHERE nombre = p_registrado_por LIMIT 1),
+            p_turno, p_observaciones
+        );
+        
+        SELECT 'Signo vital registrado correctamente' AS resultado;
+    END IF;
+END //
+
+DELIMITER ;
+
+-- Ejemplo de uso del procedimiento
+CALL RegistrarSignoVital('12345678-9', 'Presión Arterial', '120/80', 'mmHg', 'Enf. María González', 'Mañana', 'Paciente estable');`;
+                    break;
+                case 'create-function':
+                    query = `-- Crear función para calcular edad exacta
+DELIMITER //
+
+CREATE FUNCTION CalcularEdadExacta(fecha_nacimiento DATE)
+RETURNS DECIMAL(5,2)
+READS SQL DATA
+DETERMINISTIC
+BEGIN
+    DECLARE años DECIMAL(5,2);
+    
+    SET años = DATEDIFF(CURDATE(), fecha_nacimiento) / 365.25;
+    
+    RETURN años;
+END //
+
+DELIMITER ;
+
+-- Crear función para clasificar riesgo
+DELIMITER //
+
+CREATE FUNCTION ClasificarRiesgo(
+    edad INT,
+    total_medicamentos INT,
+    dias_sin_control INT
+)
+RETURNS VARCHAR(20)
+DETERMINISTIC
+BEGIN
+    DECLARE puntaje INT DEFAULT 0;
+    DECLARE clasificacion VARCHAR(20);
+    
+    -- Calcular puntaje de riesgo
+    IF edad > 80 THEN SET puntaje = puntaje + 2; END IF;
+    IF total_medicamentos > 5 THEN SET puntaje = puntaje + 2; END IF;
+    IF total_medicamentos = 0 THEN SET puntaje = puntaje + 1; END IF;
+    IF dias_sin_control > 30 THEN SET puntaje = puntaje + 3; END IF;
+    
+    -- Determinar clasificación
+    CASE 
+        WHEN puntaje >= 5 THEN SET clasificacion = 'ALTO RIESGO';
+        WHEN puntaje >= 3 THEN SET clasificacion = 'RIESGO MODERADO';
+        ELSE SET clasificacion = 'RIESGO BAJO';
+    END CASE;
+    
+    RETURN clasificacion;
+END //
+
+DELIMITER ;
+
+-- Ejemplo de uso de las funciones
+SELECT 
+    nombre,
+    CalcularEdadExacta(fecha_nacimiento) AS edad_exacta,
+    ClasificarRiesgo(
+        YEAR(CURDATE()) - YEAR(fecha_nacimiento),
+        (SELECT COUNT(*) FROM medicamentos WHERE rut_residente = rut),
+        30
+    ) AS clasificacion_riesgo
+FROM residentes;`;
+                    break;
+                case 'create-trigger':
+                    query = `-- Crear tabla de auditoría
+CREATE TABLE IF NOT EXISTS auditoria_medicamentos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rut_residente VARCHAR(12),
+    accion ENUM('INSERT', 'UPDATE', 'DELETE'),
+    medicamento_anterior TEXT,
+    medicamento_nuevo TEXT,
+    usuario VARCHAR(100),
+    fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear trigger para auditar cambios en medicamentos
+DELIMITER //
+
+CREATE TRIGGER audit_medicamentos_insert
+AFTER INSERT ON medicamentos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_medicamentos (
+        rut_residente, accion, medicamento_nuevo, usuario
+    ) VALUES (
+        NEW.rut_residente, 
+        'INSERT',
+        CONCAT('Medicamento: ', NEW.nombre, ', Dosis: ', NEW.dosis, ', Médico: ', NEW.medico_indicador),
+        USER()
+    );
+END //
+
+CREATE TRIGGER audit_medicamentos_update
+AFTER UPDATE ON medicamentos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_medicamentos (
+        rut_residente, accion, medicamento_anterior, medicamento_nuevo, usuario
+    ) VALUES (
+        NEW.rut_residente,
+        'UPDATE',
+        CONCAT('Anterior - Medicamento: ', OLD.nombre, ', Dosis: ', OLD.dosis),
+        CONCAT('Nuevo - Medicamento: ', NEW.nombre, ', Dosis: ', NEW.dosis),
+        USER()
+    );
+END //
+
+CREATE TRIGGER audit_medicamentos_delete
+AFTER DELETE ON medicamentos
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_medicamentos (
+        rut_residente, accion, medicamento_anterior, usuario
+    ) VALUES (
+        OLD.rut_residente,
+        'DELETE',
+        CONCAT('Eliminado - Medicamento: ', OLD.nombre, ', Dosis: ', OLD.dosis),
+        NULL,
+        USER()
+    );
+END //
+
+DELIMITER ;
+
+-- Consultar auditoría
+SELECT * FROM auditoria_medicamentos ORDER BY fecha_hora DESC LIMIT 10;`;
+                    break;
+            }
+            
+            document.getElementById('views-sql').textContent = query;
+            document.getElementById('views-result').textContent = `👁️ Las vistas, procedimientos, funciones y triggers automatizan y simplifican las operaciones complejas de la base de datos.`;
+        }
+        
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Mostrar confirmación temporal
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copiado!';
+                btn.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+                alert('Error al copiar al portapapeles');
+            });
+        }
+        
+        // Inicializar con la primera consulta
+        document.addEventListener('DOMContentLoaded', function() {
+            generateInnerJoinQuery();
+        });
+    </script>
+</body>
+</html>
