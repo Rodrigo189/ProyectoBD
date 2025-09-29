@@ -1,5 +1,0 @@
-Flask==3.0.3
-Flask-Cors==4.0.1
-flasgger==0.9.7.1
-PyMySQL==1.1.1
-
