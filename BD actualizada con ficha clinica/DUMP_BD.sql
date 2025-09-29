@@ -26,10 +26,10 @@ CREATE TABLE `apoderado` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `nombre` varchar(120) NOT NULL,
   `parentesco` varchar(40) NOT NULL,
-  `telefono` varchar(30) DEFAULT NULL,
+  `telefono` varchar(50) DEFAULT NULL,
   `correo` varchar(120) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `apoderado` (
 
 LOCK TABLES `apoderado` WRITE;
 /*!40000 ALTER TABLE `apoderado` DISABLE KEYS */;
-INSERT INTO `apoderado` VALUES (1,'María Pérez','Hija','+56 9 1111 2222','maria@example.com'),(2,'Juan Pérez','Hijo','+56912345678','juanperez@mail.com'),(3,'Juan Pérez','Hijo','+56912345678','juanperez@mail.com');
+INSERT INTO `apoderado` VALUES (1,'María Pérez','Hija','+56 9 1111 2222','maria@example.com'),(2,'Juan Pérez','Hijo','+56912345678','juanperez@mail.com'),(3,'Juan Pérez','Hijo','+56912345678','juanperez@mail.com'),(4,'Juan González','Hijo','+56 9 7777 6666','juan.gonzalez@example.com');
 /*!40000 ALTER TABLE `apoderado` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -60,7 +60,7 @@ CREATE TABLE `atencion` (
   PRIMARY KEY (`id`),
   KEY `idx_at_res_fecha` (`residente_rut`,`fecha`),
   CONSTRAINT `fk_at_res` FOREIGN KEY (`residente_rut`) REFERENCES `residentes` (`rut`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,7 +84,7 @@ CREATE TABLE `calidad_apoyo` (
   `nombre` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `categoria_residente` (
   `descripcion` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -147,8 +147,8 @@ CREATE TABLE `contrato_ingreso` (
   CONSTRAINT `fk_ci_cat` FOREIGN KEY (`categoria_residente_id`) REFERENCES `categoria_residente` (`id`),
   CONSTRAINT `fk_ci_hab` FOREIGN KEY (`habitacion_id`) REFERENCES `habitacion` (`id`),
   CONSTRAINT `fk_ci_ori` FOREIGN KEY (`origen_ingreso_id`) REFERENCES `origen_ingreso` (`id`),
-  CONSTRAINT `fk_ci_res` FOREIGN KEY (`residente_rut`) REFERENCES `residentes` (`rut`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `fk_ci_res` FOREIGN KEY (`residente_rut`) REFERENCES `residentes` (`rut`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +157,7 @@ CREATE TABLE `contrato_ingreso` (
 
 LOCK TABLES `contrato_ingreso` WRITE;
 /*!40000 ALTER TABLE `contrato_ingreso` DISABLE KEYS */;
-INSERT INTO `contrato_ingreso` VALUES (2,'11111111-1',1,'2025-09-25',NULL,NULL,1,1),(3,'22222222-2',2,'2025-09-25',NULL,NULL,2,2);
+INSERT INTO `contrato_ingreso` VALUES (4,'11111111-1',1,'2025-09-27',NULL,NULL,2,1),(5,'11111111-1',1,'2025-09-27',NULL,NULL,2,1);
 /*!40000 ALTER TABLE `contrato_ingreso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -378,7 +378,7 @@ CREATE TABLE `medicamentos` (
   PRIMARY KEY (`id`),
   KEY `rut_residente` (`rut_residente`),
   CONSTRAINT `medicamentos_ibfk_1` FOREIGN KEY (`rut_residente`) REFERENCES `residentes` (`rut`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -387,7 +387,7 @@ CREATE TABLE `medicamentos` (
 
 LOCK TABLES `medicamentos` WRITE;
 /*!40000 ALTER TABLE `medicamentos` DISABLE KEYS */;
-INSERT INTO `medicamentos` VALUES (1,'11111111-1','Losartﾃ｡n','50mg cada 12 horas',0,'Dr. Martﾃｭnez','2024-01-01',NULL),(2,'22222222-2','Metformina','850mg cada 8 horas',0,'Dra. Sﾃ｡nchez','2024-02-01',NULL);
+INSERT INTO `medicamentos` VALUES (3,'11111111-1','Paracetamol','500mg cada 8 horas',0,'Dr. Martínez','2025-09-01','2025-09-10');
 /*!40000 ALTER TABLE `medicamentos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -403,7 +403,7 @@ CREATE TABLE `origen_ingreso` (
   `nombre` varchar(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -481,7 +481,7 @@ CREATE TABLE `prevision_salud` (
   `nombre` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -506,7 +506,7 @@ CREATE TABLE `prevision_social` (
   `nombre` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -613,7 +613,6 @@ CREATE TABLE `residente_alergia` (
 
 LOCK TABLES `residente_alergia` WRITE;
 /*!40000 ALTER TABLE `residente_alergia` DISABLE KEYS */;
-INSERT INTO `residente_alergia` VALUES (2,'11111111-1','Alergia a penicilina',NULL),(10,'11111111-1','Alergia a la penicilina',NULL);
 /*!40000 ALTER TABLE `residente_alergia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -634,7 +633,7 @@ CREATE TABLE `residente_apoderado` (
   KEY `fk_ra_apo` (`apoderado_id`),
   CONSTRAINT `fk_ra_apo` FOREIGN KEY (`apoderado_id`) REFERENCES `apoderado` (`id`),
   CONSTRAINT `fk_ra_res` FOREIGN KEY (`residente_rut`) REFERENCES `residentes` (`rut`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -643,7 +642,6 @@ CREATE TABLE `residente_apoderado` (
 
 LOCK TABLES `residente_apoderado` WRITE;
 /*!40000 ALTER TABLE `residente_apoderado` DISABLE KEYS */;
-INSERT INTO `residente_apoderado` VALUES (2,'11111111-1',2,1),(3,'11111111-1',3,1);
 /*!40000 ALTER TABLE `residente_apoderado` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -717,7 +715,7 @@ CREATE TABLE `residente_ficha` (
 
 LOCK TABLES `residente_ficha` WRITE;
 /*!40000 ALTER TABLE `residente_ficha` DISABLE KEYS */;
-INSERT INTO `residente_ficha` VALUES ('11111111-1',1,1,NULL,NULL,NULL,NULL,2,1,0,3,0),('22222222-2',1,2,NULL,NULL,NULL,NULL,3,1,1,2,0);
+INSERT INTO `residente_ficha` VALUES ('11111111-1',1,2,NULL,NULL,NULL,NULL,3,1,0,1,0);
 /*!40000 ALTER TABLE `residente_ficha` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -763,6 +761,7 @@ CREATE TABLE `residentes` (
   `rut` varchar(12) NOT NULL,
   `nombre` varchar(100) DEFAULT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
+  `sexo` enum('M','F','O') DEFAULT NULL,
   `fecha_ingreso` date DEFAULT NULL,
   `medico_tratante` varchar(100) DEFAULT NULL,
   `proximo_control` date DEFAULT NULL,
@@ -777,7 +776,7 @@ CREATE TABLE `residentes` (
 
 LOCK TABLES `residentes` WRITE;
 /*!40000 ALTER TABLE `residentes` DISABLE KEYS */;
-INSERT INTO `residentes` VALUES ('11111111-1','Ana García','1950-05-15','2024-01-01','Dr. Martínez','2025-10-15','Hipertensión'),('22222222-2','Carlos Rodrﾃｭguez','1945-08-20','2024-02-01','Dra. Sﾃ｡nchez','2025-10-20','Diabetes tipo 2'),('string','string','2025-09-26','2025-09-26','string','2025-09-26','string');
+INSERT INTO `residentes` VALUES ('11111111-1','Ana García','1950-05-15',NULL,'2024-01-01','Dr. Martínez','2025-10-15','Hipertensión'),('string','string','2025-09-26',NULL,'2025-09-26','string','2025-09-26','string');
 /*!40000 ALTER TABLE `residentes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1067,4 +1066,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-28 13:32:30
+-- Dump completed on 2025-09-29 18:56:00
