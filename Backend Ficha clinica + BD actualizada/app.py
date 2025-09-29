@@ -1793,9 +1793,10 @@ def get_ficha_completa(rut):
 # MAIN
 # ============================================================
 
-if __name__ == '__main__':
-    app.run(
-        debug=True,        # Activa modo debug en desarrollo
-        host="0.0.0.0",    # Disponible en la red local
-        port=5001          # Puerto para la API
-    )
+import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
+
+
