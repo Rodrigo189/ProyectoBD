@@ -18,7 +18,7 @@ swagger = Swagger(app, template={
         "version": "1.0.0"
     },
     "basePath": "/",
-    "schemes": ["http"],
+    "schemes": ["https"],
     "consumes": ["application/json"],
     "produces": ["application/json"]
 })
