@@ -33,3 +33,23 @@ Front-end: React
 Back-end: Flask
 
 BD: MySQL
+
+
+CONFIGURACIÓN GRUPO 14:
+
+La base de datos global y actualizada se encuentra en /setup_db.sql, no usar la base de datos vieja.
+
+Configurar /G14-Liquidacion_reportes/backend/config.py para que esté de acuerdo con su configuración del sistema
+
+"""Configuración de la conexión a la base de datos MySQL."""
+import mysql.connector
+
+
+def get_connection():
+    """Establece y retorna una conexión a la base de datos MySQL."""
+    return mysql.connector.connect(
+        host="localhost", 
+        user="root", # Por defecto, nuestro usuario es root en MySQL, pero si lo tienen diferente, verifiquenlo con "SELECT USER();" en la terminal de MySQL.
+        password="JuacoXD112",  # Aqui pongan su contraseña al entrar a MySQL desde la terminal
+        database="liq_rep"# Aqui pongan el nombre que le pusieron a la base de datos (me refiro al nombre que le pusieron al restaurarla desde el archivo .sql)
+    )
