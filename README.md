@@ -40,8 +40,8 @@ CONFIGURACIÓN GRUPO 14:
 La base de datos global y actualizada se encuentra en /setup_db.sql, no usar la base de datos vieja.
 
 Configurar /G14-Liquidacion_reportes/backend/config.py para que esté de acuerdo con su configuración del sistema
-```
 """Configuración de la conexión a la base de datos MySQL."""
+```
 import mysql.connector
 
 
