@@ -1,0 +1,9 @@
+*.pdf
+**/__pycache__
+*.zip
+*.rar
+*.docx
+*.xlss
+*.ppt
+*.pptx
+*.doc
