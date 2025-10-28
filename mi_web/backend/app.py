@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 import os
@@ -21,6 +21,7 @@ def prueba():
     resultados_funcionarios = []
     resultados_residentes = []
     resultados_medicamentos = []
+    resultados_contrato = []
 
     cur = mysql.connection.cursor()
 
@@ -32,9 +33,9 @@ def prueba():
         if accion == 'crear_funcionario':
             try:
                 cur.execute(
-                    "INSERT INTO funcionarios (rut, nombres, apellidos, cargo, turno, asistencia) VALUES (%s,%s,%s,%s,%s,%s)",
-                    (request.form['rut'], request.form['nombres'], request.form['apellidos'],
-                     request.form['cargo'], request.form['turno'], request.form['asistencia'])
+                    "INSERT INTO funcionarios (rut, nombre, cargo, clave VALUES (%s,%s,%s,%s)",
+                    (request.form['rut'], request.form['nombre'], 
+                     request.form['cargo'], request.form['clave'])
                 )
                 mysql.connection.commit()
                 mensajes.append("Funcionario creado correctamente")
@@ -45,9 +46,9 @@ def prueba():
         elif accion == 'editar_funcionario':
             try:
                 cur.execute(
-                    "UPDATE funcionarios SET nombres=%s, apellidos=%s, cargo=%s, turno=%s, asistencia=%s WHERE rut=%s",
-                    (request.form['nombres'], request.form['apellidos'], request.form['cargo'],
-                     request.form['turno'], request.form['asistencia'], request.form['rut'])
+                    "UPDATE funcionarios SET nombre=%s, cargo=%s, clave=%s WHERE rut=%s",
+                    (request.form['nombre'],  request.form['cargo'],
+                     request.form['rut'], request.form['clave'])
                 )
                 mysql.connection.commit()
                 mensajes.append("Funcionario actualizado correctamente")
@@ -65,7 +66,7 @@ def prueba():
 
         # Consultar funcionarios
         elif accion == 'consultar_funcionarios':
-            cur.execute("SELECT rut, nombres, apellidos, cargo, turno, asistencia FROM funcionarios")
+            cur.execute("SELECT rut, nombre, cargo, clave FROM funcionarios")
             resultados_funcionarios = cur.fetchall()
 
         # --- Acciones Residente ---
@@ -243,7 +244,8 @@ def prueba():
         mensajes=mensajes,
         resultados_funcionarios=resultados_funcionarios,
         resultados_residentes=resultados_residentes,
-        resultados_medicamentos=resultados_medicamentos
+        resultados_medicamentos=resultados_medicamentos,
+        resultados_contrato=resultados_contrato
     )
 
     
@@ -360,7 +362,7 @@ def obtener_medicamentos():
             "fecha_termino": row[7].strftime("%Y-%m-%d") if row[7] else None
         })
     cur.close()
-    return jsonify(medicamentos)
+    return jsonify(medicamentos), 200
 
 # Añadir o eliminar medicamento
 @app.route('/api/medicamentos/<int:id>', methods=['PUT', 'DELETE'])
@@ -426,7 +428,7 @@ def buscar_residente():
     residente = cur.fetchone()
     cur.close()
     
-    if residente:
+    if residente: 
         return jsonify({"rut": residente[0], "existe": True}), 200
     return jsonify({"mensaje": "Residente no encontrado"}), 404
 
@@ -597,6 +599,142 @@ def crear_registro():
         mysql.connection.rollback()
         cur.close()
         return jsonify({"error": str(e)}), 500
+
+# Obtener contratos
+@app.route("/api/contratos", methods=['GET'])
+def consultar_contratos():
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM contratos") 
+        rows = cur.fetchall()
+        contratos = []
+        for con in contratos:
+            contratos.append({
+                "id_contrato": row[0],
+                "rut": row[1],
+                "sueldo_bruto": row[2],
+                "sueldo_liquido": row[3],
+                "inicio_contrato": row[4].strftime("%Y-%m-%d"),
+                "telefono_1": row[5],
+                "telefono_2": row[6] if row[6] else None,
+                "correo": row[7] if row[7] else None,
+                "direccion": row[8] if row[8] else None
+            })
+        cur.close()
+        return jsonify(contratos), 200
+    except:
+        return jsonify({"mensaje": "Contrato no encontrado"}), 404
+
+# Crear contrato
+@app.route('/api/contratos', methods=['POST'])
+def crear_contrato():
+    data = request.get_json()
+    if data:
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            INSERT INTO contratos
+            (id_contrato, rut, sueldo_bruto, sueldo_liquido, inicio_contrato, telefono_1, telefono_2, correo, direccion)
+            VALUES(%s, %s, %s,%s, %s, %s,%s, %s, %s)
+        """, (
+            data['id_contrato'],data['rut'],data['sueldo_bruto'],data['sueldo_liquido'],data['inicio_contrato'],
+            data['telefono_1'],data['telefono_2'],data['correo'],data['direccion']
+        ))
+        mysql.connection.commit()
+        cur.close()
+        return jsonify(data), 201
+    return jsonify({"mensaje": "Error en la sintax"}), 400
+
+# Obtener contrato por rut
+@app.route("/api/contrato/<rut>", methods=['GET'])
+def obtener_empleado(rut):
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute("SELECT * FROM contratos WHERE rut=%s")
+        rows = cur.fetchall()
+        if rows:
+            contratos = []
+            for row in rows:
+                contratos.append({
+                    "id_contrato": row[0],
+                    "rut": row[1],
+                    "sueldo_bruto": row[2],
+                    "sueldo_liquido": row[3],
+                    "inicio_contrato": row[4].strftime("%Y-%m-%d"),
+                    "telefono_1": row[5],
+                    "telefono_2": row[6] if row[6] else None,
+                    "correo": row[7] if row[7] else None,
+                    "direccion": row[8] if row[8] else None
+                })
+            cur.close()
+            return jsonify(contratos), 200
+    except:
+        return jsonify({"mensaje": "Contrato no encontrado"}), 404
+    
+# Añadir o eliminar contrato
+@app.route('/api/contratos/<int:id_contrato>', methods=['PUT', 'DELETE'])
+def actualizar_o_eliminar_contrato(id_contrato):
+    cur = mysql.connection.cursor()
+
+    if request.method == 'PUT':
+        data = request.get_json()
+        try:
+            cur.execute("""
+                UPDATE contrato
+                SET rut=%s, sueldo_bruto=%s, sueldo_liquido=%s, inicio_contrato=%s, telefono_1=%s, telefono_2=%s, correo=%s, direccion=%s
+                WHERE id_contrato=%s
+            """, (
+                data['rut'],data['sueldo_bruto'],data['sueldo_liquido'],data['inicio_contrato'],
+                data['telefono_1'],data['telefono_2'],data['correo'],data['direccion'],id_contrato
+            ))
+            mysql.connection.commit()
+            cur.close()
+            return jsonify(data), 201
+        except:
+            return jsonify({"mensaje": "Contrato no encontrado"}), 404
+    
+    if request.method == 'DELETE':
+        try:
+            cur.execute("DELETE FROM contratos WHERE id_contrato=%s", (id_contrato))
+            mysql.connection.commit()
+            cur.close()
+            return jsonify({"mensaje": "Contrato eliminado"}), 201
+        except:
+            return jsonify({"mensaje": "Contrato no encontrado"}), 404
+
+# Ruta para consultar contrato por id
+@app.route('/api/contratos/<id_contrato>', methods=['GET'])
+def consultar_contrato(id_contrato):
+    id_contrato = request.args.get('id_contrato')
+
+    if not id_contrato:
+        return jsonify({"error": "El id del contrato es requerido"}), 400
+    
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute("""
+            SELECT
+                rut, sueldo_bruto, sueldo_liquido,
+                inicio_contrato, telefono_1, telefono_2,
+                correo, direccion
+            FROM contratos
+            WHERE id_contrato = %s
+        """, (id_contrato))
+    
+        contrato = cur.fetchall()
+        cur.close()
+        return jsonify([{
+            "rut": contrato[0],
+            "sueldo_bruto": contrato[1],
+            "sueldo_liquido": contrato[2],
+            "inicio_contrato": contrato[3],
+            "telefono 1": contrato[4],
+            "telefono 2": contrato[5] or "",
+            "correo": contrato[6] or "",
+            "direccion": contrato[7] or ""
+        }for contr in contratos]), 200
+    except:
+        return jsonify({"mensaje": "Contrato no encontrado"}), 404
+    
     
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

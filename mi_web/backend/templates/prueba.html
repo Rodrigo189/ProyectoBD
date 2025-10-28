@@ -14,7 +14,40 @@
         {% endfor %}
     </ul>
 {% endif %}
-
+<!-- CONTRATOS -->
+ <h2>Contrato</h2>
+  <form method="post">
+    <input type="hidden" name="accion" value="crear_contrato">
+    <input name="id_contrato" placeholder="Id Contrato" required>
+    <input name="rut" placeholder="Rut" required>
+    <input name="sueldo_bruto" placeholder="Sueldo Bruto" required>
+    <input name="sueldo_liquido" placeholder="Sueldo Liquido" required>
+    <input name="inicio_contrato"placeholder="Fecha inicio contrato" type="date" required>
+    <input name="telefono_1" placeholder="Teléfono 1" required>
+    <input name="telefono_2" placeholder="Teléfono 2">
+    <input name="correo" placeholder="Correo electrónico">
+    <input name="direccion" placeholder="Dirección de vivienda">
+    <button type="submit">Crear</button>
+</form>
+<h2>Editar / Eliminar Funcionario</h2>
+<form method="post">
+    <input type="hidden" name="accion" value="editar_contrato">
+    <input name="id_contrato" placeholder="Id Contrato" required>
+    <input name="rut" placeholder="Rut" required>
+    <input name="sueldo_bruto" placeholder="Sueldo Bruto" required>
+    <input name="sueldo_liquido" placeholder="Sueldo Liquido" required>
+    <input name="inicio_contrato"placeholder="Fecha inicio contrato" type="date" required>
+    <input name="telefono_1" placeholder="Teléfono 1" required>
+    <input name="telefono_2" placeholder="Teléfono 2">
+    <input name="correo" placeholder="Correo electrónico">
+    <input name="direccion" placeholder="Dirección de vivienda">
+    <button type="submit">Editar</button>
+</form>
+<h2>Consultar Funcionarios</h2>
+<form method="post">
+    <input type="hidden" name="accion" value="consultar_contratos">
+    <button type="submit">Mostrar</button>
+</form>
 <!-- FUNCIONARIOS -->
 <h2>Funcionario</h2>
 <form method="post">
