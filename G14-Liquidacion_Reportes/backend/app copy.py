@@ -91,123 +91,8 @@ def prueba():
         elif accion == 'consultar_residentes':
             cur.execute("SELECT rut, fecha_ingreso FROM residentes")
             resultados_residentes = cur.fetchall()
-            
-        # --- Acciones Contrato ---
-        # Consultar contratos
-        elif accion == 'consultar_contrato':
-            cur.execute("SELECT id_contrato, rut, sueldo_bruto, sueldo_liquido, inicio_contrato, telefono_1, telefono_2, correo, direccion FROM contratos")
-            resultados_contrato = cur.fetchall()
-        # Crear contrato
-        elif accion == 'crear_contrato':
-            try:
-                cur.execute(
-                    "INSERT INTO contrato (id_contrato, rut, sueldo_bruto, sueldo_liquido, inicio_contrato, telefono_1, telefono_2, correo, direccion) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                    (request.form['id_contrato'], request.form['rut'], request.form['sueldo_bruto'],
-                     request.form['sueldo_liquido'], request.form['inicio_contrato'],request.form['telefono_1'],
-                     request.form['telefono_2'], request.form['correo'],request.form['direccion'])
-                )
-                mysql.connection.commit()
-                mensajes.append("Contrato creado correctamente")
-            except Exception as e:
-                mensajes.append(f"Error al crear contrato: {e}")
-        # Eliminar contrato
-        elif accion == "eliminar_contrato":
-            try:
-                cur.execute("DELETE FROM contrato WHERE id_contrato=%s", (request.form['id_contrato'],))
-                mysql.connection.commit()
-                mensajes.append("Contrato eliminado correctamente")
-            except Exception as e:
-                mensajes.append(f"Error al eliminar contrato: {e}")
-        # Editar contrato
-        elif accion == "editar_contrato":
-            try:
-                cur.execute(
-                    "UPDATE contrato SET sueldo_bruto=%s, sueldo_liquido=%s, inicio_contrato=%s, telefono_1=%s, telefono_2=%s, correo=%s, direccion=%s WHERE id_contrato=%s",
-                    (request.form['sueldo_bruto'], request.form['sueldo_liquido'], request.form['inicio_contrato'],
-                     request.form['telefono_1'], request.form['telefono_2'], request.form['correo'], request.form['direccion'])
-                )
-                mysql.connection.commit()
-                mensajes.append("Contrato actualizado")
-            except Exception as E:
-                mensajes.append(f"Error al actualizar contrato: {e}")
-        
-        # --- Acciones Paciente ---
-        # Crear Paciente
-        elif accion == 'crear_paciente':
-            try:
-                cur.execute(
-                    "INSERT INTO paciente (rut, fecha_nacimiento, familiar, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido) VALUES(%s,%s,%s,%s,%s,%s,%s)",
-                    (request.form['rut'], request.form['fecha_nacimiento'], request.form['familiar'], request.form['primer_nombre'],
-                     request.form['segundo_nombre'], request.form['primer_apellido'], request.form['segundo_apellido'])
-                )
-                mysql.connection.commit()
-                mensajes.append("Paciente creado correctamente")
-            except Exception as e:
-                mensajes.append(f"Error al crear Paciente: {e}")
-        # Consultar Paciente
-        elif accion == 'consultar_paciente':
-            cur.execute("SELECT rut, fecha_nacimiento, familiar, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido FROM paciente")
-            resultados_pacientes = cur.fetchall()
-        # Eliminar Paciente
-        elif accion == 'eliminar_paciente':
-            try:
-                cur.execute("DELETE FROM paciente WHERE rut=%s", (request.form['rut']))
-                mysql.connection.commit()
-                mensajes.append("Paciente eliminado correctamente")
-            except Exception as e:
-                mensajes.append(f"Error al eliminar paciente: {e}")
-        # Editar paciente
-        elif accion == 'editar_paciente':
-            try:
-                cur.execute(
-                    "UPDATE paciente SET fecha_nacimiento=%s, familiar=%s, primer_nombre=%s, segundo_nombre=%s, primer_apellido=%s, segundo_apellido=%s WHERE rut=%s",
-                    (request.form['fecha_nacimiento'], request.form['familiar'], request.form['primer_nombre'],
-                     request.form['segundo_nombre'], request.form['primer_apellido'], request.form['segundo_apellido'])
-                )
-                mysql.connection.commit()
-                mensajes.append("Paciente actualizado")
-            except Exception as e:
-                mensajes.append(f"Error al actualizar paciente: {e}")
-        
-        # --- Acciones reemplazos ---
-        # Crear reemplazos
-        elif accion == 'crear_reemplazos':
-            try:
-                cur.execute(
-                    "INSERT INTO reemplazos (id_reemplazo, rut_reemplazado, fecha, paciente, observacion, rut_reemplazante VALUES (%s,%s,%s,%s,%s,%s)",
-                    (request.form['id_reemplazo'], request.form['rut_reemplazado'], request.form['fecha'],
-                     request.form['paciente'], request.form['observacion'], request.form['rut_reemplazante'])
-                )
-                mysql.connection.commit()
-                mensajes.append("Reemplazo creado correctamente")
-            except Exception as e:
-                mensajes.append(f"Error al crear reemplazo: {e}")
-        # Consultar reemplazos
-        elif accion == 'consultar_reemplazos':
-            cur.execute("SELECT id_reemplazo, rut_reemplazado, fecha, paciente, observacion, rut_reemplazante FROM reemplazos")
-            resultados_reemplazos = cur.fetchall()
-        # Eliminar Reemplazos
-        elif accion == 'eliminar_reemplazos':
-            try:
-                cur.execute("DELETE FROM reemplazos WHERE id_reemplazo=%s", (request.form['id_reemplazos']))
-                mysql.connection.commit()
-                mensajes.append("Reemplazo eliminado correctamente")
-            except Exception as e:
-                mensajes.append(f"Error al eliminar reemplazo: {e}")    
-        # Editar reemplazos
-        elif accion == 'editar_reemplazos':
-            try:
-                cur.execute(
-                    "UPDATE reemplazos SET fecha=%s, pacientes=%s, observacion=%s WHERE id_reemplazo=%s",
-                    (request.form['fecha'],request.form['pacientes'],request.form['observacion'],)
-                )
-                mysql.connection.commit()
-                mensajes.append("Reemplazos actualizados correctamente")
-            except Exception as e:
-                mensajes.append(f"Error al actualizar reemplazo: {e}")    
-                
+
         # --- Acciones Medicamento ---
-        # Crear medicamento
         elif accion == 'crear_medicamento':
             try:
                 fecha_termino = request.form['fecha_termino'] or None
@@ -223,7 +108,7 @@ def prueba():
                 mensajes.append("Medicamento creado correctamente")
             except Exception as e:
                 mensajes.append(f"Error al crear medicamento: {e}")
-        # Eliminar medicamento
+
         elif accion == 'eliminar_medicamento':
             try:
                 cur.execute("DELETE FROM medicamentos WHERE id=%s", (request.form['id_med'],))
@@ -231,7 +116,7 @@ def prueba():
                 mensajes.append("Medicamento eliminado correctamente")
             except Exception as e:
                 mensajes.append(f"Error al eliminar medicamento: {e}")
-        # Consultar medicamento
+
         elif accion == 'consultar_medicamentos':
             cur.execute("SELECT id, rut_residente, nombre, dosis FROM medicamentos")
             resultados_medicamentos = cur.fetchall()
@@ -397,7 +282,7 @@ def guardar_formulario():
     cur.execute("""
         INSERT INTO formularios_turno 
         (nombre, email, hora_ingreso, fecha_ingreso, descripcion_turno, caso_sos, descripcion_sos)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)pa
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """, (
         data['nombre'],
         data['email'],
