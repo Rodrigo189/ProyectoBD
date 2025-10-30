@@ -14,6 +14,27 @@ body {
   justify-content: center;
 }
 
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 40px; 
+  box-sizing: border-box;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+}
+
 .logo-container {
   display: flex;
   align-items: center;
@@ -27,8 +48,8 @@ body {
 
 .bienvenida {
   text-align: center;   
-  margin-top: 40px;     
-  font-size: 32px;
+  margin-top: 50px;     
+  font-size: 40px;
   font-weight: 700;
 }
 
@@ -38,6 +59,13 @@ body {
   color: #1B9AA4;
 }
 
+.login-titulo {
+  font-weight: 1100;
+  font-size: 32px;
+  color: #1B9AA4;
+  margin-top: -10px; /* sube 10px */
+  top: -20px; /* sube 10px */;
+}
 /* Login */
 .login-page .bienvenida {
   text-align: center;
@@ -47,12 +75,12 @@ body {
 }
 
 .login-box {
-  max-width: 600px;
+  max-width: 800px;
   margin: 40px auto;
   background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  border-radius: 20px;
-  padding: 30px;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  border-radius: 28px;
+  padding: 50px;
   text-align: center;
 }
 
@@ -65,11 +93,11 @@ body {
 
 .login-box input {
   width: 80%;
-  padding: 12px;
+  padding: 15px;
   margin: 10px 0;
-  border: 1px solid #000;
-  border-radius: 8px;
-  font-size: 16px;
+  border: 1.5px solid #000;
+  border-radius: 14px;
+  font-size: 18px;
 }
 
 .login-box button {
@@ -86,4 +114,11 @@ body {
 
 .login-box button:hover {
   background: #147a80;
+}
+
+.red-eleam {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1B9AA4;
+  margin-left: 20px;
 }
