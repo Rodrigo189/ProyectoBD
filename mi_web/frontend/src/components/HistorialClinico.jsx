@@ -1,103 +1,101 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../HistorialClinico.css';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../HistorialClinico.css";
 
-function HistorialClinico() {
-    const { rut } = useParams();
-    const navigate = useNavigate();
-    const [registros, setRegistros] = useState([]);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(true);
+export default function HistorialClinico() {
+  const { rut } = useParams();
+  const navigate = useNavigate();
+  const [ficha, setFicha] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    useEffect(() => {
-        const cargarHistorial = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/historial-clinico/${rut}`);
-                setRegistros(response.data);
-                setError('');
-            } catch (err) {
-                setError('Error al cargar el historial clínico');
-                console.error('Error:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        cargarHistorial();
-    }, [rut]);
-
-    const handleNuevoRegistro = () => {
-        navigate(`/formulario-signos-vitales/${rut}`);
+  useEffect(() => {
+    const cargarHistorial = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/historial-clinico/${rut}`);
+        setFicha(response.data);
+        setError("");
+      } catch (err) {
+        console.error("Error al cargar historial:", err);
+        setError("Error al cargar la ficha clínica");
+      } finally {
+        setLoading(false);
+      }
     };
+    cargarHistorial();
+  }, [rut]);
 
-    const handleVolver = () => {
-        navigate(-1); // Vuelve a la página anterior
-    };
+  if (loading) return <div className="cargando">Cargando historial clínico...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!ficha) return <div className="error">No se encontró información para el RUT indicado.</div>;
 
-    const handleBuscarPaciente = () => {
-        navigate('/buscar-paciente');
-    };
+  const signos = ficha.signos_vitales || [];
 
-    if (loading) return <div>Cargando...</div>;
-    if (error) return <div>Error: {error}</div>;
+  return (
+    <div className="historial-clinico-container">
+      {/* Encabezado */}
+      <header className="header">
+        <img
+          src={`${process.env.PUBLIC_URL}/image.png`}
+          alt="Logo ELEAM"
+          className="logo"
+        />
+        <h1>Ficha Clínica</h1>
+      </header>
 
-    return (
-        <div className="historial-clinico-container">
-            <div className="header">
-            <div
-            className="logo"
-            style={{ backgroundImage: "url('/image.png')" }}
-            ></div>
-                <h1>HISTORIAL DEL CLÍNICO</h1>
-            </div>
+      {/* Datos del residente */}
+      <section className="info-paciente">
+        <p><strong>RUT:</strong> {ficha.rut}</p>
+        <p><strong>Nombre:</strong> {ficha.nombre}</p>
+        <p><strong>Médico tratante:</strong> {ficha.medico_tratante}</p>
+        <p><strong>Diagnóstico:</strong> {ficha.diagnostico}</p>
+        <p><strong>Próximo control:</strong> {ficha.proximo_control}</p>
+      </section>
 
-            <div className="info-paciente">
-                <p><strong>Nombre residente:</strong> Juan Pérez</p>
-                <p><strong>RUN:</strong> {rut}</p>
-                <p><strong>Médico tratante:</strong> Dr. García</p>
-                <p><strong>Próximo control:</strong> 2025-10-22</p>
-            </div>
+      {/* Botones */}
+      <div className="botones-container">
+        <button className="btn-accion" onClick={() => navigate("/dashboard")}>
+          ← Salir
+        </button>
+        <button className="btn-accion" onClick={() => navigate("/buscar-paciente")}>
+          Buscar Paciente
+        </button>
+        <button className="btn-accion" onClick={() => navigate(`/formulario-signos-vitales/${rut}`)}>
+          Generar Nuevo Reporte
+        </button>
+      </div>
 
-            <div className="botones-container">
-                <button onClick={handleBuscarPaciente} className="btn-accion">
-                    BUSCAR PACIENTE
-                </button>
-                <button onClick={handleVolver} className="btn-accion">
-                    VOLVER AL MENÚ
-                </button>
-                <button onClick={handleNuevoRegistro} className="btn-accion">
-                    GENERAR NUEVOS REPORTS
-                </button>
-            </div>
-
-            <div className="ultimos-registros">
-                <h3>Últimos registros:</h3>
-                <div className="tabla-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Hora</th>
-                                <th>Signo Vital</th>
-                                <th>Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {registros.map((registro, index) => (
-                                <tr key={index}>
-                                    <td>{registro.fecha}</td>
-                                    <td>{registro.hora}</td>
-                                    <td>{registro.signoVital}</td>
-                                    <td>{registro.valor}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      {/* Últimos registros */}
+      <section className="ultimos-registros">
+        <h3>Signos Vitales</h3>
+        <div className="tabla-container">
+        {signos.length > 0 ? (
+        <table>
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Presión Sistólica</th>
+                <th>Presión Diastólica</th>
+            </tr>
+            </thead>
+            <tbody>
+            {signos.map((s, i) => (
+                <tr key={i}>
+                <td>{s.fecha}</td>
+                <td>{s.hora}</td>
+                <td>{s.presionSistolica}</td>
+                <td>{s.presionDiastolica}</td>
+                </tr>
+            ))}
+            </tbody>
+        </table>
+        ) : (
+        <p>No hay signos vitales registrados para este residente.</p>
+        )}
         </div>
-    );
+      </section>
+    </div>
+  );
 }
-
-export default HistorialClinico;

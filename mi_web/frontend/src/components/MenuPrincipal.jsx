@@ -36,11 +36,11 @@ export default function MenuPrincipal() {
 
         {/* Lista de botones */}
         <div className="menu-botones">
-          <button onClick={() => navigate("/ficha-clinica")}>FICHA CLÍNICA</button>
-          <button onClick={() => navigate("/signos-vitales")}>SIGNOS VITALES</button>
+          <button onClick={() => navigate("/login-form")}>FICHA CLÍNICA</button>
+          <button onClick={() => navigate("/historial-clinico")}>SIGNOS VITALES</button>
           <button onClick={() => navigate("/parametros-clinicos")}>PARÁMETROS CLÍNICOS</button>
           <button onClick={() => navigate("/funcionarios")}>GESTIÓN DE PERSONAL</button>
-          <button onClick={() => navigate("/seleccion-usuario")}>MEDICAMENTOS</button>
+          <button onClick={() => navigate("/login-form")}>MEDICAMENTOS</button>
           <button onClick={() => navigate("/liquidacion-pagos")}>LIQUIDACIÓN Y PAGOS</button>
         </div>
       </div>

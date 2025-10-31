@@ -16,6 +16,7 @@
     "cargo": "Médico",
     "fecha_ingreso": "2024-02-01",
     "asistencia": false,
-    "clave" : "clave456"
+    "clave" : "clave456",
+    "email" : "Maria.Lopez"
   }
 ]

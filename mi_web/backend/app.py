@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
@@ -20,7 +21,7 @@ except Exception as e:
 residentes_col = mongo.db.residentes
 funcionarios_col = mongo.db.funcionarios
 medicamentos_col = mongo.db.medicamentos
-registros_col = mongo.db.registros_vitales
+registros_col = mongo.db.signos_vitales
 formularios_col = mongo.db.formularios_turno
 
 # ---------------- RESIDENTES ----------------
@@ -178,7 +179,47 @@ def obtener_formularios():
     for f in forms:
         f["_id"] = str(f["_id"])
     return jsonify(forms)
+# ---------------- HISTORIAL CLÍNICO ----------------
+@app.route('/api/historial-clinico/<rut>', methods=['GET'])
+def obtener_historial_clinico(rut):
+    try:
+        residente = residentes_col.find_one({"rut": rut})
+        if not residente:
+            return jsonify({"error": "Residente no encontrado"}), 404
 
+        residente["_id"] = str(residente["_id"])
+        signos = residente.get("signos_vitales", {})
+
+        ficha = {
+            "rut": residente.get("rut"),
+            "nombre": residente.get("nombre"),
+            "diagnostico": residente.get("diagnostico"),
+            "medico_tratante": residente.get("medico_tratante"),
+            "proximo_control": residente.get("proximo_control"),
+            "signos_vitales": signos
+        }
+
+        return jsonify(ficha), 200
+
+    except Exception as e:
+        print("Error al obtener historial clínico:", e)
+        return jsonify({"error": str(e)}), 500
+    
+# ---------------- BUSCAR PACIENTE ----------------
+@app.route('/api/buscar-residente', methods=['POST'])
+def buscar_residente():
+    data = request.get_json()
+    rut = data.get("rut")
+
+    if not rut:
+        return jsonify({"error": "Debe ingresar un RUT"}), 400
+
+    residente = residentes_col.find_one({"rut": rut})
+
+    if residente:
+        return jsonify({"existe": True, "rut": rut})
+    else:
+        return jsonify({"existe": False})
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

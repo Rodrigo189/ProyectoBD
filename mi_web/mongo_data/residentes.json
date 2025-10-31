@@ -7,15 +7,37 @@
     "medico_tratante": "Dr. Martínez",
     "proximo_control": "2025-10-15",
     "diagnostico": "Hipertensión",
-    "medicamento": {
+    "medicamento": 
+    {
         "nombre": "Losartán",
         "dosis": "50mg cada 12 horas",
         "caso_sos": false,
         "medico_indicador": "Dr. Martínez",
         "fecha_inicio": "2024-01-01",
         "fecha_termino": null
-    }
+    },
+    "signos_vitales": [
+      {
+        "fecha": "2024-10-01",
+        "hora": "08:00",
+        "presionSistolica": 140,
+        "presionDiastolica": 90
+      },
+      {
+        "fecha": "2024-10-10",
+        "hora": "09:15",
+        "presionSistolica": 135,
+        "presionDiastolica": 85
+      },
+      {
+        "fecha": "2024-10-20",
+        "hora": "08:45",
+        "presionSistolica": 138,
+        "presionDiastolica": 88
+      }
+    ]
   },
+
   {
     "rut": "22222222-2",
     "nombre": "Carlos Rodríguez",
@@ -31,6 +53,26 @@
         "medico_indicador": "Dra. Sánchez",
         "fecha_inicio": "2024-02-01",
         "fecha_termino": null
-    }
+    },
+    "signos_vitales": [
+      {
+        "fecha": "2024-10-01",
+        "hora": "08:00",
+        "presionSistolica": 140,
+        "presionDiastolica": 90
+      },
+      {
+        "fecha": "2024-10-10",
+        "hora": "09:15",
+        "presionSistolica": 135,
+        "presionDiastolica": 85
+      },
+      {
+        "fecha": "2024-10-20",
+        "hora": "08:45",
+        "presionSistolica": 138,
+        "presionDiastolica": 88
+      }
+    ]
   }
 ]
