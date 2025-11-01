@@ -13,6 +13,7 @@ from routes.atenciones_routes import atenciones_bp
 from routes.ingresos_routes import ingresos_bp
 from routes.ficha_completa_routes import ficha_completa_bp
 from routes.fichas_routes import fichas_bp
+from routes.historia_routes import historia_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -36,6 +37,7 @@ app.register_blueprint(medicamentos_bp)
 app.register_blueprint(atenciones_bp)
 app.register_blueprint(ingresos_bp)
 app.register_blueprint(fichas_bp)
+app.register_blueprint(historia_bp)
 
 @app.route('/')
 def home():
