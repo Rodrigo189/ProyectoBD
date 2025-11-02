@@ -1,0 +1,280 @@
+/* === Reset básico === */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* === Header === */
+.header {
+  background-color: #009688;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  border-bottom: 3px solid #00796b;
+  color: white;
+}
+
+.header img {
+  height: 42px;
+  margin-right: 14px;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+  color: white;
+}
+
+/* === Tarjetas de sección === */
+.section-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 30px auto;
+  max-width: 1100px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.section-card h2 {
+  margin-top: 0;
+  font-size: 20px;
+  text-align: center;
+  color: #00796b;
+  border-bottom: 2px solid #009688;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+/* === Formularios === */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 30px;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px 25px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #444;
+}
+
+input,
+select,
+textarea {
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #999;
+  font-size: 13px;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: #bbb;
+  background-color: #fdfdfd;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #009688;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 150, 136, 0.35);
+  background-color: #fff;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+/* === Botones === */
+button {
+  padding: 12px 26px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+/* Botón primario */
+.btn-primary {
+  background: linear-gradient(135deg, #009688, #00796b);
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #00bfa5, #009688);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Botón secundario */
+.btn-secondary {
+  background-color: #e0e0e0;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:hover {
+  background-color: #d5d5d5;
+  transform: translateY(-1px);
+}
+
+/* === Acciones === */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+
+.actions-center {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+/* === Etiquetas obligatorias === */
+.required {
+  color: red;
+  margin-left: 3px;
+}
+
+.note {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+/* === Radios === */
+.radio-group {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.radio-group-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #aaa;
+  border-radius: 50%;
+  transition: 0.2s;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="radio"]:checked {
+  border-color: #009688;
+  background-color: #009688;
+}
+
+input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* === Checkboxes rediseñados === */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #bbb;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+input[type="checkbox"]:hover {
+  border-color: #009688;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #009688;
+  border-color: #009688;
+  box-shadow: 0 0 4px rgba(0, 150, 136, 0.4);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "✔";
+  position: absolute;
+  top: -2px;
+  left: 3px;
+  font-size: 14px;
+  color: white;
+  font-weight: bold;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* === Responsive === */
+@media (max-width: 900px) {
+  .grid,
+  .grid-3col {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -1,0 +1,181 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+
+/* Caja principal */
+.ficha-info {
+  background: var(--color-blanco);
+  width: 90%;
+  max-width: 900px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 25px;
+  padding: 30px;
+  line-height: 1.6;
+}
+
+.buscar {
+  background: var(--color-blanco);
+  padding: 25px 40px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 420px;
+}
+
+.buscar h2 {
+  color: var(--color-principal);
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.buscar input {
+  padding: 10px;
+  border: 1px solid var(--color-gris);
+  border-radius: 6px;
+  width: 220px;
+}
+
+.buscar button {
+  margin-left: 10px;
+  padding: 8px 14px;
+  background-color: var(--color-principal);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.buscar button:hover {
+  background-color: var(--color-secundario);
+}
+
+/* Secciones de la ficha */
+.ficha-info h3 {
+  margin-top: 30px;
+  border-bottom: 2px solid var(--color-principal);
+  padding-bottom: 5px;
+  color: var(--color-principal);
+}
+
+.ficha-info p {
+  margin: 4px 0;
+}
+
+.ficha-info ul {
+  list-style: none;
+  padding-left: 15px;
+  margin: 5px 0;
+}
+
+.ficha-info ul li::before {
+  content: "• ";
+  color: var(--color-principal);
+  font-weight: bold;
+}
+
+/* Caja de antecedentes */
+pre {
+  background-color: #f8f8f8;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-gris);
+  overflow-x: auto;
+  font-size: 14px;
+}
+
+/* Tabla Historia Clínica */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th {
+  background-color: var(--color-principal);
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+td {
+  border: 1px solid var(--color-gris);
+  padding: 8px;
+  font-size: 0.95rem;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Bloques visuales */
+.section-block {
+  margin-top: 25px;
+  padding: 15px 20px;
+  border-left: 5px solid var(--color-principal);
+  background-color: #fafafa;
+  border-radius: 8px;
+}
+.antecedentes-lista {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.antecedentes-lista li {
+  padding: 6px 0;
+  border-bottom: 1px solid #ececec;
+}
+
+.antecedentes-lista li:last-child {
+  border-bottom: none;
+}
+
+.antecedentes-lista b {
+  color: var(--color-principal);
+  font-weight: 600;
+}
+.exportar-section {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.btn-exportar {
+  background-color: var(--color-principal);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-exportar:hover {
+  background-color: var(--color-secundario);
+}
+
+/* Oculta botones y barra de navegación al imprimir */
+@media print {
+  .navbar,
+  .buscar,
+  .btn-exportar {
+    display: none !important;
+  }
+
+  .ficha-info {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: white;
+  }
+}

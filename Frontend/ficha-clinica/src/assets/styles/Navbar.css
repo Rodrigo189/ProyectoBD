@@ -1,0 +1,55 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #009688; /* color principal institucional */
+  color: white;
+  padding: 10px 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  width: 36px;
+  height: 36px;
+  margin-right: 12px;
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #cde9e5; /* tono más claro */
+}
+
+/* Botón destacado “Nueva Ficha” */
+.btn-nav {
+  background-color: #00796b;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.btn-nav:hover {
+  background-color: #004d40;
+}
