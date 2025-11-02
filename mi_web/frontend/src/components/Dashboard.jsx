@@ -99,7 +99,7 @@ export default function Dashboard() {
                       : "No definida"}
                   </p>
                 </>
-              ) : (
+              ):(
                 <p>No hay medicamentos registrados</p>
               )}
           </div>

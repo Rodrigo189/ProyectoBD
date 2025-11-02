@@ -39,7 +39,7 @@ export default function MenuPrincipal() {
           <button onClick={() => navigate("/login-form")}>FICHA CLÍNICA</button>
           <button onClick={() => navigate("/historial-clinico")}>SIGNOS VITALES</button>
           <button onClick={() => navigate("/parametros-clinicos")}>PARÁMETROS CLÍNICOS</button>
-          <button onClick={() => navigate("/funcionarios")}>GESTIÓN DE PERSONAL</button>
+          <button onClick={() => navigate("/principal")}>GESTIÓN DE PERSONAL</button>
           <button onClick={() => navigate("/login-form")}>MEDICAMENTOS</button>
           <button onClick={() => navigate("/liquidacion-pagos")}>LIQUIDACIÓN Y PAGOS</button>
         </div>

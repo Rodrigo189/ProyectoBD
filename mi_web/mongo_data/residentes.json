@@ -7,7 +7,7 @@
     "medico_tratante": "Dr. Martínez",
     "proximo_control": "2025-10-15",
     "diagnostico": "Hipertensión",
-    "medicamento": 
+    "medicamentos":[ 
     {
         "nombre": "Losartán",
         "dosis": "50mg cada 12 horas",
@@ -15,7 +15,7 @@
         "medico_indicador": "Dr. Martínez",
         "fecha_inicio": "2024-01-01",
         "fecha_termino": null
-    },
+    }],
     "signos_vitales": [
       {
         "fecha": "2024-10-01",
@@ -46,14 +46,14 @@
     "medico_tratante": "Dra. Sánchez",
     "proximo_control": "2025-10-20",
     "diagnostico": "Diabetes tipo 2",
-    "medicamento": {
+    "medicamentos":[ {
         "nombre": "Metformina",
         "dosis": "850mg cada 8 horas",
         "caso_sos": false,
         "medico_indicador": "Dra. Sánchez",
         "fecha_inicio": "2024-02-01",
         "fecha_termino": null
-    },
+    }],
     "signos_vitales": [
       {
         "fecha": "2024-10-01",

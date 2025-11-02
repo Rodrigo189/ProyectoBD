@@ -39,8 +39,8 @@ export default function DashboardFuncionario({ usuario }) {
     fetchFuncionarios();
   };
 
-  const handleEliminarMedicamento = async id => {
-    await fetch(`http://localhost:5000/api/medicamentos/${id}`, { method: "DELETE" });
+  const handleEliminarMedicamento = async (id, nombre) => {
+    await fetch(`http://localhost:5000/api/medicamentos/${id}?nombre=${encodeURIComponent(nombre)}`, { method: "DELETE" });
     fetchMedicamentos();
   };
 
@@ -103,10 +103,10 @@ export default function DashboardFuncionario({ usuario }) {
           </thead>
           <tbody>
             {medicamentos.map(m => {
-              const residente = residentes.find(r => r.rut === m.rut_residente);
-              const nombreResidente = residente ? `${residente.nombres} ${residente.apellidos}` : m.rut_residente;
+              const residente = residentes.find(r => r.rut === m.id);
+              const nombreResidente = residente ? residente.nombre : m.nombre_residente;
               return (
-                <tr key={m.id}>
+                <tr key={'{m.id}-${m.nombre}'}>
                   <td>{m.id}</td>
                   <td>{nombreResidente}</td>
                   <td>{m.nombre}</td>
@@ -117,7 +117,7 @@ export default function DashboardFuncionario({ usuario }) {
                   <td>{m.fecha_termino || "-"}</td>
                   <td>
                     <button onClick={() => setEditingMed(m)}>Editar</button>
-                    <button onClick={() => handleEliminarMedicamento(m.id)}>Eliminar</button>
+                    <button onClick={() => handleEliminarMedicamento(m.id, m.nombre)}>Eliminar</button>
                   </td>
                 </tr>
               );
