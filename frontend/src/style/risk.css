@@ -1,0 +1,157 @@
+.riesgo-bg {
+    background: #f4f6f6;
+    min-height: 100vh;
+}
+
+.riesgo-main {
+    max-width: 1200px;
+    margin: 18px auto;
+    padding: 0 18px;
+}
+
+/* nuevo título centrado */
+.riesgo-heading {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #003233;
+    margin: 8px 0 18px;
+}
+
+.riesgo-container {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+}
+
+/* LEFT: lista de hallazgos - centrar las filas dentro del área */
+.riesgo-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    /* más separación vertical entre filas */
+    align-items: center;
+    /* centra las filas horizontalmente */
+    padding-top: 6px;
+}
+
+/* tarjeta fila: limitar ancho y centrar contenido */
+.riesgo-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 8px;
+    padding: 14px 18px;
+    /* un poco más de espacio interno */
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+
+    width: 100%;
+    max-width: 760px;
+    /* limita el ancho de cada fila */
+    box-sizing: border-box;
+}
+
+/* ajustar altura y texto */
+.riesgo-stripe {
+    width: 10px;
+    height: 64px;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #0ea3a3, #078b8b);
+    margin-right: 16px;
+    flex-shrink: 0;
+}
+
+.riesgo-content {
+    flex: 1;
+}
+
+.riesgo-title {
+    font-weight: 800;
+    color: #033;
+    font-size: 16px;
+}
+
+/* pill de nivel: tamaño consistente y alineación */
+.riesgo-pill {
+    padding: 8px 16px;
+    border-radius: 18px;
+    font-weight: 800;
+    color: #fff;
+    min-width: 68px;
+    text-align: center;
+    margin-left: 14px;
+}
+
+.riesgo-pill.green {
+    background: #3cc07a;
+}
+
+.riesgo-pill.yellow {
+    background: #ffd54f;
+    color: #222;
+}
+
+.riesgo-pill.red {
+    background: #ff6b6b;
+}
+
+/* RIGHT: info paciente + recomendaciones */
+.riesgo-side {
+    width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.patient-card {
+    background: #fff;
+    padding: 14px 18px;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    color: #133;
+}
+
+.recommend-card {
+    background: linear-gradient(180deg, #0ea3a3, #078b8b);
+    color: #fff;
+    padding: 18px 20px;
+    border-radius: 18px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.recommend-card h3 {
+    margin-top: 0;
+}
+
+.recommend-card ul {
+    margin: 8px 0 0 18px;
+    padding: 0;
+}
+
+.recommend-card li {
+    margin: 8px 0;
+}
+
+/* responsive */
+@media (max-width: 920px) {
+    .riesgo-container {
+        flex-direction: column;
+    }
+
+    .riesgo-side {
+        width: 100%;
+    }
+
+    .riesgo-list {
+        gap: 16px;
+        align-items: stretch;
+        /* ocupar el ancho en móvil */
+    }
+
+    .riesgo-row {
+        max-width: 100%;
+    }
+}

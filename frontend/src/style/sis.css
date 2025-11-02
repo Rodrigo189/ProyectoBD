@@ -1,0 +1,86 @@
+.sis-bg {
+    background: #f1f4f4;
+    min-height: 100vh;
+}
+
+.sis-main {
+    max-width: 1100px;
+    margin: 22px auto;
+    padding: 18px;
+}
+
+.sis-heading {
+    color: #0ea3a3;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 8px 0 20px;
+}
+
+/* 2x2 grid centrado */
+.sis-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    align-items: stretch;
+}
+
+/* tarjeta */
+.sis-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    min-height: 110px;
+}
+
+/* valor grande */
+.sis-value {
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+/* colores */
+.sis-value.teal {
+    color: #0ea3a3;
+}
+
+.sis-value.green {
+    color: #2db86b;
+}
+
+.sis-value.yellow {
+    color: #e6b000;
+}
+
+.sis-value.red {
+    color: #ff5252;
+}
+
+.sis-label {
+    color: #5e6b6b;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* responsive: en móvil 1 columna */
+@media (max-width: 720px) {
+    .sis-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .sis-card {
+        padding: 20px;
+        min-height: 100px;
+    }
+
+    .sis-value {
+        font-size: 24px;
+    }
+}
