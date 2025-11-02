@@ -1,11 +1,13 @@
 .form-container {
-  background: var(--color-blanco);
-  margin: 40px auto;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
+   background: var(--color-blanco);
+   margin: 40px auto;
+   padding: 30px;
+   border-radius: 12px;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
   max-width: 600px;
+  width: 95%;
+  max-width: 1100px;  
 }
 
 .form-section {
@@ -126,3 +128,16 @@ select,
 textarea {
   margin-bottom: 10px;
 }
+
+/* === Layout de 2 columnas para el FORMULARIO === */
+.grid-2{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:14px;
+}
+@media (max-width:900px){
+  .grid-2{ grid-template-columns:1fr; }
+}
+
+/* Utilidades */
+.full{ grid-column:1 / -1; }
