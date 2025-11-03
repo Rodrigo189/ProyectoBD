@@ -1,0 +1,362 @@
+from flask import Flask, request, jsonify
+from flask_pymongo import PyMongo
+from flask_cors import CORS
+from datetime import datetime
+import os
+
+# Flask permite levantar el servidor web, CORS (Cross-Origin Resource Sharing) habilita la comunicacion
+# entre el frontend (React) y el backend (Flask), evitando bloqueos por politica de mismo origen.
+
+app = Flask(__name__)
+CORS(app, resources={r"/api/*": {
+    "origins": ["http://localhost:3000", "http://localhost:3002"],
+    "methods": ["GET", "POST", "PUT", "DELETE"],
+    "allow_headers": ["Content-Type", "Accept"],
+    "expose_headers": ["Content-Type"]
+}}, supports_credentials=True)
+
+# Añadir middleware para debug
+@app.after_request
+def after_request(response):
+    print(f"Response Headers: {dict(response.headers)}")
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
+
+# PyMongo se utiliza para establecer la conexion con MongoDB,
+# donde se almacenan los datos medicos, residentes, funcionarios, etc.
+
+app.config["MONGO_URI"] = "mongodb://localhost:27017/proyectobd"
+mongo = PyMongo(app)
+
+try:
+    mongo.db.list_collection_names()
+    print("Conexión a MongoDB exitosa")
+except Exception as e:
+    print("Error conectando a MongoDB:", e)
+
+# Cada coleccion representa una entidad dentro del sistema, Son equivalentes a tablas en una base de datos relacional.
+residentes_col = mongo.db.residentes
+funcionarios_col = mongo.db.funcionarios
+medicamentos_col = mongo.db.medicamentos
+registros_col = mongo.db.signos_vitales
+formularios_col = mongo.db.formularios_turno
+
+# ---------------- RESIDENTES ----------------
+# Incluye operaciones CRUD (crear, leer, actualizar, eliminar), sobre los datos personales y médicos de los residentes
+@app.route('/api/residentes', methods=['POST'])
+def crear_residente():
+    data = request.get_json()
+    if "rut" not in data:
+        return jsonify({"error": "RUT es requerido"}), 400
+    residentes_col.insert_one(data)
+    return jsonify(data), 201
+
+@app.route('/api/residentes/<rut>', methods=['GET', 'PUT', 'DELETE'])
+def manejar_residente(rut):
+    if request.method == 'GET':
+        print(f"Buscando residente con RUT: {rut}")  # Debug
+        residente = residentes_col.find_one({"rut": rut})
+        print(f"Residente encontrado: {residente}")  # Debug
+        if not residente:
+            print("Residente no encontrado")  # Debug
+            return jsonify({"mensaje": "Residente no encontrado"}), 404
+        residente["_id"] = str(residente["_id"])
+        print(f"Enviando respuesta: {residente}")  # Debug
+        return jsonify(residente)
+    elif request.method == 'PUT':
+        data = request.get_json()
+        result = residentes_col.update_one({"rut": rut}, {"$set": data})
+        if result.matched_count == 0:
+            return jsonify({"mensaje": "Residente no encontrado"}), 404
+        return jsonify(data)
+    elif request.method == 'DELETE':
+        result = residentes_col.delete_one({"rut": rut})
+        if result.deleted_count == 0:
+            return jsonify({"mensaje": "Residente no encontrado"}), 404
+        return jsonify({"mensaje": "Residente eliminado"})
+
+# ---------------- FUNCIONARIOS ----------------
+# Los funcionarios pueden registrarse, actualizar sus datos y autenticarse.
+@app.route('/api/funcionarios', methods=['GET', 'POST'])
+def listar_o_crear_funcionarios():
+    if request.method == 'GET':
+        funcionarios = list(funcionarios_col.find())
+        for f in funcionarios:
+            f["_id"] = str(f["_id"])
+        return jsonify(funcionarios)
+
+    else:  # POST
+        try:
+            data = request.get_json()
+            # DEBUG: imprime lo que recibe el backend
+            print("Datos recibidos para crear funcionario:", data)
+
+            result = funcionarios_col.insert_one(data)
+            print("Funcionario insertado con _id:", result.inserted_id)
+
+            return jsonify(data), 201
+        except Exception as e:
+            print("ERROR al guardar funcionario:", e)
+            return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/funcionarios/<rut>", methods=["PUT", "DELETE"])
+def actualizar_o_eliminar_funcionario(rut):
+    if request.method == "PUT":
+        data = request.get_json().copy()
+        data.pop("_id", None)  # Evitar problemas con MongoDB
+        if "asistencia" in data:
+            data["asistencia"] = bool(data["asistencia"])
+        result = funcionarios_col.update_one({"rut": rut}, {"$set": data})
+        if result.matched_count == 0:
+            return jsonify({"error": "Funcionario no encontrado"}), 404
+        return jsonify({"message": "Funcionario actualizado correctamente"})
+    else:  # DELETE
+        result = funcionarios_col.delete_one({"rut": rut})
+        if result.deleted_count == 0:
+            return jsonify({"error": "Funcionario no encontrado"}), 404
+        return jsonify({"message": "Funcionario eliminado correctamente"})
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    rut = data.get("rut")
+    clave = data.get("clave")
+    print(f"Intento de login - RUT: {rut}, Clave: {clave}")  # Debug
+    
+    user = funcionarios_col.find_one({"rut": rut, "clave": clave})
+    print(f"Usuario encontrado: {user}")  # Debug
+    
+    if user:
+        print("Login exitoso")  # Debug
+        return jsonify({"mensaje": "Login exitoso", "rut": rut, "nombre": user.get("nombres")})
+    print("Credenciales incorrectas")  # Debug
+    return jsonify({"mensaje": "Credenciales incorrectas"}), 401
+
+# ---------------- MEDICAMENTOS ----------------
+# Maneja la creacion, actualizacion y eliminacion de medicamentos asociados a cada residente.
+@app.route('/api/medicamentos', methods=['POST', 'GET'])
+def manejar_medicamentos():
+    if request.method == 'POST':
+        data = request.get_json()
+        rut_residente = data.get("rut_residente")
+
+        if not rut_residente:
+            return jsonify({"error": "Falta el RUT del residente"}), 400
+
+        residente = residentes_col.find_one({"rut": rut_residente})
+        if not residente:
+            return jsonify({"error": f"No se encontró residente con RUT {rut_residente}"}), 404
+
+        medicamento = {
+            "nombre": data.get("nombre"),
+            "dosis": data.get("dosis"),
+            "caso_sos": data.get("caso_sos", False),
+            "medico_indicador": data.get("medico_indicador"),
+            "fecha_inicio": data.get("fecha_inicio"),
+            "fecha_termino": data.get("fecha_termino")
+        }
+
+        residentes_col.update_one(
+            {"rut": rut_residente},
+            {"$push": {"medicamentos": medicamento}}
+        )
+
+        return jsonify({
+            "mensaje": "Medicamento asignado correctamente",
+            "id": rut_residente,
+            "nombre_residente": residente.get("nombre")
+        }), 200
+
+    else:
+        # Mostrar todos los medicamentos con nombre del residente y RUT como id
+        residentes = list(residentes_col.find({}, {"_id": 0, "rut": 1, "nombre": 1, "medicamentos": 1, "medicamento": 1}))
+        medicamentos = []
+
+        for r in residentes:
+            meds = r.get("medicamentos", [])
+            # Si hay listas anidadas (lista dentro de lista), las aplana
+            if len(meds) > 0 and isinstance(meds[0], list):
+                meds = [item for sublist in meds for item in sublist]
+
+            for m in meds:
+                if isinstance(m, dict):
+                    medicamentos.append({
+                        "id": r.get("rut"),
+                        "nombre_residente": r.get("nombre"),
+                        "nombre": m.get("nombre"),
+                        "dosis": m.get("dosis"),
+                        "caso_sos": m.get("caso_sos", False),
+                        "medico_indicador": m.get("medico_indicador"),
+                        "fecha_inicio": m.get("fecha_inicio"),
+                        "fecha_termino": m.get("fecha_termino")
+                    })
+
+        return jsonify(medicamentos)
+
+@app.route('/api/medicamentos/<rut>', methods=['PUT', 'DELETE'])
+def actualizar_o_eliminar_medicamento(rut):
+    data = request.get_json() if request.method == 'PUT' else None
+    residente = residentes_col.find_one({"rut": rut})
+
+    if not residente:
+        return jsonify({"mensaje": "Residente no encontrado"}), 404
+
+    # Asegurar formato lista
+    if "medicamentos" not in residente or not isinstance(residente["medicamentos"], list):
+        if "medicamento" in residente and residente["medicamento"]:
+            residente["medicamentos"] = [residente["medicamento"]]
+        else:
+            residente["medicamentos"] = []
+
+    if request.method == 'PUT':
+        nombre_medicamento = data.get("nombre")
+        actualizado = False
+
+        for m in residente["medicamentos"]:
+            if m.get("nombre") == nombre_medicamento:
+                # Actualizar medicamento específico
+                m.update({
+                    "dosis": data.get("dosis", m.get("dosis")),
+                    "caso_sos": data.get("caso_sos", m.get("caso_sos")),
+                    "medico_indicador": data.get("medico_indicador", m.get("medico_indicador")),
+                    "fecha_inicio": data.get("fecha_inicio", m.get("fecha_inicio")),
+                    "fecha_termino": data.get("fecha_termino", m.get("fecha_termino"))
+                })
+                actualizado = True
+                break
+
+        if not actualizado:
+            return jsonify({"mensaje": f"No se encontró el medicamento '{nombre_medicamento}'"}), 404
+
+        residentes_col.update_one({"rut": rut}, {"$set": {"medicamentos": residente["medicamentos"]}})
+
+        return jsonify({
+            "mensaje": f"Medicamento '{nombre_medicamento}' actualizado correctamente",
+            "id": rut,
+            "nombre_residente": residente.get("nombre")
+        }), 200
+
+    else:
+        nombre_medicamento = request.args.get("nombre")
+        if not nombre_medicamento:
+            return jsonify({"error": "Debe especificar el nombre del medicamento a eliminar"}), 400
+
+        nueva_lista = [m for m in residente["medicamentos"] if m.get("nombre") != nombre_medicamento]
+
+        if len(nueva_lista) == len(residente["medicamentos"]):
+            return jsonify({"mensaje": f"No se encontró el medicamento '{nombre_medicamento}'"}), 404
+
+        residentes_col.update_one({"rut": rut}, {"$set": {"medicamentos": nueva_lista}})
+
+        return jsonify({
+            "mensaje": f"Medicamento '{nombre_medicamento}' eliminado del residente {residente.get('nombre')}",
+            "id": rut,
+            "nombre_residente": residente.get("nombre")
+        }), 200
+
+
+# ---------------- REGISTROS VITALES ----------------
+# Permiten registrar parametros clinicos como presion arterial, temperatura o pulso, vinculados a un residente.
+@app.route('/api/registros-vitales', methods=['POST', 'GET'])
+def manejar_registros():
+    if request.method == 'POST':
+        data = request.get_json()
+        if "fecha" not in data:
+            data["fecha"] = datetime.now().strftime("%Y-%m-%d")
+        if "hora" not in data:
+            data["hora"] = datetime.now().strftime("%H:%M:%S")
+        registros_col.insert_one(data)
+        return jsonify({"mensaje": "Registro guardado con éxito"}), 201
+    else:  # GET
+        rut = request.args.get('rut')
+        if not rut:
+            return jsonify({"error": "Se requiere el RUT del residente"}), 400
+            
+        registros = list(registros_col.find({"rut": rut}))
+        for registro in registros:
+            registro["_id"] = str(registro["_id"])
+            
+        return jsonify(registros), 200
+
+@app.route('/api/registros-vitales/<id>', methods=['PUT', 'DELETE'])
+def actualizar_o_eliminar_registro(id):
+    from bson import ObjectId
+    try:
+        obj_id = ObjectId(id)
+    except:
+        return jsonify({"error": "ID inválido"}), 400
+    if request.method == 'PUT':
+        data = request.get_json()
+        result = registros_col.update_one({"_id": obj_id}, {"$set": data})
+        if result.matched_count == 0:
+            return jsonify({"mensaje": "Registro no encontrado"}), 404
+        return jsonify(data)
+    else:
+        result = registros_col.delete_one({"_id": obj_id})
+        if result.deleted_count == 0:
+            return jsonify({"mensaje": "Registro no encontrado"}), 404
+        return jsonify({"mensaje": "Registro eliminado"})
+
+# ---------------- FORMULARIOS ----------------
+# Permiten registrar informacion relacionada a los turnos de los funcionarios.
+@app.route('/api/formulario', methods=['POST'])
+def guardar_formulario():
+    data = request.get_json()
+    formularios_col.insert_one(data)
+    return jsonify({"mensaje": "Formulario guardado con éxito"}), 201
+
+@app.route('/api/formulario', methods=['GET'])
+def obtener_formularios():
+    forms = list(formularios_col.find())
+    for f in forms:
+        f["_id"] = str(f["_id"])
+    return jsonify(forms)
+
+# ---------------- HISTORIAL CLÍNICO ----------------
+# Devuelve toda la informacion clinica relevante del residente, incluyendo su diagnostico, medico tratante, proximo control y signos vitales.
+@app.route('/api/historial-clinico/<rut>', methods=['GET'])
+def obtener_historial_clinico(rut):
+    try:
+        residente = residentes_col.find_one({"rut": rut})
+        if not residente:
+            return jsonify({"error": "Residente no encontrado"}), 404
+
+        residente["_id"] = str(residente["_id"])
+        signos = residente.get("signos_vitales", {})
+
+        ficha = {
+            "rut": residente.get("rut"),
+            "nombre": residente.get("nombre"),
+            "diagnostico": residente.get("diagnostico"),
+            "medico_tratante": residente.get("medico_tratante"),
+            "proximo_control": residente.get("proximo_control"),
+            "signos_vitales": signos
+        }
+
+        return jsonify(ficha), 200
+
+    except Exception as e:
+        print("Error al obtener historial clínico:", e)
+        return jsonify({"error": str(e)}), 500
+    
+# ---------------- BUSCAR PACIENTE ----------------
+# Verifica la existencia de un residente segun su RUT.
+@app.route('/api/buscar-residente', methods=['POST'])
+def buscar_residente():
+    data = request.get_json()
+    rut = data.get("rut")
+
+    if not rut:
+        return jsonify({"error": "Debe ingresar un RUT"}), 400
+
+    residente = residentes_col.find_one({"rut": rut})
+
+    if residente:
+        return jsonify({"existe": True, "rut": rut})
+    else:
+        return jsonify({"existe": False})
+
+# ---------------- INICIO APP ----------------
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
