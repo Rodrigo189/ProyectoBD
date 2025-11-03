@@ -16,7 +16,8 @@ import Estadisticas from "./pages/stats";
 import Probabilidades from "./pages/prob";
 import AnalisisRiesgo from "./pages/risk";
 import EstadisticasSistema from "./pages/sis";
-import AdminDash from "./pages/admindash";
+import AdministradorDashboard from "./pages/admindash";
+import ListaFuncionarioRyE from "./pages/adminlist";
 
 function App() {
   return (
@@ -34,11 +35,20 @@ function App() {
         <Route path="/PerfilAdministrador" element={<PerfilAdministrador />} />
         <Route path="/ListaFuncionario" element={<ListaFuncionario />} />
         <Route path="/funcionarios/:id" element={<SubPerfilFuncionario />} />
-        <Route path="/Estadisticas" element={<Estadisticas />} />
-        <Route path="/Probabilidades" element={<Probabilidades />} />
-        <Route path="/AnalisisRiesgo" element={<AnalisisRiesgo />} />
-        <Route path="/EstadisticasSistema" element={<EstadisticasSistema />} />
-        <Route path="/AdministradorDashboard" element={<AdminDash />} />
+
+        {/*
+          Ahora estas rutas aceptan id opcional para abrir vistas por usuario.
+          Si no hay id (o navegas desde admin root), siguen funcionando.
+        */}
+        <Route path="/Estadisticas/:id?" element={<Estadisticas />} />
+        <Route path="/Probabilidades/:id?" element={<Probabilidades />} />
+        <Route path="/AnalisisRiesgo/:id?" element={<AnalisisRiesgo />} />
+
+        {/* Puedes mantener id? aquí; la vista ignora el id si llega */}
+        <Route path="/EstadisticasSistema/:id?" element={<EstadisticasSistema />} />
+
+        <Route path="/AdministradorDashboard/:id?" element={<AdministradorDashboard />} />
+        <Route path="/ListaFuncionarioRyE" element={<ListaFuncionarioRyE />} />
       </Routes>
     </BrowserRouter>
   );

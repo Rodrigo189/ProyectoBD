@@ -9,10 +9,11 @@ export default function LoginReportesFuncionario() {
     const goBack = () => { if (window.history.length > 1) window.history.back(); };
 
     const handleLogin = async ({ run, password }) => {
-        // validar credenciales si corresponde (API)
-        console.log("login reportes - funcionario", { run, password });
-        // después de login ir a la vista de reportes para funcionarios
-        navigate("/FuncionarioDashboard");
+        // ...validación mock...
+        // Guarda el usuario actual (FUNCIONARIO)
+        localStorage.setItem("currentUserId", "2");       // usa el id real si lo tienes
+        localStorage.setItem("currentUserRole", "funcionario");
+        navigate("/FuncionarioDashboard");                // el dashboard usará currentUserId
     };
 
     return (

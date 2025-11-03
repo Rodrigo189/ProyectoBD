@@ -9,10 +9,11 @@ export default function LoginReportesAdministrador() {
     const goBack = () => { if (window.history.length > 1) window.history.back(); };
 
     const handleLogin = async ({ run, password }) => {
-        // validar credenciales si corresponde (API)
-        console.log("login reportes - administrador", { run, password });
-        // después de login ir a la vista de estadísticas para administradores
-        navigate("/AdministradorDashboard");
+        // ...validación mock...
+        // Guarda el usuario actual (ADMIN) para que el botón "Ver Estadísticas" tenga un id por defecto
+        localStorage.setItem("currentUserId", "1");       // usa el id real si lo tienes
+        localStorage.setItem("currentUserRole", "admin");
+        navigate("/AdministradorDashboard");              // sin id; el dashboard tomará currentUserId
     };
 
     return (

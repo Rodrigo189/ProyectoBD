@@ -1,157 +1,153 @@
+:root {
+    --bg: #f4f7f8;
+    --card: #ffffff;
+    --shadow: 0 8px 28px rgba(17, 24, 39, .08);
+    --text: #0b2733;
+    --muted: #6b7b84;
+    --teal: #0ea5a8;
+    --green: #28a745;
+    --yellow: #f0ad4e;
+    --red: #e53935;
+}
+
 .riesgo-bg {
-    background: #f4f6f6;
+    background: var(--bg);
     min-height: 100vh;
 }
 
 .riesgo-main {
     max-width: 1200px;
-    margin: 18px auto;
-    padding: 0 18px;
-}
-
-/* nuevo título centrado */
-.riesgo-heading {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 800;
-    color: #003233;
-    margin: 8px 0 18px;
-}
-
-.riesgo-container {
-    display: flex;
-    gap: 28px;
-    align-items: flex-start;
-}
-
-/* LEFT: lista de hallazgos - centrar las filas dentro del área */
-.riesgo-list {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    /* más separación vertical entre filas */
-    align-items: center;
-    /* centra las filas horizontalmente */
-    padding-top: 6px;
-}
-
-/* tarjeta fila: limitar ancho y centrar contenido */
-.riesgo-row {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    border-radius: 8px;
-    padding: 14px 18px;
-    /* un poco más de espacio interno */
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0, 0, 0, 0.03);
-
-    width: 100%;
-    max-width: 760px;
-    /* limita el ancho de cada fila */
-    box-sizing: border-box;
-}
-
-/* ajustar altura y texto */
-.riesgo-stripe {
-    width: 10px;
-    height: 64px;
-    border-radius: 6px;
-    background: linear-gradient(180deg, #0ea3a3, #078b8b);
-    margin-right: 16px;
-    flex-shrink: 0;
-}
-
-.riesgo-content {
-    flex: 1;
+    margin: 0 auto;
+    padding: 22px 24px 56px;
+    color: var(--text);
 }
 
 .riesgo-title {
+    text-align: center;
     font-weight: 800;
-    color: #033;
-    font-size: 16px;
+    font-size: 34px;
+    margin: 8px 0 22px;
 }
 
-/* pill de nivel: tamaño consistente y alineación */
+/* Layout principal: izquierda lista, derecha columna con paciente + recomendaciones */
+.riesgo-content {
+    display: grid;
+    grid-template-columns: 0.95fr 1.2fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* Columna derecha */
+.right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Tarjeta de paciente: ancho EXACTO de la columna derecha */
+.patient-card {
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    width: 100%;
+    line-height: 1.55;
+}
+
+.patient-card .sep {
+    color: #9aa7ad;
+    margin: 0 6px;
+}
+
+/* Lista de riesgos */
+.riesgo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.riesgo-item {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    /* sin franja/stripe */
+    align-items: center;
+    gap: 12px;
+}
+
+.riesgo-item .r-title {
+    font-weight: 600;
+    color: var(--text);
+}
+
 .riesgo-pill {
-    padding: 8px 16px;
-    border-radius: 18px;
-    font-weight: 800;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .2px;
     color: #fff;
-    min-width: 68px;
-    text-align: center;
-    margin-left: 14px;
 }
 
 .riesgo-pill.green {
-    background: #3cc07a;
+    background: var(--green);
 }
 
 .riesgo-pill.yellow {
-    background: #ffd54f;
+    background: var(--yellow);
     color: #222;
 }
 
 .riesgo-pill.red {
-    background: #ff6b6b;
+    background: var(--red);
 }
 
-/* RIGHT: info paciente + recomendaciones */
-.riesgo-side {
-    width: 420px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.empty {
+    background: #eef4f6;
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
 }
 
-.patient-card {
-    background: #fff;
-    padding: 14px 18px;
-    border-radius: 14px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    color: #133;
-}
-
+/* Recomendaciones: dimensiones corregidas */
 .recommend-card {
-    background: linear-gradient(180deg, #0ea3a3, #078b8b);
+    background: var(--teal);
     color: #fff;
-    padding: 18px 20px;
-    border-radius: 18px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    /* mismo ancho que la patient-card */
+    min-height: 260px;
+    /* altura razonable, no desproporcionada */
 }
 
 .recommend-card h3 {
-    margin-top: 0;
+    margin: 0 0 12px;
+    font-weight: 800;
+    font-size: 22px;
 }
 
 .recommend-card ul {
-    margin: 8px 0 0 18px;
-    padding: 0;
+    margin: 0;
+    padding-left: 18px;
 }
 
 .recommend-card li {
-    margin: 8px 0;
+    margin: 10px 0;
 }
 
-/* responsive */
-@media (max-width: 920px) {
-    .riesgo-container {
-        flex-direction: column;
-    }
+.recommend-card li::marker {
+    color: #d0f3f4;
+}
 
-    .riesgo-side {
-        width: 100%;
-    }
-
-    .riesgo-list {
-        gap: 16px;
-        align-items: stretch;
-        /* ocupar el ancho en móvil */
-    }
-
-    .riesgo-row {
-        max-width: 100%;
+/* Responsive */
+@media (max-width: 980px) {
+    .riesgo-content {
+        grid-template-columns: 1fr;
     }
 }

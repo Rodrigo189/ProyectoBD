@@ -143,6 +143,17 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
+.estad-sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px 12px;
+    justify-content: center;
+    /* NUEVO: baja un poco la columna de botones */
+    margin-top: 24px;
+}
+
 /* dots */
 .hero-controls {
     display: flex;

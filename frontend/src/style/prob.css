@@ -89,6 +89,23 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
 }
 
+/* animación de desvanecimiento del grid al cambiar de categoría */
+@keyframes fadeInGrid {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.prob-grid.fade-in {
+    animation: fadeInGrid .35s ease both;
+}
+
 /* animate-in: new cards entran con keyframes */
 @keyframes slideInUp {
     from {
