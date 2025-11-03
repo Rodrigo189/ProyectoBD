@@ -10,7 +10,7 @@ export default function Navbar({ titulo = "Ficha Clínica ELEAM" }) {
       </div>
 
       <div className="navbar-links">
-        <a href="/">Inicio</a>
+        <a href="/" className="nav-link">Inicio</a>
         <a href="/ficha/crear" className="btn-nav">Nueva Ficha</a>
       </div>
     </nav>

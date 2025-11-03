@@ -1,55 +1,78 @@
 .navbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color: #009688; /* color principal institucional */
-  color: white;
-  padding: 10px 25px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 12px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-wrap: wrap;
 }
 
 .navbar-left {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .navbar-logo {
-  width: 36px;
-  height: 36px;
-  margin-right: 12px;
+  height: 42px;
+  width: auto;
 }
 
 .navbar-title {
   font-size: 20px;
-  font-weight: 600;
-  color: white;
+  font-weight: 700;
+  color: var(--color-principal);
 }
 
 .navbar-links {
   display: flex;
   align-items: center;
+  gap: 20px;
 }
 
 .navbar-links a {
-  color: white;
   text-decoration: none;
-  margin-left: 20px;
+  color: var(--color-principal);
   font-weight: 500;
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
 .navbar-links a:hover {
-  color: #cde9e5; /* tono más claro */
+  color: var(--color-secundario);
 }
 
-/* Botón destacado “Nueva Ficha” */
 .btn-nav {
-  background-color: #00796b;
-  padding: 8px 14px;
+  background-color: var(--color-principal);
+  color: #fff !important;
+  padding: 8px 16px;
   border-radius: 6px;
   font-weight: 600;
+  transition: background 0.3s ease;
 }
 
 .btn-nav:hover {
-  background-color: #004d40;
+  background-color: var(--color-secundario);
+}
+
+/* 🔹 Responsivo */
+@media (max-width: 700px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .navbar-links {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navbar-title {
+    font-size: 18px;
+  }
 }
