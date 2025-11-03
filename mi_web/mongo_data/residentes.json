@@ -1,0 +1,78 @@
+[
+  {
+    "rut": "11111111-1",
+    "nombre": "Ana García",
+    "fecha_nacimiento": "1950-05-15",
+    "fecha_ingreso": "2024-01-01",
+    "medico_tratante": "Dr. Martínez",
+    "proximo_control": "2025-10-15",
+    "diagnostico": "Hipertensión",
+    "medicamentos":[ 
+    {
+        "nombre": "Losartán",
+        "dosis": "50mg cada 12 horas",
+        "caso_sos": false,
+        "medico_indicador": "Dr. Martínez",
+        "fecha_inicio": "2024-01-01",
+        "fecha_termino": null
+    }],
+    "signos_vitales": [
+      {
+        "fecha": "2024-10-01",
+        "hora": "08:00",
+        "presionSistolica": 140,
+        "presionDiastolica": 90
+      },
+      {
+        "fecha": "2024-10-10",
+        "hora": "09:15",
+        "presionSistolica": 135,
+        "presionDiastolica": 85
+      },
+      {
+        "fecha": "2024-10-20",
+        "hora": "08:45",
+        "presionSistolica": 138,
+        "presionDiastolica": 88
+      }
+    ]
+  },
+
+  {
+    "rut": "22222222-2",
+    "nombre": "Carlos Rodríguez",
+    "fecha_nacimiento": "1945-08-20",
+    "fecha_ingreso": "2024-02-01",
+    "medico_tratante": "Dra. Sánchez",
+    "proximo_control": "2025-10-20",
+    "diagnostico": "Diabetes tipo 2",
+    "medicamentos":[ {
+        "nombre": "Metformina",
+        "dosis": "850mg cada 8 horas",
+        "caso_sos": false,
+        "medico_indicador": "Dra. Sánchez",
+        "fecha_inicio": "2024-02-01",
+        "fecha_termino": null
+    }],
+    "signos_vitales": [
+      {
+        "fecha": "2024-10-01",
+        "hora": "08:00",
+        "presionSistolica": 140,
+        "presionDiastolica": 90
+      },
+      {
+        "fecha": "2024-10-10",
+        "hora": "09:15",
+        "presionSistolica": 135,
+        "presionDiastolica": 85
+      },
+      {
+        "fecha": "2024-10-20",
+        "hora": "08:45",
+        "presionSistolica": 138,
+        "presionDiastolica": 88
+      }
+    ]
+  }
+]
