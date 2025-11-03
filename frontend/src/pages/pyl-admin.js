@@ -17,7 +17,7 @@ export default function LoginAdministrador() {
             <Header onBack={goBack} />
 
             <main className="funcionario-main">
-                <h1 className="funcionario-welcome-text">Te damos la bienvenida!</h1>
+                <h1 className="funcionario-welcome-text">¡Te damos la bienvenida!</h1>
 
                 <section className="funcionario-form-wrap">
                     <LoginCard
