@@ -9,3 +9,115 @@ body {
   /* Aseguramos que el fondo cubra todo */
   min-height: 100vh;
 }
+/* src/assets/styles/globals.css (AÑADIR AL FINAL) */
+
+/* === REGLAS DE ACCESIBILIDAD === */
+
+/* 1. Modos de Tamaño de Texto */
+/* (Usamos 'body' para que todo el contenido herede el tamaño) */
+body.accessibility-font-large {
+  font-size: 110%; /* 10% más grande */
+}
+body.accessibility-font-xlarge {
+  font-size: 120%; /* 20% más grande */
+}
+
+/* 2. Modo de Alto Contraste */
+/* Fondo oscuro, texto blanco/amarillo */
+body.accessibility-high-contrast {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+/* (Sobreescribimos los estilos de tus módulos) */
+body.accessibility-high-contrast .navbar {
+  background-color: #000 !important;
+  border-bottom: 2px solid #ffff00;
+}
+
+body.accessibility-high-contrast .navbar-title,
+body.accessibility-high-contrast .nav-link {
+  color: #ffff00 !important; /* Amarillo */
+}
+
+body.accessibility-high-contrast .btn-nav,
+body.accessibility-high-contrast .btn-nav-logout {
+  background-color: #ffff00 !important;
+  color: #000 !important;
+  border: 1px solid #000;
+}
+
+body.accessibility-high-contrast .pageContainer,
+body.accessibility-high-contrast .searchBox {
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #fff;
+}
+
+body.accessibility-high-contrast h2,
+body.accessibility-high-contrast h3,
+body.accessibility-high-contrast h4 {
+  color: #ffff00 !important; /* Amarillo */
+  border-color: #ffff00 !important;
+}
+
+body.accessibility-high-contrast .sectionBlock,
+body.accessibility-high-contrast .formSection,
+body.accessibility-high-contrast .subsection {
+  background: #1a1a1a !important;
+  border-color: #fff !important;
+}
+
+body.accessibility-high-contrast .input,
+body.accessibility-high-contrast .select,
+body.accessibility-high-contrast .textarea {
+  background: #333 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+body.accessibility-high-contrast .btnPrimary,
+body.accessibility-high-contrast .btnPdf,
+body.accessibility-high-contrast .btnFiltro {
+  background: #000 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00;
+}
+
+body.accessibility-high-contrast .btnSecondary,
+body.accessibility-high-contrast .btnFiltroSec {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff;
+}
+/* src/assets/styles/globals.css (AÑADIR REGLAS DE HERENCIA) */
+
+/* === REGLAS PARA FORZAR LA HERENCIA DEL TAMAÑO DE TEXTO === */
+
+/* Forzar herencia en todos los elementos del formulario */
+body.accessibility-font-large input,
+body.accessibility-font-xlarge input,
+body.accessibility-font-large select,
+body.accessibility-font-xlarge select,
+body.accessibility-font-large textarea,
+body.accessibility-font-xlarge textarea {
+    font-size: inherit !important;
+}
+
+/* Forzar herencia en las listas de datos (FichaClinica.jsx) */
+body.accessibility-font-large .section-block ul,
+body.accessibility-font-xlarge .section-block ul,
+body.accessibility-font-large .section-block li,
+body.accessibility-font-xlarge .section-block li,
+body.accessibility-font-large .section-block li b,
+body.accessibility-font-xlarge .section-block li b {
+    font-size: inherit !important;
+    /* Aseguramos que las líneas no se peguen al aumentar el tamaño */
+    line-height: 1.5 !important;
+}
+
+/* Asegurar que los textos pequeños también escalen */
+body.accessibility-font-large .detalle,
+body.accessibility-font-xlarge .detalle {
+    font-size: inherit !important;
+}

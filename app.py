@@ -14,9 +14,18 @@ from routes.ingresos_routes import ingresos_bp
 from routes.ficha_completa_routes import ficha_completa_bp
 from routes.fichas_routes import fichas_bp
 from routes.historia_routes import historia_bp
+from routes.login_routes import login_bp
+from routes.funcionarios_routes import funcionarios_bp
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}})
+
+# --- CORRECCIÓN DE CORS AQUÍ ---
+# Añadimos 'supports_credentials=True' para permitir el login
+CORS(app, 
+     resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}}, 
+     supports_credentials=True
+)
+# --- FIN CORRECCIÓN ---
 
 swagger = Swagger(app, template={
     "info": {
@@ -38,11 +47,13 @@ app.register_blueprint(atenciones_bp)
 app.register_blueprint(ingresos_bp)
 app.register_blueprint(fichas_bp)
 app.register_blueprint(historia_bp)
+app.register_blueprint(login_bp)
+app.register_blueprint(funcionarios_bp)
 
 @app.route('/')
 def home():
     return jsonify({
-        "message": "API ELEAM en funcionamiento ✅",
+        "message": "API ELEAM (FICHAS + LOGIN) en funcionamiento ✅",
         "version": "3.0.0",
         "status": "ok"
     })

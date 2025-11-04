@@ -1,8 +1,7 @@
-// src/pages/FichaClinica.jsx
+// src/pages/FichaClinica.jsx (Corregido)
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getFichaCompleta, deleteFicha } from "../services/fichaService";
-import Navbar from "../components/Navbar";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import styles from "../assets/styles/fichaClinica.module.css";
@@ -10,28 +9,23 @@ import styles from "../assets/styles/fichaClinica.module.css";
 export default function FichaClinica() { 
   const { rut } = useParams();
   const navigate = useNavigate();
-
   const [ficha, setFicha] = useState(null);
   const [loading, setLoading] = useState(true);
   const [rutBusqueda, setRutBusqueda] = useState("");
-
   const [filtroInicio, setFiltroInicio] = useState("");
   const [filtroFin, setFiltroFin] = useState("");
   const [historialFiltrado, setHistorialFiltrado] = useState([]);
-  
   const componenteParaImprimirRef = useRef(null);
 
-  // === BUSCADOR (en la misma página) ===
   const buscarFicha = (e) => {
     e.preventDefault();
     if (!rutBusqueda.trim()) {
       alert("⚠️ Ingrese un RUT para buscar la ficha clínica");
       return;
     }
-    navigate(`/ficha/${rutBusqueda}`);
+    navigate(`/fichas/${rutBusqueda}`);
   };
 
-  // === Cargar ficha ===
   useEffect(() => {
     if (!rut) {
       setLoading(false);
@@ -57,7 +51,6 @@ export default function FichaClinica() {
     fetchFicha();
   }, [rut]); 
 
-  // === Filtros de historial ===
   const aplicarFiltro = () => {
     if (!filtroInicio || !filtroFin) {
       alert("Seleccione ambas fechas para filtrar.");
@@ -83,92 +76,64 @@ export default function FichaClinica() {
     setFiltroFin("");
   };
 
-  // === Eliminar Ficha ===
+  // --- CORRECCIÓN DE REDIRECCIÓN AQUÍ ---
   const eliminarFicha = async () => {
     if (!window.confirm("¿Seguro que deseas eliminar esta ficha clínica?")) return;
     try {
       await deleteFicha(ficha.rut_residente || ficha.datos_personales.rut);
       alert("🗑️ Ficha eliminada correctamente");
-      navigate("/");
+      navigate("/fichas"); // Redirigir al buscador, no al Menú Principal
     } catch (error) {
       console.error("Error al eliminar ficha:", error);
       alert("❌ No se pudo eliminar la ficha");
     }
   };
+  // --- FIN CORRECCIÓN ---
 
-  // === EXPORTAR PDF (con html2canvas) ===
   const exportarPDF = () => {
     const input = componenteParaImprimirRef.current;
-    if (!input) {
-      console.error("No se encontró el elemento para imprimir");
-      return;
-    }
-
-    // Ocultar temporalmente los filtros antes de tomar la captura
+    if (!input) return;
     const filtros = input.querySelector(`.${styles.historialFiltros}`);
     if (filtros) filtros.style.display = 'none';
-
-    html2canvas(input, {
-      scale: 2, // Mejora la resolución de la imagen
-      useCORS: true // Para que cargue imágenes si las hubiera
-    }).then(canvas => {
-      // Volver a mostrar los filtros
-      if (filtros) filtros.style.display = 'flex'; // 'flex' o 'block'
-
-      const imgData = canvas.toDataURL('image/png');
-      
-      // Dimensiones del PDF (A4) y de la imagen
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      
-      // Calcular la relación de aspecto
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2; // Centrar la imagen
-      const imgY = 10; // Margen superior
-      const imgFinalHeight = imgHeight * ratio;
-
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgFinalHeight);
-      
-      // Manejar contenido que excede una página (opcional simple)
-      let heightLeft = imgFinalHeight;
-      heightLeft -= pdfHeight;
-
-      let position = imgY + imgFinalHeight; // Posición inicial para la siguiente página
-
-      while (heightLeft > 0) {
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', imgX, -position, imgWidth * ratio, imgFinalHeight);
-        heightLeft -= pdfHeight;
-        position += imgFinalHeight - pdfHeight;
-      }
-      
-      pdf.save(`Ficha-Residente-${ficha.datos_personales.rut}.pdf`);
-    }).catch(err => {
-      // En caso de error, asegurarse de mostrar los filtros
-      if (filtros) filtros.style.display = 'flex';
-      console.error("Error al generar el PDF:", err);
-      alert("❌ No se pudo generar el PDF.");
-    });
+    html2canvas(input, { scale: 2, useCORS: true })
+      .then(canvas => {
+        if (filtros) filtros.style.display = 'flex';
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = pdfWidth / imgWidth;
+        const imgFinalHeight = imgHeight * ratio;
+        let position = 0;
+        let heightLeft = imgFinalHeight;
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgFinalHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+        while (heightLeft > 0) {
+          position = heightLeft - imgFinalHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgFinalHeight);
+          heightLeft -= pdf.internal.pageSize.getHeight();
+        }
+        pdf.save(`Ficha-Residente-${ficha.datos_personales.rut}.pdf`);
+      }).catch(err => {
+        if (filtros) filtros.style.display = 'flex';
+        console.error("Error al generar el PDF:", err);
+        alert("❌ No se pudo generar el PDF.");
+      });
   };
 
-  // === Vistas de Carga / Buscador ===
   if (loading) return (
     <div>
-      <Navbar titulo="Ficha Clínica ELEAM" />
       <p className={styles.loadingMsg}>Cargando ficha...</p>
     </div>
   );
 
-  if (!rut) {
-    return (
+  if (!rut) { 
+    return ( 
       <div>
-        <Navbar titulo="Ficha Clínica ELEAM" />
         <div className={styles.searchBox}>
-          <h2>Buscar Ficha Clínica</h2>
-          <form className={styles.searchForm} onSubmit={buscarFicha}>
+         <form className={styles.searchForm} onSubmit={buscarFicha}>
             <label htmlFor="rut" className={styles.label}>
               Ingrese el RUT del residente
             </label>
@@ -192,7 +157,6 @@ export default function FichaClinica() {
   if (!ficha || ficha.message === "Ficha no encontrada")
     return (
       <div>
-        <Navbar titulo="Ficha Clínica ELEAM" />
         <p className={styles.errorMsg}>❌ No se encontró la ficha clínica para el RUT: {rut}.</p>
         <div className={styles.searchBox}>
           <form className={styles.searchForm} onSubmit={buscarFicha}>
@@ -209,15 +173,11 @@ export default function FichaClinica() {
       </div>
     );
 
-  // === VISTA DE LA FICHA COMPLETA ===
   return (
     <div>
-      <Navbar titulo="Ficha Clínica ELEAM" />
       
-      {/* Contenedor de la ficha que se imprimirá */}
       <div className={styles.pageContainer} ref={componenteParaImprimirRef}>
         
-        {/* Título solo para impresión */}
         <div className={styles.printTitle}>
           <h1>Ficha Clínica Integral</h1>
           <h2>Residente: {ficha.datos_personales?.nombre}</h2>
@@ -225,8 +185,6 @@ export default function FichaClinica() {
         </div>
 
         <h2>Ficha Clínica del Residente</h2>
-
-        {/* --- RESTO DEL JSX (Actualizado a CSS Modules) --- */}
         <div className={styles.sectionBlock}>
           <h3>Datos Personales</h3>
           <ul>
@@ -241,7 +199,6 @@ export default function FichaClinica() {
             <li><b>Dirección actual:</b> {ficha.datos_personales?.direccion_actual || "—"}</li>
           </ul>
         </div>
-
         <div className={styles.sectionBlock}>
           <h3>Ubicación e Ingreso</h3>
           <ul>
@@ -250,7 +207,6 @@ export default function FichaClinica() {
             <li><b>Motivo institucionalización:</b> {ficha.ubicacion?.motivo_institucionalizacion || "—"}</li>
           </ul>
         </div>
-
         <div className={styles.sectionBlock}>
           <h3>Datos Sociales</h3>
           <ul>
@@ -269,7 +225,6 @@ export default function FichaClinica() {
             <li><b>Educación superior/técnica:</b> {ficha.datos_sociales?.escolaridad?.educacion_superior || "—"}</li>
           </ul>
         </div>
-
         <div className={styles.sectionBlock}>
           <h3>Apoderado</h3>
           <ul>
@@ -279,7 +234,6 @@ export default function FichaClinica() {
             <li><b>Correo:</b> {ficha.apoderado?.correo || "—"}</li>
           </ul>
         </div>
-
         <div className={styles.sectionBlock}>
           <h3>Antecedentes Médicos</h3>
           <ul>
@@ -293,7 +247,6 @@ export default function FichaClinica() {
             <li><b>Otras patologías:</b> {ficha.antecedentes_medicos?.otras_patologias || "—"}</li>
           </ul>
         </div>
-
         <div className={styles.sectionBlock}>
           <h3>Historia Clínica</h3>
           <ul>
@@ -302,9 +255,7 @@ export default function FichaClinica() {
             <li><b>Exámenes realizados:</b> {ficha.historia_clinica?.examenes || "—"}</li>
             <li><b>Medicamentos asociados al ingreso:</b> {ficha.historia_clinica?.medicamentos_asociados || "—"}</li>
           </ul>
-
           <h4>Historial de Atenciones y Motivos</h4>
-
           <div className={styles.historialFiltros}>
             <label>Desde:</label>
             <input type="date" value={filtroInicio} onChange={(e) => setFiltroInicio(e.target.value)} />
@@ -313,7 +264,6 @@ export default function FichaClinica() {
             <button onClick={aplicarFiltro} className={styles.btnFiltro}>Filtrar</button>
             <button onClick={mostrarTodo} className={styles.btnFiltroSec}>Mostrar todo</button>
           </div>
-
           <div className={styles.historialLista}>
             {Array.isArray(historialFiltrado) && historialFiltrado.length > 0 ? (
               <ul>
@@ -334,9 +284,8 @@ export default function FichaClinica() {
         </div>
       </div>
 
-      {/* --- BOTONES MOVIDOS AL FINAL (CON ETIQUETAS CORREGIDAS) --- */}
       <div className={styles.actionsContainer}>
-        <button className={styles.btnPrimary} onClick={() => navigate(`/ficha/editar/${ficha.rut_residente || ficha.datos_personales.rut}`)}>✏️ Editar</button>
+        <button className={styles.btnPrimary} onClick={() => navigate(`/fichas/editar/${ficha.rut_residente || ficha.datos_personales.rut}`)}>✏️ Editar</button>
         <button className={styles.btnDanger} onClick={eliminarFicha}>🗑️ Eliminar</button>
         <button className={styles.btnPdf} onClick={exportarPDF}>📄 Exportar PDF</button>
       </div>

@@ -76,3 +76,20 @@
     font-size: 18px;
   }
 }
+/* src/assets/styles/Navbar.css (AÑADIR AL FINAL) */
+.btn-nav-logout {
+  background-color: #f44336; /* Color rojo */
+  color: #fff !important;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+}
+
+.btn-nav-logout:hover {
+  background-color: #d32f2f;
+}
