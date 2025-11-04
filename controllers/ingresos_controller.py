@@ -1,10 +1,11 @@
 from flask import jsonify, request
 from db_nosql import get_db
-from bson import ObjectId
+# 'ObjectId' ya no es necesario
+# from bson import ObjectId
 
 def add_ingreso():
     """
-    Registrar un ingreso de residente
+    Registrar o actualizar un ingreso de residente
     ---
     tags:
       - Ingresos
@@ -12,34 +13,51 @@ def add_ingreso():
       - in: body
         name: body
         required: true
-        description: Datos del ingreso
+        description: Datos del ingreso (sección ubicación de la ficha)
         schema:
           type: object
           properties:
             rut_residente:
               type: string
               example: "11111111-1"
-            fecha_ingreso:
-              type: string
-              example: "2025-10-01"
-            motivo:
-              type: string
-              example: "Traslado desde hospital"
             habitacion:
               type: string
               example: "Habitación 12B"
+            ingresa_desde:
+              type: string
+              example: "Hospital"
+            motivo_institucionalizacion:
+              type: string
+              example: "Traslado desde hospital"
     responses:
       200:
-        description: Ingreso registrado correctamente
+        description: Ingreso registrado o actualizado correctamente
     """
     db = get_db()
     data = request.json
-    db.contratoIngresoMedicamentos.insert_one(data)
+    
+    # --- CORRECCIÓN ---
+    # Usamos upsert=True para crear o actualizar, basado en el RUT
+    # Usamos la colección 'db.ingresos', no 'db.contratoIngresoMedicamentos'
+    try:
+        rut = data["rut_residente"]
+    except KeyError:
+        return jsonify({"message": "Error: 'rut_residente' es requerido."}), 400
+    except TypeError:
+        return jsonify({"message": "Error: JSON inválido."}), 400
+
+    db.ingresos.update_one(
+        {"rut_residente": rut}, 
+        {"$set": data}, 
+        upsert=True
+    )
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": "Ingreso registrado"})
 
 def get_ingresos(rut_residente):
     """
-    Obtener ingresos de un residente
+    Obtener ingreso de un residente
     ---
     tags:
       - Ingresos
@@ -51,13 +69,22 @@ def get_ingresos(rut_residente):
         description: RUT del residente
     responses:
       200:
-        description: Lista de ingresos registrados
+        description: Datos del ingreso
     """
     db = get_db()
-    ingresos = list(db.contratoIngresoMedicamentos.find({"rut_residente": rut_residente}, {"_id": 0}))
-    return jsonify(ingresos)
+    
+    # --- CORRECCIÓN ---
+    # Cambiado a 'db.ingresos'
+    # Cambiado a find_one() porque tu frontend espera un solo objeto de ubicación
+    ingresos = db.ingresos.find_one(
+        {"rut_residente": rut_residente}, 
+        {"_id": 0}
+    )
+    # --- FIN CORRECCIÓN ---
+    
+    return jsonify(ingresos if ingresos else {"message": "Ingreso no encontrado"})
 
-def update_ingreso(id):
+def update_ingreso(rut_residente):
     """
     Actualizar información de un ingreso
     ---
@@ -65,10 +92,10 @@ def update_ingreso(id):
       - Ingresos
     parameters:
       - in: path
-        name: id
+        name: rut_residente
         type: string
         required: true
-        description: ID del ingreso
+        description: RUT del residente
       - in: body
         name: body
         required: true
@@ -76,7 +103,7 @@ def update_ingreso(id):
         schema:
           type: object
           properties:
-            motivo:
+            motivo_institucionalizacion:
               type: string
               example: "Ingreso por recuperación postoperatoria"
             habitacion:
@@ -88,10 +115,18 @@ def update_ingreso(id):
     """
     db = get_db()
     data = request.json
-    result = db.contratoIngresoMedicamentos.update_one({"_id": ObjectId(id)}, {"$set": data})
+    
+    # --- CORRECCIÓN ---
+    # Se usa 'rut_residente' (no 'id') y 'db.ingresos'
+    result = db.ingresos.update_one(
+        {"rut_residente": rut_residente}, 
+        {"$set": data}
+    )
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.modified_count} ingreso(s) actualizado(s)"})
 
-def delete_ingreso(id):
+def delete_ingreso(rut_residente):
     """
     Eliminar un ingreso
     ---
@@ -99,14 +134,19 @@ def delete_ingreso(id):
       - Ingresos
     parameters:
       - in: path
-        name: id
+        name: rut_residente
         type: string
         required: true
-        description: ID del ingreso a eliminar
+        description: RUT del residente cuyo ingreso se eliminará
     responses:
       200:
         description: Ingreso eliminado correctamente
     """
     db = get_db()
-    result = db.contratoIngresoMedicamentos.delete_one({"_id": ObjectId(id)})
+    
+    # --- CORRECCIÓN ---
+    # Se usa 'rut_residente' (no 'id') y 'db.ingresos'
+    result = db.ingresos.delete_one({"rut_residente": rut_residente})
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.deleted_count} ingreso(s) eliminado(s)"})

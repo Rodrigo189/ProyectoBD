@@ -1,10 +1,11 @@
 from flask import jsonify, request
 from db_nosql import get_db
-from bson import ObjectId
+# 'ObjectId' ya no es necesario
+# from bson import ObjectId
 
 def add_alergia():
     """
-    Registrar una alergia
+    Registrar o actualizar una alergia
     ---
     tags:
       - Alergias
@@ -24,11 +25,28 @@ def add_alergia():
               example: "Alergia a penicilina"
     responses:
       200:
-        description: Alergia registrada correctamente
+        description: Alergia registrada o actualizada correctamente
     """
     db = get_db()
     data = request.json
-    db.urgenciasMedicas.insert_one(data)
+    
+    # --- CORRECCIÓN ---
+    # Usamos upsert=True para crear o actualizar, basado en el RUT
+    # Usamos la colección 'db.alergias', no 'db.urgenciasMedicas'
+    try:
+        rut = data["rut_residente"]
+    except KeyError:
+        return jsonify({"message": "Error: 'rut_residente' es requerido."}), 400
+    except TypeError:
+        return jsonify({"message": "Error: JSON inválido."}), 400
+
+    db.alergias.update_one(
+        {"rut_residente": rut}, 
+        {"$set": data}, 
+        upsert=True
+    )
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": "Alergia registrada"})
 
 def get_alergias(rut_residente):
@@ -45,13 +63,22 @@ def get_alergias(rut_residente):
         description: RUT del residente
     responses:
       200:
-        description: Lista de alergias
+        description: Descripción de las alergias
     """
     db = get_db()
-    alergias = list(db.urgenciasMedicas.find({"rut_residente": rut_residente}, {"_id": 0}))
-    return jsonify(alergias)
+    
+    # --- CORRECCIÓN ---
+    # Cambiado a 'db.alergias'
+    # Cambiado a find_one() porque tu frontend maneja esto como un solo campo
+    alergias = db.alergias.find_one(
+        {"rut_residente": rut_residente}, 
+        {"_id": 0}
+    )
+    # --- FIN CORRECCIÓN ---
+    
+    return jsonify(alergias if alergias else {"message": "Alergias no encontradas"})
 
-def update_alergia(id):
+def update_alergia(rut_residente):
     """
     Actualizar una alergia
     ---
@@ -59,10 +86,10 @@ def update_alergia(id):
       - Alergias
     parameters:
       - in: path
-        name: id
+        name: rut_residente
         type: string
         required: true
-        description: ID de la alergia
+        description: RUT del residente
       - in: body
         name: body
         required: true
@@ -79,10 +106,18 @@ def update_alergia(id):
     """
     db = get_db()
     data = request.json
-    result = db.urgenciasMedicas.update_one({"_id": ObjectId(id)}, {"$set": data})
+    
+    # --- CORRECCIÓN ---
+    # Se usa 'rut_residente' (no 'id') y 'db.alergias'
+    result = db.alergias.update_one(
+        {"rut_residente": rut_residente}, 
+        {"$set": data}
+    )
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.modified_count} alergia(s) actualizada(s)"})
 
-def delete_alergia(id):
+def delete_alergia(rut_residente):
     """
     Eliminar una alergia
     ---
@@ -90,14 +125,19 @@ def delete_alergia(id):
       - Alergias
     parameters:
       - in: path
-        name: id
+        name: rut_residente
         type: string
         required: true
-        description: ID de la alergia a eliminar
+        description: RUT del residente cuya alergia se eliminará
     responses:
       200:
         description: Alergia eliminada correctamente
     """
     db = get_db()
-    result = db.urgenciasMedicas.delete_one({"_id": ObjectId(id)})
+    
+    # --- CORRECCIÓN ---
+    # Se usa 'rut_residente' (no 'id') y 'db.alergias'
+    result = db.alergias.delete_one({"rut_residente": rut_residente})
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.deleted_count} alergia(s) eliminada(s)"})

@@ -36,7 +36,11 @@ def create_or_update_residente():
     """
     db = get_db()
     data = request.json
-    db.paciente.update_one({"rut": data["rut"]}, {"$set": data}, upsert=True)
+    
+    # --- CORRECCIÓN: 'db.paciente' cambiado a 'db.residentes' ---
+    db.residentes.update_one({"rut": data["rut"]}, {"$set": data}, upsert=True)
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": "Residente creado o actualizado"})
 
 def get_residentes():
@@ -50,7 +54,11 @@ def get_residentes():
         description: Lista completa de residentes
     """
     db = get_db()
-    residentes = list(db.paciente.find({}, {"_id": 0}))
+    
+    # --- CORRECCIÓN: 'db.paciente' cambiado a 'db.residentes' ---
+    residentes = list(db.residentes.find({}, {"_id": 0}))
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify(residentes)
 
 def update_residente(rut):
@@ -84,7 +92,11 @@ def update_residente(rut):
     """
     db = get_db()
     data = request.json
-    result = db.paciente.update_one({"rut": rut}, {"$set": data})
+    
+    # --- CORRECCIÓN: 'db.paciente' cambiado a 'db.residentes' ---
+    result = db.residentes.update_one({"rut": rut}, {"$set": data})
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.modified_count} residente(s) actualizado(s)"})
 
 def delete_residente(rut):
@@ -104,5 +116,9 @@ def delete_residente(rut):
         description: Residente eliminado correctamente
     """
     db = get_db()
-    result = db.paciente.delete_one({"rut": rut})
+    
+    # --- CORRECCIÓN: 'db.paciente' cambiado a 'db.residentes' ---
+    result = db.residentes.delete_one({"rut": rut})
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.deleted_count} residente(s) eliminado(s)"})

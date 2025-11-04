@@ -1,10 +1,11 @@
 from flask import jsonify, request
 from db_nosql import get_db
-from bson import ObjectId
+# 'ObjectId' ya no es necesario
+# from bson import ObjectId
 
 def add_patologia():
     """
-    Registrar una patología médica
+    Registrar o actualizar patologías de un residente
     ---
     tags:
       - Patologías
@@ -12,27 +13,56 @@ def add_patologia():
       - in: body
         name: body
         required: true
-        description: Datos de la patología
+        description: Objeto de antecedentes médicos del residente
         schema:
           type: object
           properties:
             rut_residente:
               type: string
               example: "11111111-1"
-            nombre:
+            diabetes_tipo_I:
+              type: boolean
+            diabetes_tipo_II:
+              type: boolean
+            glaucoma:
+              type: boolean
+            patologia_renal:
+              type: boolean
+            detalle_patologia_renal:
               type: string
-              example: "Diabetes tipo II"
-            detalle:
+            epoc:
+              type: boolean
+            artrosis:
+              type: boolean
+            cancer:
               type: string
-              example: "Controlada con medicación"
+            otras_patologias:
+              type: string
     responses:
       200:
-        description: Patología registrada correctamente
+        description: Patologías registradas o actualizadas
     """
     db = get_db()
     data = request.json
-    db.urgenciasMedicas.insert_one(data)
-    return jsonify({"message": "Patología registrada"})
+    
+    # --- CORRECCIÓN ---
+    # Usamos upsert=True para crear o actualizar, basado en el RUT
+    # Usamos la colección 'db.patologias', no 'db.urgenciasMedicas'
+    try:
+        rut = data["rut_residente"]
+    except KeyError:
+        return jsonify({"message": "Error: 'rut_residente' es requerido."}), 400
+    except TypeError:
+        return jsonify({"message": "Error: JSON inválido."}), 400
+
+    db.patologias.update_one(
+        {"rut_residente": rut}, 
+        {"$set": data}, 
+        upsert=True
+    )
+    # --- FIN CORRECCIÓN ---
+    
+    return jsonify({"message": "Patologías registradas"})
 
 def get_patologias(rut_residente):
     """
@@ -48,59 +78,77 @@ def get_patologias(rut_residente):
         description: RUT del residente
     responses:
       200:
-        description: Lista de patologías médicas
+        description: Objeto de patologías médicas
     """
     db = get_db()
-    patologias = list(db.urgenciasMedicas.find({"rut_residente": rut_residente}, {"_id": 0}))
-    return jsonify(patologias)
+    
+    # --- CORRECCIÓN ---
+    # Cambiado a 'db.patologias'
+    # Cambiado a find_one() porque tu frontend espera un solo objeto
+    patologias = db.patologias.find_one(
+        {"rut_residente": rut_residente}, 
+        {"_id": 0}
+    )
+    # --- FIN CORRECCIÓN ---
+    
+    return jsonify(patologias if patologias else {"message": "Patologías no encontradas"})
 
-def update_patologia(id):
+def update_patologia(rut_residente):
     """
-    Actualizar una patología
+    Actualizar patologías de un residente
     ---
     tags:
       - Patologías
     parameters:
       - in: path
-        name: id
+        name: rut_residente
         type: string
         required: true
-        description: ID de la patología
+        description: RUT del residente
       - in: body
         name: body
         required: true
-        description: Nuevos datos de la patología
+        description: Nuevos datos de patologías
         schema:
           type: object
-          properties:
-            detalle:
-              type: string
-              example: "En tratamiento"
     responses:
       200:
-        description: Patología actualizada correctamente
+        description: Patologías actualizadas correctamente
     """
     db = get_db()
     data = request.json
-    result = db.urgenciasMedicas.update_one({"_id": ObjectId(id)}, {"$set": data})
+    
+    # --- CORRECCIÓN ---
+    # Se usa 'rut_residente' (no 'id') y 'db.patologias'
+    result = db.patologias.update_one(
+        {"rut_residente": rut_residente}, 
+        {"$set": data}
+    )
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.modified_count} patología(s) actualizada(s)"})
 
-def delete_patologia(id):
+def delete_patologia(rut_residente):
     """
-    Eliminar una patología
+    Eliminar patologías de un residente
     ---
     tags:
       - Patologías
     parameters:
       - in: path
-        name: id
+        name: rut_residente
         type: string
         required: true
-        description: ID de la patología a eliminar
+        description: RUT del residente cuyas patologías se eliminarán
     responses:
       200:
-        description: Patología eliminada correctamente
+        description: Patologías eliminadas correctamente
     """
     db = get_db()
-    result = db.urgenciasMedicas.delete_one({"_id": ObjectId(id)})
+    
+    # --- CORRECCIÓN ---
+    # Se usa 'rut_residente' (no 'id') y 'db.patologias'
+    result = db.patologias.delete_one({"rut_residente": rut_residente})
+    # --- FIN CORRECCIÓN ---
+    
     return jsonify({"message": f"{result.deleted_count} patología(s) eliminada(s)"})
