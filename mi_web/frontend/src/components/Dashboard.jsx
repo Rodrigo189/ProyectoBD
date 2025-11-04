@@ -31,7 +31,7 @@ export default function Dashboard() {
             proximoControl: data.proximo_control || "dd/mm/aaaa",
             diagnostico: data.diagnostico || "...........................",
             medicoIndicador: data.medico_indicador || "...........................",
-            medicamento: data.medicamento || "...........................",
+            medicamentos: data.medicamentos || [],
             dosis: data.dosis || "...........................",
             casoSOS: data.caso_sos !== undefined ? (data.caso_sos ? "Sí" : "No") : "..........................."
           });
@@ -81,25 +81,23 @@ export default function Dashboard() {
         <h3>Diagnóstico Residente</h3>
         <div className="diagnostico-detalle">
           <div>
-            <p>Diagnóstico: {residenteData.diagnostico}</p>
-            <p>Médico que indica: {residenteData.medicoTratante}</p>
+            <p><strong>Diagnóstico:</strong> {residenteData.diagnostico}</p>
+            <p><strong>Médico que indica:</strong> {residenteData.medicoTratante}</p>
           </div>
             <div>
-              {residenteData.medicamento ? (
-                <>
-                  <p>Nombre Medicamento: {residenteData.medicamento.nombre}</p>
-                  <p>Dosis: {residenteData.medicamento.dosis}</p>
-                  <p>Caso SOS: {residenteData.medicamento.caso_sos ? "Sí" : "No"}</p>
-                  <p>Médico que indica: {residenteData.medicamento.medico_indicador}</p>
-                  <p>Fecha inicio: {residenteData.medicamento.fecha_inicio}</p>
-                  <p>
-                    Fecha término:{" "}
-                    {residenteData.medicamento.fecha_termino
-                      ? residenteData.medicamento.fecha_termino
-                      : "No definida"}
-                  </p>
-                </>
-              ):(
+              {residenteData.medicamentos && residenteData.medicamentos.length > 0 ? (
+                residenteData.medicamentos.map((med, index) => (
+                  <div key={index}>
+                    <p><strong>Nombre:</strong> {med.nombre}</p>
+                    <p><strong>Dosis:</strong> {med.dosis}</p>
+                    <p><strong>Caso SOS:</strong> {med.caso_sos ? "Sí" : "No"}</p>
+                    <p><strong>Médico que indica:</strong> {med.medico_indicador}</p>
+                    <p><strong>Fecha inicio:</strong> {med.fecha_inicio}</p>
+                    <p><strong>Fecha término:</strong> {med.fecha_termino || "No definida"}</p>
+                    <hr />
+                  </div>
+                ))
+              ) : (
                 <p>No hay medicamentos registrados</p>
               )}
           </div>

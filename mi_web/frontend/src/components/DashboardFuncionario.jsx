@@ -33,7 +33,7 @@ export default function DashboardFuncionario({ usuario }) {
     fetchMedicamentos();
     fetchResidentes();
   }, []);
-
+  
   const handleEliminarFuncionario = async rut => {
     await fetch(`http://localhost:5000/api/funcionarios/${rut}`, { method: "DELETE" });
     fetchFuncionarios();
@@ -106,7 +106,7 @@ export default function DashboardFuncionario({ usuario }) {
               const residente = residentes.find(r => r.rut === m.id);
               const nombreResidente = residente ? residente.nombre : m.nombre_residente;
               return (
-                <tr key={'{m.id}-${m.nombre}'}>
+                <tr key={`${m.id}-${m.nombre}`}>
                   <td>{m.id}</td>
                   <td>{nombreResidente}</td>
                   <td>{m.nombre}</td>

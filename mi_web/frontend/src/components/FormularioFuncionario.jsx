@@ -24,8 +24,10 @@ export default function FormularioFuncionario({ funcionario, setEditing, refresh
       body: JSON.stringify({ rut, nombres, apellidos, cargo, fecha_ingreso: fechaIngreso, asistencia })
     });
 
-    refresh();
-    setEditing(null);
+    setTimeout(() => {
+      refresh();
+      setEditing(null);
+    }, 300);
   };
 
   return (

@@ -14,19 +14,22 @@ const handleSubmit = async (e) => {
     const response = await fetch("http://127.0.0.1:5000/api/residentes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rut, fecha }),
+      body: JSON.stringify({ rut }),
     });
 
-    if (!response.ok) {
-      console.error("Error en la respuesta del servidor");
-      return;
-    }
+    const data = await response.json();
 
-    navigate(`/dashboard?rut=${rut}`);
+    if (response.ok && data.existe) {
+      navigate(`/dashboard?rut=${rut}`);
+    } else {
+      alert("Residente no encontrado o datos incorrectos");
+    }
   } catch (error) {
     console.error("Error enviando datos:", error);
+    alert("Error de conexión con el servidor");
   }
 };
+
 
 return (
   <div> {/* contenedor principal */}
