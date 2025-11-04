@@ -1,0 +1,70 @@
+[
+    {
+        "rut": "11111111-1",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Accidente",
+                "detalle": "Resbalón en turno",
+                "nivel": "Bajo"
+            },
+            {
+                "id": 2,
+                "tipo": "Salud",
+                "detalle": "Estrés laboral",
+                "nivel": "Medio"
+            }
+        ]
+    },
+    {
+        "rut": "22222222-2",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Dosificación",
+                "detalle": "Paracetamol",
+                "nivel": "Medio"
+            },
+            {
+                "id": 2,
+                "tipo": "Contraindicación",
+                "detalle": "Losartán",
+                "nivel": "Alto"
+            }
+        ]
+    },
+    {
+        "rut": "33333333-3",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Bioseguridad",
+                "detalle": "Guantes incompletos",
+                "nivel": "Bajo"
+            },
+            {
+                "id": 2,
+                "tipo": "Accidente",
+                "detalle": "Corte leve",
+                "nivel": "Medio"
+            }
+        ]
+    },
+    {
+        "rut": "44444444-4",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Ergonomía",
+                "detalle": "Sobrecarga lumbar",
+                "nivel": "Medio"
+            },
+            {
+                "id": 2,
+                "tipo": "Proceso",
+                "detalle": "Registro atrasado",
+                "nivel": "Bajo"
+            }
+        ]
+    }
+]

@@ -5,7 +5,7 @@ import Calendario from "./calender";
 import {
     fetchFuncionarioById,
     fetchResumenByUserMonth,
-    fetchHistorialByUser,
+    fetchSisByRut, // NUEVO: para obtener registros de SIS
 } from "../api/funcionarios";
 
 /**
@@ -26,7 +26,6 @@ export default function FuncionarioDashboard({
     const id = forceId || routeId;
 
     // id para navegar al hub de estadísticas:
-    // ruta/forceId -> currentUserId (guardado al login) -> null
     const currentUserId = window.localStorage.getItem("currentUserId") || null;
     const navId = id || currentUserId || null;
 
@@ -53,7 +52,7 @@ export default function FuncionarioDashboard({
             setLoading(true);
             setData(null);
 
-            const targetId = id || currentUserId; // si no hay id de ruta, intenta el usuario actual
+            const targetId = id || currentUserId;
             if (!targetId) {
                 setLoading(false);
                 return;
@@ -63,7 +62,6 @@ export default function FuncionarioDashboard({
             if (!mounted) return;
 
             setData(f);
-            // setear mes inicial: actual si existe en resumen, si no el primero disponible
             const todayMonth = new Date().getMonth() + 1;
             const available = f?.resumen ? Object.keys(f.resumen).map((k) => Number(k)) : [];
             const initialMonth = available.includes(todayMonth) ? todayMonth : (available[0] || todayMonth);
@@ -95,7 +93,7 @@ export default function FuncionarioDashboard({
         };
     }, [data, month]);
 
-    // cargar historial del usuario
+    // cargar historial desde SIS (registros variados por usuario)
     useEffect(() => {
         let mounted = true;
         if (!data || !data.id) {
@@ -104,10 +102,13 @@ export default function FuncionarioDashboard({
         }
         setHistLoading(true);
         (async () => {
-            const rows = await fetchHistorialByUser(data.id);
-            if (!mounted) return;
-            setHistorial(Array.isArray(rows) ? rows : []);
-            setHistLoading(false);
+            try {
+                const sis = await fetchSisByRut(data.id); // CAMBIO: viene de /api/sis/:rut
+                if (!mounted) return;
+                setHistorial(Array.isArray(sis?.registros) ? sis.registros : []);
+            } finally {
+                if (mounted) setHistLoading(false);
+            }
         })();
         return () => {
             mounted = false;
@@ -163,7 +164,8 @@ export default function FuncionarioDashboard({
                                 <div className="perfil-details">
                                     <p><span className="label">Nombre(s):</span> {data.nombre}</p>
                                     <p><span className="label">Apellido(s):</span> {data.apellido}</p>
-                                    <p><span className="label">RUN:</span> {data.run}</p>
+                                    {/* CAMBIO: usar rut si está disponible */}
+                                    <p><span className="label">RUN:</span> {data.rut || data.run}</p>
                                     <p><span className="label">Género:</span> {data.genero}</p>
                                     <p><span className="label">Cargo:</span> {data.cargo}</p>
                                 </div>

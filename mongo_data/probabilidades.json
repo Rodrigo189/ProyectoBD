@@ -1,0 +1,166 @@
+[
+    {
+        "rut": "11111111-1",
+        "items": [
+            {
+                "id": 1,
+                "nombre": "Aspirina",
+                "grupo": "Analgésicos",
+                "pct": 18
+            },
+            {
+                "id": 2,
+                "nombre": "Ibuprofeno",
+                "grupo": "Analgésicos",
+                "pct": 30
+            },
+            {
+                "id": 3,
+                "nombre": "Paracetamol",
+                "grupo": "Analgésicos",
+                "pct": 19
+            },
+            {
+                "id": 4,
+                "nombre": "Amoxicilina",
+                "grupo": "Antibióticos",
+                "pct": 85
+            },
+            {
+                "id": 5,
+                "nombre": "Losartán",
+                "grupo": "Cardíacos",
+                "pct": 44
+            },
+            {
+                "id": 6,
+                "nombre": "Metformina",
+                "grupo": "Antidiabéticos",
+                "pct": 18
+            }
+        ]
+    },
+    {
+        "rut": "22222222-2",
+        "items": [
+            {
+                "id": 1,
+                "nombre": "Aspirina",
+                "grupo": "Analgésicos",
+                "pct": 22
+            },
+            {
+                "id": 2,
+                "nombre": "Ibuprofeno",
+                "grupo": "Analgésicos",
+                "pct": 12
+            },
+            {
+                "id": 3,
+                "nombre": "Paracetamol",
+                "grupo": "Analgésicos",
+                "pct": 35
+            },
+            {
+                "id": 4,
+                "nombre": "Ciprofloxacino",
+                "grupo": "Antibióticos",
+                "pct": 41
+            },
+            {
+                "id": 5,
+                "nombre": "Enalapril",
+                "grupo": "Cardíacos",
+                "pct": 68
+            },
+            {
+                "id": 6,
+                "nombre": "Metformina",
+                "grupo": "Antidiabéticos",
+                "pct": 27
+            }
+        ]
+    },
+    {
+        "rut": "33333333-3",
+        "items": [
+            {
+                "id": 1,
+                "nombre": "Naproxeno",
+                "grupo": "Analgésicos",
+                "pct": 26
+            },
+            {
+                "id": 2,
+                "nombre": "Diclofenaco",
+                "grupo": "Analgésicos",
+                "pct": 33
+            },
+            {
+                "id": 3,
+                "nombre": "Paracetamol",
+                "grupo": "Analgésicos",
+                "pct": 21
+            },
+            {
+                "id": 4,
+                "nombre": "Azitromicina",
+                "grupo": "Antibióticos",
+                "pct": 38
+            },
+            {
+                "id": 5,
+                "nombre": "Amlodipino",
+                "grupo": "Cardíacos",
+                "pct": 52
+            },
+            {
+                "id": 6,
+                "nombre": "Metformina",
+                "grupo": "Antidiabéticos",
+                "pct": 24
+            }
+        ]
+    },
+    {
+        "rut": "44444444-4",
+        "items": [
+            {
+                "id": 1,
+                "nombre": "Aspirina",
+                "grupo": "Analgésicos",
+                "pct": 14
+            },
+            {
+                "id": 2,
+                "nombre": "Ketorolaco",
+                "grupo": "Analgésicos",
+                "pct": 28
+            },
+            {
+                "id": 3,
+                "nombre": "Paracetamol",
+                "grupo": "Analgésicos",
+                "pct": 17
+            },
+            {
+                "id": 4,
+                "nombre": "Amoxicilina",
+                "grupo": "Antibióticos",
+                "pct": 46
+            },
+            {
+                "id": 5,
+                "nombre": "Losartán",
+                "grupo": "Cardíacos",
+                "pct": 36
+            },
+            {
+                "id": 6,
+                "nombre": "Glibenclamida",
+                "grupo": "Antidiabéticos",
+                "pct": 20
+            }
+        ]
+    }
+]

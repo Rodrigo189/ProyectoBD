@@ -2,28 +2,28 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import ListaFuncionarioRyE from "../components/listemplate";
 import perfil from "../img/perfil.png";
+import { listFuncionarios } from "../api/funcionarios";
 
-// De momento usa el mismo mock; luego lo cambiamos a tu lógica nueva
-const mockFetchFuncionarios = () =>
-    Promise.resolve([
-        { id: "1", nombre: "Juanito Pérez", cargo: "Jefe de Departamento", email: "juan.perez@eleam.cl", avatar: perfil },
-        { id: "2", nombre: "María Gómez", cargo: "Auxiliar", email: "maria.gomez@eleam.cl", avatar: perfil },
-        { id: "3", nombre: "Carlos Ruiz", cargo: "Enfermero", email: "carlos.ruiz@eleam.cl", avatar: perfil },
-        { id: "4", nombre: "Ana Torres", cargo: "Médico", email: "ana.torres@eleam.cl", avatar: perfil },
-    ]);
+const fetchFuncionarios = async () => {
+    const list = await listFuncionarios();
+    return list.map(f => ({
+        id: f.rut,
+        nombre: `${f.nombre || ""} ${f.apellido || ""}`.trim(),
+        cargo: f.cargo || "",
+        email: f.email || "",
+        avatar: f.avatar || perfil
+    }));
+};
 
 export default function ListaFuncionarioLyE() {
     const navigate = useNavigate();
+    const role = localStorage.getItem("currentUserRole");
+    if (role !== "admin") return <div style={{ padding: 16 }}>No autorizado: requiere rol administrador.</div>;
 
     return (
         <ListaFuncionarioRyE
-            // title="Funcionarios" // mismo título que la original
-            fetchFuncionarios={mockFetchFuncionarios}
-            onSelect={(f) => {
-                // TODO: aquí va la navegación/lógica específica de Reportes y Estadísticas
-                // Ejemplo provisional (cámbialo cuando me pases la lógica):
-                navigate(`/AdministradorDashboard/${f.id}`);
-            }}
+            fetchFuncionarios={fetchFuncionarios}
+            onSelect={(f) => navigate(`/AdministradorDashboard/${encodeURIComponent(f.id)}`)}
         />
     );
 }

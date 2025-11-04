@@ -4,8 +4,6 @@ import Header from "./header";
 import "../style/prob.css";
 import { fetchProbabilidadesMedicamentosByUser } from "../api/funcionarios";
 
-const CATS = ["Todos", "Analgésicos", "Antibióticos", "Cardíacos", "Antidiabéticos"];
-
 export default function ProbTemplate() {
     const navigate = useNavigate();
     const { id: routeId } = useParams();
@@ -14,22 +12,37 @@ export default function ProbTemplate() {
     const [items, setItems] = useState([]);
     const [cat, setCat] = useState("Todos");
     const [loading, setLoading] = useState(true);
-    const [gridKey, setGridKey] = useState(0); // para animar desvanecimiento al cambiar categoría
+    const [gridKey, setGridKey] = useState(0); // animación al cambiar categoría
+
+    // Normaliza la respuesta del backend a [{id, nombre, grupo, pct}]
+    const normalize = (rows) => {
+        const raw = Array.isArray(rows)
+            ? rows
+            : Array.isArray(rows?.medicamentos)
+                ? rows.medicamentos
+                : [];
+        return raw.map((m, i) => ({
+            id: m.id ?? `${m.nombre || "med"}-${i}`,
+            nombre: m.nombre || m.name || "—",
+            grupo: m.grupo || m.category || "Otros",
+            pct: Number(m.pct ?? m.porcentaje ?? m.percent ?? 0),
+        }));
+    };
 
     useEffect(() => {
         let mounted = true;
         if (!userId) { setItems([]); setLoading(false); return; }
         setLoading(true);
         fetchProbabilidadesMedicamentosByUser(userId)
-            .then((rows) => mounted && setItems(Array.isArray(rows) ? rows : []))
+            .then((rows) => mounted && setItems(normalize(rows)))
             .finally(() => mounted && setLoading(false));
         return () => { mounted = false; };
     }, [userId]);
 
-    // al cambiar de categoría, fuerza re-mount del grid para animar fade-in
-    useEffect(() => {
-        setGridKey((k) => k + 1);
-    }, [cat]);
+    useEffect(() => { setGridKey((k) => k + 1); }, [cat]);
+
+    // Categorías dinámicas
+    const categories = useMemo(() => ["Todos", ...Array.from(new Set(items.map(x => x.grupo)))], [items]);
 
     const data = useMemo(() => {
         if (cat === "Todos") return items;
@@ -45,7 +58,7 @@ export default function ProbTemplate() {
                 <h1 className="prob-title">Análisis de Interacciones</h1>
 
                 <nav className="prob-filter">
-                    {CATS.map((c) => (
+                    {categories.map((c) => (
                         <button
                             key={c}
                             className={`prob-pill ${c === cat ? "active" : ""}`}
@@ -61,7 +74,7 @@ export default function ProbTemplate() {
                         <section key={gridKey} className="prob-grid fade-in">
                             {data.map((m) => (
                                 <article key={m.id} className="prob-item">
-                                    <div className="avatar">{m.nombre.charAt(0).toUpperCase()}</div>
+                                    <div className="avatar">{(m.nombre || "?").charAt(0).toUpperCase()}</div>
                                     <div className="meta">
                                         <div className="name">{m.nombre}</div>
                                         <div className="group">{m.grupo}</div>
@@ -74,6 +87,9 @@ export default function ProbTemplate() {
                                     </div>
                                 </article>
                             ))}
+                            {data.length === 0 && (
+                                <div className="prob-empty">Sin medicamentos en esta categoría.</div>
+                            )}
                         </section>
                     )}
             </main>

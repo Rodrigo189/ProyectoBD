@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../style/log-fya.css";
 import Header from "../components/header";
 import LoginCard from "../components/log-card";
@@ -7,18 +7,40 @@ import { useNavigate } from "react-router-dom";
 export default function LoginAdministrador() {
     const goBack = () => { if (window.history.length > 1) window.history.back(); };
     const navigate = useNavigate();
+    const [error, setError] = useState("");
+
     const handleLogin = async ({ run, password }) => {
-        console.log("login administrador", { run, password });
-        navigate("/PerfilAdministrador");
+        setError("");
+        try {
+            const r = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ rut: run, password, roleArea: "admin" })
+            });
+            const res = await r.json().catch(() => ({}));
+            if (r.status === 403 && res?.error === "wrong_role") {
+                setError("No autorizado: tu cuenta no es Administrador.");
+                return;
+            }
+            if (!r.ok) throw res;
+            if (res?.user?.role !== "admin") {
+                setError("No autorizado: requiere cuenta de administrador.");
+                return;
+            }
+            localStorage.setItem("token", res.token);
+            localStorage.setItem("currentUserId", res.user.rut || res.user.id);
+            localStorage.setItem("currentUserRole", res.user.role);
+            navigate("/PerfilAdministrador");
+        } catch (e) {
+            setError("Credenciales inválidas");
+        }
     };
 
     return (
         <div className="login-funcionario-bg">
             <Header onBack={goBack} />
-
             <main className="funcionario-main">
                 <h1 className="funcionario-welcome-text">¡Te damos la bienvenida!</h1>
-
                 <section className="funcionario-form-wrap">
                     <LoginCard
                         title="Ingresa Portal Administrador ELEAM"
@@ -27,6 +49,7 @@ export default function LoginAdministrador() {
                         onSubmit={handleLogin}
                     />
                 </section>
+                {error && <div style={{ color: "#b00020", marginTop: 12 }}>{error}</div>}
             </main>
         </div>
     );

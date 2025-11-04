@@ -1,268 +1,183 @@
 import perfil from "../img/perfil.png";
 
-const STORAGE_KEY = "funcionarios_mock_v2";
+// --- Helpers de API (usa proxy http://localhost:5000 desde package.json) ---
+const token = () => localStorage.getItem("token");
+const authHeaders = () => (token() ? { Authorization: `Bearer ${token()}` } : {});
 
-// utilidades de random determinístico por usuario
-function hash(str) {
-    let h = 2166136261;
-    for (let i = 0; i < str.length; i++) {
-        h ^= str.charCodeAt(i);
-        h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
-    }
-    return h >>> 0;
+async function apiFetch(path, opts = {}) {
+    const res = await fetch(path, {
+        headers: { "Content-Type": "application/json", ...authHeaders(), ...(opts.headers || {}) },
+        ...opts,
+    });
+    if (!res.ok) throw await res.json().catch(() => ({ error: res.status }));
+    return res.json();
 }
-function rng(seedStr) {
-    let s = hash(String(seedStr)) || 1;
-    return () => {
-        s ^= s << 13; s ^= s >>> 17; s ^= s << 5;
-        return ((s >>> 0) % 10000) / 10000;
+
+// Agregado: login real (JWT)
+export const loginApi = ({ username, rut, password }) =>
+    apiFetch("/api/auth/login", { method: "POST", body: JSON.stringify({ username, rut, password }) });
+
+// Normaliza el funcionario del backend a la forma usada en el front
+function normalizeFuncionario(d) {
+    return {
+        id: d.rut,
+        rut: d.rut,
+        run: d.rut,
+        nombre: d.nombre,
+        apellido: d.apellido,
+        cargo: d.cargo || "",
+        email: d.email || "",
+        telefono: d.telefono || "",
+        direccion: d.direccion || "",
+        nacimiento: d.nacimiento || "",
+        avatar: d.avatar || perfil,
+        tipoContrato: d.tipoContrato || "Indefinido",
+        inicio: d.inicio || d.inicioContrato || "",
+        termino: d.termino || d.terminoContrato || "",
+        sueldoBruto: d.sueldoBruto || 0,
+        sueldoLiquido: d.sueldoLiquido || 0,
+        bonos: d.bonos || 0,
+        fechaPago: d.fechaPago || "",
     };
 }
-function pick(rand, min, max) {
-    return Math.floor(rand() * (max - min + 1)) + min;
-}
-function pad(n) { return String(n).padStart(2, "0"); }
-function diaISO(y, m, d) { return `${y}-${pad(m)}-${pad(d)}`; }
-function diaSemana(fecha) {
-    const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    return dias[new Date(fecha).getDay()];
-}
 
-function bootstrapDB() {
-    const fromLS = localStorage.getItem(STORAGE_KEY);
-    if (fromLS) return JSON.parse(fromLS);
+// --- API Real ---
 
-    const base = [
-        { id: "1", nombre: "Juanito", apellido: "Pérez", run: "11.111.111-1", genero: "Masculino", cargo: "Jefe de Departamento", email: "juan.perez@eleam.cl", telefono: "(+56) 9 1111 1111", direccion: "Av. Siempre Viva 123", nacimiento: "1985-04-22", avatar: perfil },
-        { id: "2", nombre: "María", apellido: "Gómez", run: "22.222.222-2", genero: "Femenino", cargo: "Auxiliar", email: "maria.gomez@eleam.cl", telefono: "(+56) 9 2222 2222", direccion: "Calle Palma 45", nacimiento: "1990-08-12", avatar: perfil },
-        { id: "3", nombre: "Carlos", apellido: "Ruiz", run: "33.333.333-3", genero: "Masculino", cargo: "Enfermero", email: "carlos.ruiz@eleam.cl", telefono: "(+56) 9 3333 3333", direccion: "Pedro de Valdivia 999", nacimiento: "1988-01-09", avatar: perfil },
-        { id: "4", nombre: "Ana", apellido: "Torres", run: "44.444.444-4", genero: "Femenino", cargo: "Médico", email: "ana.torres@eleam.cl", telefono: "(+56) 9 4444 4444", direccion: "Los Laureles 12", nacimiento: "1983-11-30", avatar: perfil },
-    ];
-
-    const year = new Date().getFullYear();
-    const db = base.map((u) => {
-        const r = rng(u.id);
-
-        // resumen mensual 1..12
-        const resumen = {};
-        for (let m = 1; m <= 12; m++) {
-            const diasTrabajados = pick(r, 10, 22);
-            const horas = diasTrabajados * pick(r, 7, 9);
-            resumen[m] = {
-                diasTrabajados,
-                horas,
-                turnosExtra: pick(r, 0, 4),
-                turnosLargos: pick(r, 0, 3),
-                turnosNoche: pick(r, 0, 8),
-                diasLibre: pick(r, 4, 12),
-            };
-        }
-
-        // historial: últimos 40 días (sin domingos)
-        const historial = [];
-        const hoy = new Date();
-        for (let i = 0; i < 40; i++) {
-            const d = new Date(hoy);
-            d.setDate(hoy.getDate() - i);
-            if (d.getDay() === 0) continue; // domingo
-            const fecha = d.toISOString().slice(0, 10);
-            const horas = [6, 8, 10][pick(r, 0, 2)];
-            const turno = horas >= 10 ? "Turno Largo" : (pick(r, 0, 1) ? "Mañana" : "Tarde");
-            const hIni = horas >= 10 ? "08:00" : (turno === "Mañana" ? "08:00" : "14:00");
-            const hFin = horas >= 10 ? "18:00" : (turno === "Mañana" ? "14:00" : "22:00");
-            historial.push({
-                fecha,
-                dia: diaSemana(fecha),
-                turno,
-                horario: `${hIni} - ${hFin}`,
-                horas,
-                observaciones: pick(r, 0, 10) > 8 ? "Apoyo extra en sala" : "",
-            });
-        }
-
-        // riesgos y medicamentos
-        const riesgos = [
-            { id: `${u.id}-r1`, tipo: "Accidente", nivel: ["Bajo", "Medio", "Alto"][pick(r, 0, 2)], fecha: diaISO(year, pick(r, 1, 12), pick(r, 1, 28)), detalle: "Resbalón en turno" },
-            { id: `${u.id}-r2`, tipo: "Salud", nivel: ["Bajo", "Medio", "Alto"][pick(r, 0, 2)], fecha: diaISO(year, pick(r, 1, 12), pick(r, 1, 28)), detalle: "Estrés laboral" },
-        ];
-        const meds = [
-            { id: `${u.id}-m1`, nombre: "Paracetamol", dosis: "500mg", frecuencia: "Cada 8h", desde: diaISO(year, pick(r, 1, 12), pick(r, 1, 28)) },
-            { id: `${u.id}-m2`, nombre: "Ibuprofeno", dosis: "400mg", frecuencia: "Cada 12h", desde: diaISO(year, pick(r, 1, 12), pick(r, 1, 28)) },
-        ];
-
-        return {
-            ...u,
-            tipoContrato: "Indefinido",
-            inicio: "01/01/2024",
-            termino: "31/12/2024",
-            sueldoBruto: 1000000,
-            sueldoLiquido: 800000,
-            bonos: 50000,
-            fechaPago: "30/09/2024",
-            resumen,
-            historial,
-            riesgos,
-            meds,
-        };
-    });
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-    return db;
-}
-
-function loadDB() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : bootstrapDB();
-    } catch {
-        return bootstrapDB();
-    }
-}
-
-function delay(ms = 120) {
-    return new Promise((r) => setTimeout(r, ms));
-}
-
-// API
-
+// Lista de funcionarios
 export async function listFuncionarios() {
-    await delay();
-    return loadDB().map((u) => ({ ...u }));
+    const data = await apiFetch("/api/funcionarios");
+    return (data || []).map(normalizeFuncionario);
 }
 
-export async function fetchFuncionarioById(id) {
-    await delay();
-    const u = loadDB().find((x) => x.id === String(id));
-    return u ? { ...u } : null;
+// Detalle por RUT
+export async function fetchFuncionarioById(idOrRut) {
+    const d = await apiFetch(`/api/funcionarios/${encodeURIComponent(idOrRut)}`);
+    return normalizeFuncionario(d);
 }
 
-/**
- * Devuelve el resumen para un usuario y mes (1..12).
- */
-export async function fetchResumenByUserMonth(id, month) {
-    await delay();
-    const u = loadDB().find((x) => x.id === String(id));
-    if (!u) return { diasTrabajados: 0, horas: 0, turnosExtra: 0, turnosLargos: 0, turnosNoche: 0, diasLibre: 0 };
-    return u.resumen?.[Number(month)] || { diasTrabajados: 0, horas: 0, turnosExtra: 0, turnosLargos: 0, turnosNoche: 0, diasLibre: 0 };
+// NUEVO: obtener registros SIS por RUT (para dashboard)
+export async function fetchSisByRut(rut) {
+    return apiFetch(`/api/sis/${encodeURIComponent(rut)}`);
 }
 
-export async function fetchHistorialByUser(id) {
-    await delay();
-    const u = loadDB().find((x) => x.id === String(id));
-    return u ? u.historial.map((h) => ({ ...h })) : [];
+// Resumen mensual: mapea desde /api/sis/<rut>
+export async function fetchResumenByUserMonth(idOrRut, month) {
+    const sis = await apiFetch(`/api/sis/${encodeURIComponent(idOrRut)}`);
+    const horas = Number(sis.horas || 0);
+    return {
+        diasTrabajados: Math.max(0, Math.round(horas / 8)),
+        horas,
+        turnosExtra: Number(sis.extra || 0),
+        turnosLargos: 0,
+        turnosNoche: 0,
+        diasLibre: 0,
+    };
 }
 
-export async function updateRemuneracion(id, payload) {
-    await delay();
-    const db = loadDB();
-    const idx = db.findIndex((m) => String(m.id) === String(id));
-    if (idx === -1) return { ok: false };
-    db[idx] = { ...db[idx], ...payload };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-    return { ok: true, data: { ...db[idx] } };
+// Historial de turnos: no disponible en backend -> devolver vacío
+export async function fetchHistorialByUser(idOrRut) {
+    return [];
 }
 
-// Datos complementarios por usuario
-
-export async function fetchMedicamentosByUser(userId) {
-    await delay();
-    const u = loadDB().find((x) => x.id === String(userId));
-    return u ? u.meds.map((m) => ({ ...m })) : [];
-}
-
-export async function fetchRiesgosByUser(userId) {
-    await delay();
-    const u = loadDB().find((x) => x.id === String(userId));
-    return u ? u.riesgos.map((r) => ({ ...r })) : [];
-}
-
-// Probabilidades por medicamento (determinístico por usuario)
-export async function fetchProbabilidadesMedicamentosByUser(userId) {
-    await delay();
-    const rand = rng(`prob-${userId}`);
-    const meds = [
-        { id: "asp", nombre: "Aspirina", grupo: "Analgésicos" },
-        { id: "ibu", nombre: "Ibuprofeno", grupo: "Analgésicos" },
-        { id: "par", nombre: "Paracetamol", grupo: "Analgésicos" },
-        { id: "amo", nombre: "Amoxicilina", grupo: "Antibióticos" },
-        { id: "los", nombre: "Losartán", grupo: "Cardíacos" },
-        { id: "met", nombre: "Metformina", grupo: "Antidiabéticos" },
-    ];
-    // porcentaje 15%..95% por usuario
-    return meds.map((m) => {
-        const pct = Math.round((0.15 + rand() * 0.8) * 100);
-        return { ...m, pct };
+// Actualizar remuneración (PUT /api/funcionarios/:rut)
+export async function updateRemuneracion(idOrRut, payload) {
+    const res = await fetch(`/api/funcionarios/${encodeURIComponent(idOrRut)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify(payload),
     });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, data };
 }
 
+// Medicamentos por usuario: placeholder
+export async function fetchMedicamentosByUser(idOrRut) {
+    return [];
+}
+
+// Riesgos reales por usuario
+export async function fetchRiesgosByUser(idOrRut) {
+    const items = await apiFetch(`/api/riesgos/${encodeURIComponent(idOrRut)}`);
+    return Array.isArray(items) ? items : [];
+}
+
+// Probabilidades por medicamentos
+export async function fetchProbabilidadesMedicamentosByUser(idOrRut) {
+    const items = await apiFetch(`/api/probabilidades/${encodeURIComponent(idOrRut)}`);
+    return Array.isArray(items) ? items : [];
+}
+
+// Estadísticas por usuario
 export async function fetchEstadisticasByUser(
-    userId,
+    idOrRut,
     { periodo = "mensual", year = new Date().getFullYear(), month = new Date().getMonth() + 1 } = {}
 ) {
-    await delay();
-    const u = loadDB().find((x) => x.id === String(userId));
-    if (!u) return null;
+    const sis = await apiFetch(`/api/sis/${encodeURIComponent(idOrRut)}`);
+    const horas = Number(sis.horas || 0);
+    const turnosExtra = Number(sis.extra || 0);
+    const incidentes = Number(sis.incidentes || 0);
+    const diasTrabajados = Math.max(0, Math.round(horas / 8));
 
     if (periodo === "mensual") {
-        const r = u.resumen?.[Number(month)] || {};
         return {
-            userId, periodo, year, month,
-            diasTrabajados: r.diasTrabajados || 0,
-            horas: r.horas || 0,
-            turnosExtra: r.turnosExtra || 0,
-            turnosNoche: r.turnosNoche || 0,
-            turnosLargos: r.turnosLargos || 0,
-            diasLibre: r.diasLibre || 0,
-            incidentes: Math.max(0, Math.round((r.turnosExtra || 0) / 2 - 0.2)),
+            userId: idOrRut,
+            periodo,
+            year,
+            month,
+            diasTrabajados,
+            horas,
+            turnosExtra,
+            turnosNoche: 0,
+            turnosLargos: 0,
+            diasLibre: 0,
+            incidentes,
         };
     }
-
-    // anual (suma de meses)
-    const agg = Object.values(u.resumen || {}).reduce(
-        (a, r) => ({
-            diasTrabajados: a.diasTrabajados + (r.diasTrabajados || 0),
-            horas: a.horas + (r.horas || 0),
-            turnosExtra: a.turnosExtra + (r.turnosExtra || 0),
-            turnosNoche: a.turnosNoche + (r.turnosNoche || 0),
-            turnosLargos: a.turnosLargos + (r.turnosLargos || 0),
-            diasLibre: a.diasLibre + (r.diasLibre || 0),
-        }),
-        { diasTrabajados: 0, horas: 0, turnosExtra: 0, turnosNoche: 0, turnosLargos: 0, diasLibre: 0 }
-    );
-    return { userId, periodo, year, ...agg, incidentes: Math.round(agg.turnosExtra / 3) };
+    return {
+        userId: idOrRut,
+        periodo: "anual",
+        year,
+        diasTrabajados: diasTrabajados * 12,
+        horas: horas * 12,
+        turnosExtra: turnosExtra * 12,
+        turnosNoche: 0,
+        turnosLargos: 0,
+        diasLibre: 0,
+        incidentes: incidentes * 12,
+    };
 }
 
+// Estadísticas del sistema (placeholder usando /api/sis/<rut> si se pasa userId)
 export async function fetchEstadisticasSistema(
     { periodo = "mensual", year = new Date().getFullYear(), month = new Date().getMonth() + 1, sedeId = null, userId = null } = {}
 ) {
-    await delay();
-    const db = loadDB();
-
-    const totals = db.reduce(
-        (a, u) => {
-            const r = u.resumen?.[Number(month)] || {};
-            a.funcionariosActivos += 1;
-            a.horasTotales += r.horas || 0;
-            a.turnosExtraTotales += r.turnosExtra || 0;
-            a.incidentesTotales += Math.max(0, Math.round((r.turnosExtra || 0) / 2 - 0.2));
-            return a;
-        },
-        { funcionariosActivos: 0, horasTotales: 0, turnosExtraTotales: 0, incidentesTotales: 0 }
-    );
-
-    // “personaliza” levemente si viene userId (solo para diferenciar vista por usuario)
-    if (userId) {
-        const r = rng(`sis-${userId}`);
-        totals.horasTotales = Math.round(totals.horasTotales * (0.95 + r() * 0.1));
-        totals.turnosExtraTotales = Math.round(totals.turnosExtraTotales * (0.9 + r() * 0.2));
-        totals.incidentesTotales = Math.max(0, Math.round(totals.incidentesTotales * (0.8 + r() * 0.4)));
+    if (!userId) {
+        return {
+            periodo, year, month, sedeId, userId: null,
+            totals: { funcionariosActivos: 0, horasTotales: 0, turnosExtraTotales: 0, incidentesTotales: 0 },
+            distribucionTurnos: { dia: 0, noche: 0, largo: 0 },
+            riesgosPorNivel: { bajo: 0, medio: 0, alto: 0 },
+            ausentismo: { tasa: 0, justificadas: 0, injustificadas: 0 },
+        };
     }
+    const sis = await apiFetch(`/api/sis/${encodeURIComponent(userId)}`);
+    const horas = Number(sis.horas || 0);
+    const extra = Number(sis.extra || 0);
+    const inc = Number(sis.incidentes || 0);
 
     return {
         periodo, year, month, sedeId, userId,
-        totals,
+        totals: {
+            funcionariosActivos: 1,
+            horasTotales: horas,
+            turnosExtraTotales: extra,
+            incidentesTotales: inc,
+        },
         distribucionTurnos: { dia: 62, noche: 24, largo: 14 },
         riesgosPorNivel: { bajo: 9, medio: 4, alto: 2 },
         ausentismo: { tasa: 3.8, justificadas: 9, injustificadas: 4 },
     };
 }
+
+// Alias compatible
+export const fetchFuncionarios = listFuncionarios;

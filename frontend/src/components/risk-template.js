@@ -11,6 +11,16 @@ const levelClass = (nivel) => {
     return "green";
 };
 
+// Nuevo: calcular edad desde fecha de nacimiento
+const getAge = (dob) => {
+    if (!dob) return "—";
+    const d = new Date(dob);
+    if (Number.isNaN(d.getTime())) return "—";
+    const diff = Date.now() - d.getTime();
+    const ageDate = new Date(diff);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+};
+
 export default function RiskTemplate() {
     const navigate = useNavigate();
     const { id: routeId } = useParams();
@@ -40,6 +50,10 @@ export default function RiskTemplate() {
         return () => { mounted = false; };
     }, [userId]);
 
+    // Tomar nacimiento desde el usuario para mostrar edad
+    const nacimiento = user?.nacimiento || user?.fechaNacimiento || null;
+    const edad = getAge(nacimiento);
+
     return (
         <div className="riesgo-bg">
             <Header onBack={() => navigate(-1)} />
@@ -50,10 +64,10 @@ export default function RiskTemplate() {
                     <p className="loading">Cargando...</p>
                 ) : (
                     <section className="riesgo-content">
-                        {/* Columna izquierda: lista de riesgos (sin franjas azules) */}
+                        {/* Columna izquierda: lista de riesgos */}
                         <div className="riesgo-list">
-                            {items.map((r) => (
-                                <div key={r.id} className="riesgo-item">
+                            {items.map((r, idx) => (
+                                <div key={r.id || `${r.tipo}-${r.detalle || ""}-${idx}`} className="riesgo-item">
                                     <div className="r-title">
                                         {r.detalle ? `${r.tipo} + ${r.detalle}` : r.tipo}
                                     </div>
@@ -65,11 +79,11 @@ export default function RiskTemplate() {
                             )}
                         </div>
 
-                        {/* Columna derecha: paciente + recomendaciones alineadas y del mismo ancho */}
+                        {/* Columna derecha: paciente + recomendaciones */}
                         <div className="right-col">
                             <div className="patient-card">
                                 <div><strong>Paciente:</strong> {user ? `${user.nombre} ${user.apellido}` : "—"}</div>
-                                <div><strong>Edad:</strong> ## años <span className="sep">|</span> <strong>Peso:</strong> 70KG</div>
+                                <div><strong>Edad:</strong> {edad} años <span className="sep">|</span> <strong>Peso:</strong> 70KG</div>
                                 <div><strong>Alergias:</strong> Penicilina</div>
                             </div>
 
