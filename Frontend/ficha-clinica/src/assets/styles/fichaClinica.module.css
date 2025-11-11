@@ -1,0 +1,413 @@
+/* src/assets/styles/fichaClinica.module.css */
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   (Usado por todas las páginas)
+   ========================================================= */
+
+.pageContainer {
+  width: 90%;
+  max-width: 950px; /* Ancho unificado para todo */
+  margin: 30px auto; /* Espaciado unificado */
+  padding: 30px 40px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.pageContainer h2 {
+  text-align: center;
+  color: var(--color-principal);
+  margin-top: 0;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--color-fondo);
+  padding-bottom: 15px;
+}
+
+/* =========================================================
+   BUSCADOR (para BuscarFicha.jsx)
+   ========================================================= */
+
+.searchBox {
+  width: 90%;
+  max-width: 480px; /* Más pequeño que el contenedor normal */
+  margin: 80px auto; /* Centrado en la página */
+  padding: 30px 40px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.searchBox h2 {
+  font-size: 22px;
+  color: var(--color-principal);
+  margin-bottom: 25px;
+  border-bottom: none;
+}
+
+.searchForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.searchForm label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+.searchForm input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* =========================================================
+   ESTILOS DE FORMULARIO (para Crear/Editar)
+   ========================================================= */
+
+.formSection {
+  background: #fafafa;
+  padding: 20px 25px;
+  margin-bottom: 30px;
+  border-left: 4px solid var(--color-principal);
+  border-radius: 0 8px 8px 0;
+}
+
+.formSection h3 {
+  color: var(--color-principal);
+  border-bottom: 1px solid #eee;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  font-size: 18px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px 24px;
+}
+
+/* Clases para inputs y labels */
+.label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 15px;
+  transition: 0.2s;
+  box-sizing: border-box; /* Previene desbordamiento */
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--color-principal);
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 130, 0.3);
+}
+
+.input[readonly] {
+  background-color: #f4f4f4;
+  cursor: not-allowed;
+}
+
+.textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Checkboxes */
+.checkboxGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px 16px;
+  margin-top: 12px;
+}
+
+.checkboxItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+}
+.checkboxItem:hover {
+  background-color: #f1f1f1;
+}
+.checkboxItem input {
+  width: auto; /* Corregir tamaño de checkbox */
+  transform: scale(1.2);
+  accent-color: var(--color-principal);
+}
+.checkboxItem label {
+  margin-bottom: 0; /* Corregir label de checkbox */
+  font-weight: 500;
+}
+
+/* Subsecciones (Escolaridad, Atenciones) */
+.subsection {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border: 1px solid #e0e0e0;
+  background: #fdfdfd;
+  border-radius: 8px;
+}
+.subsection h4 {
+  color: var(--color-principal);
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 8px;
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+/* =========================================================
+   VISTA DE FICHA (para FichaClinica.jsx)
+   ========================================================= */
+
+.sectionBlock {
+  padding: 15px 20px;
+  margin-bottom: 25px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fafafa;
+  page-break-inside: avoid; /* Para la impresión */
+}
+
+.sectionBlock h3 {
+  color: var(--color-principal);
+  border-bottom: 1px solid #eee;
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  font-size: 18px;
+}
+
+.sectionBlock h4 {
+  color: var(--color-principal);
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.sectionBlock ul {
+  list-style: none;
+  padding-left: 10px;
+}
+
+.sectionBlock li {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+.sectionBlock li b {
+  color: #333;
+  min-width: 150px;
+  display: inline-block;
+}
+
+/* Filtros de Historial */
+.historialFiltros {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+  padding: 15px;
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+.historialFiltros label {
+  font-weight: 600;
+  font-size: 14px;
+}
+.historialFiltros input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.historialLista ul {
+  padding-left: 0;
+}
+.historialLista li {
+  background: #f7f9fa;
+  border-left: 3px solid var(--color-principal);
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 0 6px 6px 0;
+}
+.historialLista .detalle {
+  color: #555;
+  font-size: 14px;
+  display: block;
+  margin-top: 4px;
+}
+.sinAtenciones {
+  color: #777;
+  font-style: italic;
+  padding: 10px;
+}
+
+/* =========================================================
+   BOTONES (Unificados)
+   ========================================================= */
+
+.actionsContainer {
+  width: 90%;
+  max-width: 950px;
+  margin: 0 auto 40px auto; /* Debajo del contenedor principal */
+  display: flex;
+  gap: 15px;
+  justify-content: center; /* Centramos los botones */
+  flex-wrap: wrap;
+}
+
+.btn,
+.btnPrimary,
+.btnSecondary,
+.btnDanger,
+.btnPdf {
+  border: none;
+  border-radius: 6px;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 15px;
+  text-decoration: none; /* Para links */
+  display: inline-block;
+  text-align: center;
+}
+
+.btnPrimary {
+  background-color: var(--color-principal);
+  color: white;
+}
+.btnPrimary:hover {
+  background-color: var(--color-secundario);
+}
+
+.btnSecondary {
+  background-color: #6c757d;
+  color: white;
+}
+.btnSecondary:hover {
+  opacity: 0.85;
+}
+
+.btnDanger {
+  background-color: #dc3545;
+  color: white;
+}
+.btnDanger:hover {
+  background-color: #c82333;
+}
+
+.btnPdf {
+  background-color: #28a745;
+  color: white;
+}
+.btnPdf:hover {
+  background-color: #218838;
+}
+
+/* Botones de filtro (más pequeños) */
+.btnFiltro {
+  background-color: var(--color-principal);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+.btnFiltroSec {
+  background-color: #777;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 14px;
+  cursor: pointer;
+}
+
+/* =========================================================
+   UTILIDADES Y ESTILOS DE IMPRESIÓN
+   ========================================================= */
+
+.loadingMsg,
+.errorMsg {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 40px;
+}
+.errorMsg {
+  color: #dc3545;
+}
+
+/* Ocultar en la vista normal */
+.printTitle {
+  display: none;
+}
+
+@media print {
+  body {
+    background-color: #fff !important;
+  }
+  
+  /* Ocultar Navbar y botones */
+  :global(nav),
+  .actionsContainer,
+  .historialFiltros {
+    display: none !important;
+  }
+
+  .pageContainer {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  .sectionBlock {
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+  }
+
+  .sectionBlock h3, .sectionBlock h4 {
+    color: #000 !important;
+  }
+
+  /* Mostrar el título solo para imprimir */
+  .printTitle {
+    display: block !important;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #000;
+  }
+  .printTitle h1, .printTitle h2, .printTitle h3 {
+    color: #000 !important;
+  }
+}
