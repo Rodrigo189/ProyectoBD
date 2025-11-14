@@ -18,7 +18,9 @@
 *.log
 dist/
 build/
-**/__pycache__
+__pycache__/
+*.pyc
+*.pyo
 
 # Ignora archivos de configuración sensibles
 
@@ -41,6 +43,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+pip/
 
 # Optional npm cache directory
 .npm
