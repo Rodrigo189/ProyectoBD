@@ -12,7 +12,7 @@
 .dashboard-funcionario-container {
   background: linear-gradient(180deg, #f0f7f7 0%, #e4f1f2 100%);
 }
-
+.dashboard-funcionario
 /* Títulos */
 .dashboard-funcionario h2 {
   text-align: center;
@@ -130,4 +130,12 @@
 .dashboard-funcionario form label {
   font-weight: 600;
   color: #333;
+}
+
+#boton-especial {
+  padding: 12px 25px;
+  height: auto;
+  width: auto;
+  flex: 0 0 auto;
+  background-color: #dc3545;
 }

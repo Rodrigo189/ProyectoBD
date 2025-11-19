@@ -2,10 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../Principal.css";
 
-export default function Principal() {
-  const navigate = useNavigate();
+export default function Principal() { // Componente principal del portal ELEAM
+  const navigate = useNavigate(); // Hook para navegar programaticamente
 
-  const personal = [
+  const personal = [ // Datos ficticios del personal de turno
     { id: 1, nombre: "..... ... ...", cargo: "Enfermera", email: "...@eleam.chile.cl", imagen: "Mujer.png" },
     { id: 2, nombre: "..... ... ...", cargo: "Médico", email: "...@eleam.chile.cl", imagen: "Hombre.png" },
     { id: 3, nombre: "..... ... ...", cargo: "Auxiliar", email: "...@eleam.chile.cl", imagen: "Hombre.png" },
@@ -21,7 +21,11 @@ export default function Principal() {
       {/* Encabezado principal */}
       <header className="principal-header">
         <div className="header-logo">
-          <img src={`${process.env.PUBLIC_URL}/image.png`} alt="Logo ELEAM" />
+          <img src={`${process.env.PUBLIC_URL}/image.png`} alt="Logo ELEAM" /> 
+        </div>
+        <div className="breadcrumbs">
+          <span onClick={() => navigate("/")}>Inicio</span> /
+          <strong>Personal</strong>
         </div>
         <h1 className="titulo-header">Portal ELEAM</h1>
       </header>
@@ -43,7 +47,7 @@ export default function Principal() {
       <main className="principal-main">
         <div className="personal-grid">
           {personal.map((p) => (
-            <div key={p.id} className="personal-card">
+            <div key={p.id} className="personal-card"> {/* Tarjeta de personal */}
               <img
                 src={`${process.env.PUBLIC_URL}/${p.imagen}`}
                 alt={p.nombre}

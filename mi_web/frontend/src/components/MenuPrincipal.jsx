@@ -9,15 +9,7 @@ export default function MenuPrincipal() {
     <div className="menu-principal">
       {/* Fondo izquierda */}
       <div
-        className="menu-fondo"
-        style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL + '/ELEAM.png'})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.9,
-        }}
-      ></div>
+        className="menu-fondo" style={{ backgroundImage: `url(${"ELEAM.PNG"})` }}></div>
 
       {/* Panel derecho */}
       <div className="menu-panel">

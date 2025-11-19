@@ -1,26 +1,26 @@
 import { useState } from "react";
 import "../DashboardFuncionario.css";
 
-export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes }) {
-  const [rut_residente, setRutResidente] = useState(medicamento.rut_residente || "");
-  const [nombre, setNombre] = useState(medicamento.nombre || "");
-  const [dosis, setDosis] = useState(medicamento.dosis || "");
-  const [caso_sos, setCasoSos] = useState(medicamento.caso_sos || false);
-  const [medico_indicador, setMedicoIndicador] = useState(medicamento.medico_indicador || "");
-  const [fecha_inicio, setFechaInicio] = useState(medicamento.fecha_inicio || "");
-  const [fecha_termino, setFechaTermino] = useState(medicamento.fecha_termino || "");
+export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes }) { // Recibe el medicamento a editar, funcion para cerrar el formulario, funcion para refrescar la lista y lista de residentes
+  const [rut_residente, setRutResidente] = useState(medicamento.rut_residente || ""); // Estado para cada campo del formulario
+  const [nombre, setNombre] = useState(medicamento.nombre || ""); // Estado para cada campo del formulario
+  const [dosis, setDosis] = useState(medicamento.dosis || ""); // Estado para cada campo del formulario
+  const [caso_sos, setCasoSos] = useState(medicamento.caso_sos || false); // Estado para cada campo del formulario
+  const [medico_indicador, setMedicoIndicador] = useState(medicamento.medico_indicador || ""); // Estado para cada campo del formulario
+  const [fecha_inicio, setFechaInicio] = useState(medicamento.fecha_inicio || ""); // Estado para cada campo del formulario
+  const [fecha_termino, setFechaTermino] = useState(medicamento.fecha_termino || ""); // Estado para cada campo del formulario
 
-  const handleSubmit = async () => {
+  const handleSubmit = async () => { // Funcion para manejar el envio del formulario
     if (!rut_residente) {
       alert("Debe ingresar un RUT para asignar el medicamento");
       return;
     }
 
-    const url = medicamento.id
+    const url = medicamento.id // Determinar la URL segun si es edicion o creacion
       ? `http://localhost:5000/api/medicamentos/${medicamento.id}`
       : "http://localhost:5000/api/medicamentos";
 
-    const body = {
+    const body = { // Cuerpo de la solicitud con los datos del formulario
       rut_residente,
       nombre,
       dosis,
@@ -30,21 +30,21 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
       fecha_termino: fecha_termino || null
     };
 
-    try {
+    try {  // Manejar errores con try-catch
       const res = await fetch(url, {
         method: medicamento.id ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
 
-      if (!res.ok) {
+      if (!res.ok) { // Manejar errores de la API
         const text = await res.text();
         throw new Error(text);
       }
 
       refresh();
       setEditing(null);
-    } catch (error) {
+    } catch (error) { // Mostrar error si ocurre
       alert("Error al guardar el medicamento: " + error.message);
     }
   };
@@ -55,7 +55,7 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
 
       <input
         placeholder="RUT del Residente"
-        value={rut_residente}
+        value={rut_residente} // Estado del RUT del residente
         onChange={e => setRutResidente(e.target.value)}
       />
       <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />

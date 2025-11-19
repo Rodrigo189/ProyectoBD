@@ -3,28 +3,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 export default function Dashboard() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const queryParams = new URLSearchParams(location.search);
-  const rut = queryParams.get("rut");
-  
-  const [residenteData, setResidenteData] = useState({
+  const location = useLocation(); // Hook para acceder a la ubicación actual
+  const navigate = useNavigate(); // Hook para navegar programaticamente
+  const queryParams = new URLSearchParams(location.search); // Obtener los parametros de consulta (locations.search seria "?rut=12345678-9")
+  const rut = queryParams.get("rut"); // Obtener el valor del parametro 'rut'
+
+  const [residenteData, setResidenteData] = useState({ // Estado para almacenar los datos del residente
     nombre: "...........................",
     medicoTratante: "...........................",
     proximoControl: "dd/mm/aaaa",
     diagnostico: "...........................",
     medicoIndicador: "...........................",
-    medicamento: "...........................",
+    medicamentos: [],
     dosis: "...........................",
     casoSOS: "..........................."
   });
 
-  useEffect(() => {
-    const cargarDatosResidente = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/residentes/${rut}`);
-        if (response.ok) {
-          const data = await response.json();
+  useEffect(() => { // Cargar datos del residente al montar el componente o cuando cambie el 'rut'
+    const cargarDatosResidente = async () => { // Funcion para cargar los datos del residente desde la API
+      try {  // Manejo de errores
+        const response = await fetch(`http://localhost:5000/api/residentes/${rut}`); // Llamada a la API para obtener los datos del residente
+        if (response.ok) { // Si la respuesta es exitosa
+          const data = await response.json(); // Parsear la respuesta JSON
           setResidenteData({
             nombre: data.nombre || "...........................",
             medicoTratante: data.medico_tratante || "...........................",
@@ -43,7 +43,7 @@ export default function Dashboard() {
       }
     };
 
-    if (rut) {
+    if (rut) { // Solo cargar si 'rut' esta definido
       cargarDatosResidente();
     }
   }, [rut]);
@@ -55,10 +55,14 @@ export default function Dashboard() {
         <div className="logo" style={{ backgroundImage: "url('/image.png')" }}></div>
         <div className="portal-title">Portal ELEAM Residente</div>
       </div>
-
+      <div className= "breadcrumbs">
+        <span onClick={() => navigate("/")}>Inicio</span> /
+        <span onClick={() => navigate("/login-form")}> Informacion Residente</span> /
+        <strong> Portal de Residentes</strong>
+      </div>
       {/* Datos residente */}
       <div className="datos-residente">
-        <div className="foto-residente"></div>
+        <div className="foto-residente" style={{ backgroundImage: "url('/Residente.png')" }}></div>
         <div className="info-residente">
           <p>Nombre residente: {residenteData.nombre}</p>
           <p>RUN: {rut}</p>
@@ -88,6 +92,7 @@ export default function Dashboard() {
               {residenteData.medicamentos && residenteData.medicamentos.length > 0 ? (
                 residenteData.medicamentos.map((med, index) => (
                   <div key={index}>
+                    <p><strong><u>Registro Medicamento N° {index + 1}</u></strong></p>
                     <p><strong>Nombre:</strong> {med.nombre}</p>
                     <p><strong>Dosis:</strong> {med.dosis}</p>
                     <p><strong>Caso SOS:</strong> {med.caso_sos ? "Sí" : "No"}</p>

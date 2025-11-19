@@ -8,6 +8,7 @@ body {
 .banner {
   width: 100%;
   height: 96px;
+  gap: 15px;
   background: #E4E4E4;
   display: flex;
   align-items: center;
@@ -51,6 +52,12 @@ body {
   margin-top: 50px;     
   font-size: 40px;
   font-weight: 700;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* separación entre logo y migas */
 }
 
 .logo-text {
@@ -100,9 +107,9 @@ body {
   font-size: 18px;
 }
 
-.login-box button {
+.login-box button {/* Estilos para el botón de inicio de sesion */
   width: 60%;
-  padding: 12px;
+  padding: 12px; /* Espaciado interno */
   background: #1B9AA4;
   border: none;
   border-radius: 8px;
@@ -121,4 +128,30 @@ body {
   font-weight: 700;
   color: #1B9AA4;
   margin-left: 20px;
+}
+
+/* Migas de Pan */
+.breadcrumbs {
+  margin-left: auto;
+  display: flex;
+  font-size: 26px;
+  margin-bottom: 26px;
+  color: #555;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.breadcrumbs span {
+  cursor: pointer;
+  color: #1B9AA4;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.breadcrumbs span:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs strong {
+  color: #000;
+  font-weight: 700;
 }
