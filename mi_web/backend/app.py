@@ -19,7 +19,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True) #H
 # PyMongo se utiliza para establecer la conexion con MongoDB,
 # donde se almacenan los datos medicos, residentes, funcionarios, etc.
 
-app.config["MONGO_URI"] = "mongodb://localhost:27017/proyectobd"
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app) # Inicializa la conexion con MongoDB
 
 try: # Verifica la conexion a la base de datos
