@@ -20,6 +20,9 @@ CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True) #H
 # donde se almacenan los datos medicos, residentes, funcionarios, etc.
 
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+
+print(">>> URI RECIBIDA:", repr(app.config["MONGO_URI"]))
+
 mongo = PyMongo(app) # Inicializa la conexion con MongoDB
 
 try: # Verifica la conexion a la base de datos
