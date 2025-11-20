@@ -25,7 +25,6 @@ export default function Dashboard() {
         const response = await fetch(`https://eleam.onrender.com/api/residentes/${rut}`); // Llamada a la API para obtener los datos del residente
         if (response.ok) { // Si la respuesta es exitosa
           const data = await response.json(); // Parsear la respuesta JSON
->>>>>>> d838b0b21689e389e85db279e307e734de3bb8f4
           setResidenteData({
             nombre: data.nombre || "...........................",
             medicoTratante: data.medico_tratante || "...........................",
