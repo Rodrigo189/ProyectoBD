@@ -12,8 +12,8 @@ export default function FormularioFuncionario({ funcionario, setEditing, refresh
 
   const handleSubmit = async () => { // Funcion para manejar el envio del formulario
     const url = funcionario.rut
-      ? `http://localhost:5000/api/funcionarios/${rut}`
-      : "http://localhost:5000/api/funcionarios";
+      ? `https://eleam.onrender.com/api/funcionarios/${rut}`
+      : "https://eleam.onrender.com/api/funcionarios";
 
     const method = funcionario.rut ? "PUT" : "POST"; // Metodo HTTP segun si es edicion o creacion
 

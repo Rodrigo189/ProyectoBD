@@ -17,8 +17,8 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
     }
 
     const url = medicamento.id // Determinar la URL segun si es edicion o creacion
-      ? `http://localhost:5000/api/medicamentos/${medicamento.id}`
-      : "http://localhost:5000/api/medicamentos";
+      ? `https://eleam.onrender.com/api/medicamentos/${medicamento.id}`
+      : "https://eleam.onrender.com/api/medicamentos";
 
     const body = { // Cuerpo de la solicitud con los datos del formulario
       rut_residente,

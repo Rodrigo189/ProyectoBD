@@ -13,19 +13,19 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
   const navigate = useNavigate(); // Hook para navegar programaticamente
 
   const fetchFuncionarios = async () => {  // Funcion para cargar la lista de funcionarios desde la API
-    const res = await fetch("http://localhost:5000/api/funcionarios");
+    const res = await fetch("https://eleam.onrender.com/api/funcionarios");
     const data = await res.json();
     setFuncionarios(data);
   };
 
   const fetchMedicamentos = async () => { // Funcion para cargar la lista de medicamentos desde la API
-    const res = await fetch("http://localhost:5000/api/medicamentos");
+    const res = await fetch("https://eleam.onrender.com/api/medicamentos");
     const data = await res.json();
     setMedicamentos(data);
   };
 
   const fetchResidentes = async () => { // Funcion para cargar la lista de residentes desde la API
-    const res = await fetch("http://localhost:5000/api/residentes");
+    const res = await fetch("https://eleam.onrender.com/api/residentes");
     const data = await res.json();
     setResidentes(data);
   };
@@ -37,12 +37,12 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
   }, []);
   
   const handleEliminarFuncionario = async rut => { // Funcion para eliminar un funcionario
-    await fetch(`http://localhost:5000/api/funcionarios/${rut}`, { method: "DELETE" });
+    await fetch(`https://eleam.onrender.com/api/funcionarios/${rut}`, { method: "DELETE" });
     fetchFuncionarios();
   };
 
   const handleEliminarMedicamento = async (id, nombre) => { // Funcion para eliminar un medicamento
-    await fetch(`http://localhost:5000/api/medicamentos/${id}?nombre=${encodeURIComponent(nombre)}`, { method: "DELETE" });
+    await fetch(`https://eleam.onrender.com/api/medicamentos/${id}?nombre=${encodeURIComponent(nombre)}`, { method: "DELETE" });
     fetchMedicamentos();
   };
 

@@ -13,9 +13,9 @@ export default function LoginFuncionario() { // Componente del formulario de log
   const handleSubmit = async (e) => { // Funcion para manejar el envio del formulario
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
     try { // Manejar errores con try-catch
-      const response = await fetch("http://127.0.0.1:5000/api/login", { // Llamada a la API de login
-        method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
+      const response = await fetch("https://eleam.onrender.com/api/login", { // Llamada a la API de login
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rut, clave }), // Enviar RUT y clave en el cuerpo de la solicitud
       });
 
