@@ -9,7 +9,7 @@ export default function MenuPrincipal() {
     <div className="menu-principal">
       {/* Fondo izquierda */}
       <div
-        className="menu-fondo" style={{ backgroundImage: `url(${"ELEAM.PNG"})` }}></div>
+        className="menu-fondo" style={{ backgroundImage: `url(${"ELEAM.png"})` }}></div>
 
       {/* Panel derecho */}
       <div className="menu-panel">
