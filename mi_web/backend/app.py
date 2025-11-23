@@ -114,6 +114,18 @@ def listar_o_crear_funcionarios(): # Maneja la lista y creacion de funcionarios
             from datetime import datetime
             if not data.get("fecha_ingreso"):
                 data["fecha_ingreso"] = datetime.now().strftime("%Y-%m-%d")
+                
+            # Genera el email del funcionario
+            nombres = data.get("nombres", "").strip().split()
+            apellidos = data.get("apellidos", "").strip().split()
+
+            if nombres and apellidos:
+                primer_nombre = nombres[0].lower()
+                primer_apellido = apellidos[0].lower()
+                data["email"] = f"{primer_nombre}.{primer_apellido}@eleam.cl"
+            else:
+                data["email"] = "desconocido@eleam.cl"
+
 
             # Insertar en MongoDB
             funcionarios_col.insert_one(data)
