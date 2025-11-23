@@ -140,6 +140,11 @@
 .info-personal strong {
   font-weight: 700;
 }
+
+.info{
+  color: #168792;
+}
+
 /* Migas de Pan */
 .breadcrumbs {
   font-size: 26px;
