@@ -120,6 +120,7 @@ body.accessibility-font-xlarge .section-block li b {
 body.accessibility-font-large .detalle,
 body.accessibility-font-xlarge .detalle {
     font-size: inherit !important;
+
 }
 /* Estilos para los Breadcrumbs */
 nav {
