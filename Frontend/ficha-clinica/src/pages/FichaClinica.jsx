@@ -1,4 +1,4 @@
-// src/pages/FichaClinica.jsx (Corregido)
+// src/pages/FichaClinica.jsx (Corregido y Completo)
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getFichaCompleta, deleteFicha } from "../services/fichaService";
@@ -76,19 +76,17 @@ export default function FichaClinica() {
     setFiltroFin("");
   };
 
-  // --- CORRECCIÓN DE REDIRECCIÓN AQUÍ ---
   const eliminarFicha = async () => {
     if (!window.confirm("¿Seguro que deseas eliminar esta ficha clínica?")) return;
     try {
       await deleteFicha(ficha.rut_residente || ficha.datos_personales.rut);
       alert("🗑️ Ficha eliminada correctamente");
-      navigate("/fichas"); // Redirigir al buscador, no al Menú Principal
+      navigate("/fichas"); 
     } catch (error) {
       console.error("Error al eliminar ficha:", error);
       alert("❌ No se pudo eliminar la ficha");
     }
   };
-  // --- FIN CORRECCIÓN ---
 
   const exportarPDF = () => {
     const input = componenteParaImprimirRef.current;
@@ -133,7 +131,7 @@ export default function FichaClinica() {
     return ( 
       <div>
         <div className={styles.searchBox}>
-         <form className={styles.searchForm} onSubmit={buscarFicha}>
+          <form className={styles.searchForm} onSubmit={buscarFicha}>
             <label htmlFor="rut" className={styles.label}>
               Ingrese el RUT del residente
             </label>
@@ -285,7 +283,13 @@ export default function FichaClinica() {
       </div>
 
       <div className={styles.actionsContainer}>
-        <button className={styles.btnPrimary} onClick={() => navigate(`/fichas/editar/${ficha.rut_residente || ficha.datos_personales.rut}`)}>✏️ Editar</button>
+        {/* 🚩 CORRECCIÓN CRÍTICA: La ruta ahora es /fichas/:rut/editar 🚩 */}
+        <button 
+            className={styles.btnPrimary} 
+            onClick={() => navigate(`/fichas/${ficha.rut_residente || ficha.datos_personales.rut}/editar`)}
+        >
+            ✏️ Editar
+        </button>
         <button className={styles.btnDanger} onClick={eliminarFicha}>🗑️ Eliminar</button>
         <button className={styles.btnPdf} onClick={exportarPDF}>📄 Exportar PDF</button>
       </div>

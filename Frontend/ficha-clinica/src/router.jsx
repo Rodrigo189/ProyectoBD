@@ -1,4 +1,3 @@
-// src/router.jsx (Corregido)
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // --- TUS PÁGINAS (desde ./pages/) ---
@@ -11,12 +10,9 @@ import NotFound from "./pages/NotFound.jsx";
 import Login from "./pages/Login.jsx";
 import AdminTratantes from "./pages/AdminTratantes.jsx";
 
-// --- CORRECCIÓN DE RUTAS DE IMPORTACIÓN ---
-// Ahora apuntan a la carpeta "./components/"
+// --- COMPONENTES ---
 import Layout from "./components/Layout.jsx";
 import RutaProtegida from "./components/RutaProtegida.jsx";
-// --- FIN CORRECCIÓN ---
-
 
 export default function AppRouter() {
   return (
@@ -26,16 +22,17 @@ export default function AppRouter() {
         <Route path="/" element={<MenuPrincipal />} />
         <Route path="/login" element={<Login />} />
         
-        {/* --- RUTAS PROTEGIDAS (Solo para tratantes logueados) --- */}
+        {/* --- RUTAS PROTEGIDAS --- */}
         <Route element={<RutaProtegida />}>
           
-          {/* Usamos el Layout para que todas estas páginas
-              tengan el Navbar y el Botón de Accesibilidad */}
           <Route element={<Layout />}>
             <Route path="/fichas" element={<BuscarFicha />} />
             <Route path="/fichas/:rut" element={<FichaClinica />} />
             <Route path="/fichas/crear" element={<CrearFicha />} />
-            <Route path="/fichas/editar/:rut" element={<EditarFicha />} />
+            
+            {/* 🚩 CORRECCIÓN CRÍTICA: La nueva ruta para Editar 🚩 */}
+            <Route path="/fichas/:rut/editar" element={<EditarFicha />} />
+            
             <Route path="/admin/tratantes" element={<AdminTratantes />} />
           </Route>
           
