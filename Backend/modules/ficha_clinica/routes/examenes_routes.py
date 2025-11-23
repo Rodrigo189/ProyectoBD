@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.examenes_controller import add_examen, get_examenes, update_examen, delete_examen
+from modules.ficha_clinica.controllers.examenes_controller import add_examen, get_examenes, update_examen, delete_examen
 
 examenes_bp = Blueprint("examenes", __name__, url_prefix="/api/examenes")
 

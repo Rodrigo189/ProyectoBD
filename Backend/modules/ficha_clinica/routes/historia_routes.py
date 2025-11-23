@@ -1,6 +1,6 @@
 from flask import Blueprint
 # --- CORRECCIÓN: Nombres de funciones actualizados e importación añadida ---
-from controllers.historia_controller import (
+from modules.ficha_clinica.controllers.historia_controller import(
     crear_historia, 
     obtener_historia, 
     update_historia, 

@@ -1,6 +1,6 @@
 from flask import Blueprint
 # --- CORRECCIÓN: Importar la nueva función ---
-from controllers.atenciones_controller import (
+from modules.ficha_clinica.controllers.atenciones_controller import (
     add_atencion, 
     get_atenciones, 
     update_atencion, 

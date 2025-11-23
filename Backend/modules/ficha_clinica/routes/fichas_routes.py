@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.fichas_controller import create_ficha, get_ficha, update_ficha, delete_ficha
+from modules.ficha_clinica.controllers.fichas_controller import create_ficha, get_ficha, update_ficha, delete_ficha
 
 fichas_bp = Blueprint("fichas", __name__, url_prefix="/api/fichas")
 

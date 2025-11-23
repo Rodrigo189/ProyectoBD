@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.apoderados_controller import add_apoderado, get_apoderados, update_apoderado, delete_apoderado
+from modules.ficha_clinica.controllers.apoderados_controller import add_apoderado, get_apoderados, update_apoderado, delete_apoderado
 
 # --- CORRECCIÓN 1: Cambiado a singular ---
 apoderados_bp = Blueprint("apoderados", __name__, url_prefix="/api/apoderado")

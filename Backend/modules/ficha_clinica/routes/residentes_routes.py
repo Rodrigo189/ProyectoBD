@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.residentes_controller import (
+from modules.ficha_clinica.controllers.residentes_controller import (
     create_or_update_residente,
     get_residentes,
     update_residente,

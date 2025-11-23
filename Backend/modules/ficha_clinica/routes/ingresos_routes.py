@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.ingresos_controller import add_ingreso, get_ingresos, update_ingreso, delete_ingreso
+from modules.ficha_clinica.controllers.ingresos_controller import add_ingreso, get_ingresos, update_ingreso, delete_ingreso
 
 ingresos_bp = Blueprint("ingresos", __name__, url_prefix="/api/ingresos")
 

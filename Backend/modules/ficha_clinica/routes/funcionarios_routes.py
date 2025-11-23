@@ -1,7 +1,7 @@
 # routes/funcionarios_routes.py (NUEVO)
 
 from flask import Blueprint
-from controllers.funcionarios_controller import (
+from modules.ficha_clinica.controllers.funcionarios_controller import (
     listar_o_crear_funcionarios, 
     actualizar_o_eliminar_funcionario
 )
