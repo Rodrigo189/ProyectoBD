@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../DashboardFuncionario.css";
 
-export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes }) { // Recibe el medicamento a editar, funcion para cerrar el formulario, funcion para refrescar la lista y lista de residentes
+export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes, funcionarios }) { // Recibe el medicamento a editar, funcion para cerrar el formulario, funcion para refrescar la lista y lista de residentes
   const [rut_residente, setRutResidente] = useState(medicamento.rut_residente || ""); // Estado para cada campo del formulario
   const [nombre, setNombre] = useState(medicamento.nombre || ""); // Estado para cada campo del formulario
   const [dosis, setDosis] = useState(medicamento.dosis || ""); // Estado para cada campo del formulario
@@ -64,7 +64,21 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
         CASO SOS:
         <input type="checkbox" checked={caso_sos} onChange={e => setCasoSos(e.target.checked)} />
       </label>
-      <input placeholder="Médico indicador" value={medico_indicador} onChange={e => setMedicoIndicador(e.target.value)} />
+      <label>
+        Médico indicador:
+        <select
+          value={medico_indicador}
+          onChange={e => setMedicoIndicador(e.target.value)}
+          required
+        >
+          <option value="">Seleccione un funcionario</option>
+          {funcionarios.map((f, index) => (
+            <option key={index} value={`${f.nombres} ${f.apellidos}`}>
+              {f.nombres} {f.apellidos} - {f.cargo}
+            </option>
+          ))}
+        </select>
+      </label>
       <input type="date" value={fecha_inicio} onChange={e => setFechaInicio(e.target.value)} />
       <input type="date" value={fecha_termino} onChange={e => setFechaTermino(e.target.value)} />
       <button onClick={handleSubmit}>{medicamento.id ? "Actualizar" : "Crear"}</button>

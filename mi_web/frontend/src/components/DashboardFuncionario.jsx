@@ -102,6 +102,7 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
             setEditing={setEditingMed}
             refresh={fetchMedicamentos}
             residentes={residentes}
+            funcionarios={funcionarios}
           />
         )}
         <table border="1">
