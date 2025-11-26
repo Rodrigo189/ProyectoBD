@@ -5,7 +5,8 @@ import Principal from "./components/Principal";
 import LoginFuncionario from "./components/LoginFuncionario";
 import DashboardFuncionario from "./components/DashboardFuncionario";
 import FormularioTurno from "./components/FormularioTurno";
-import MenuPrincipal from "./MenuPrincipal";
+import MenuPrincipal from "./components/MenuPrincipal";
+import InfoMedicamentos from "./components/InfoMedicamentos"
 
 import "@fontsource/inria-sans";
 
