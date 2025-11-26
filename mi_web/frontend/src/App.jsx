@@ -6,6 +6,7 @@ import LoginFuncionario from "./components/LoginFuncionario";
 import DashboardFuncionario from "./components/DashboardFuncionario";
 import FormularioTurno from "./components/FormularioTurno";
 import MenuPrincipal from "./MenuPrincipal";
+
 import "@fontsource/inria-sans";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login-form" element={<LoginForm />} />
         <Route path="/formulario" element={<FormularioTurno />} />
         <Route path="/dashboard-funcionario" element={<DashboardFuncionario />} />
+        <Route path="/medicamentos/:rut" element={<InfoMedicamentos />} />
       </Routes>
     </Router>
   );

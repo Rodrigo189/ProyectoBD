@@ -13,7 +13,7 @@ export default function HistorialClinico() {
   useEffect(() => {
     const cargarHistorial = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/historial-clinico/${rut}`);
+        const response = await axios.get(`https://eleam.onrender.com/api/historial-clinico/${rut}`);
         setFicha(response.data);
         setError("");
       } catch (err) {

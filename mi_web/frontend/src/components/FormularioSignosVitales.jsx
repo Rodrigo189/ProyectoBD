@@ -32,7 +32,7 @@ function FormularioSignosVitales() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/registros-vitales', formData);
+            await axios.post('https://eleam.onrender.com/api/registros-vitales', formData);
             const result = await Swal.fire({
                 title: 'Registro guardado con éxito',
                 icon: 'success',

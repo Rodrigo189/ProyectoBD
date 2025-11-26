@@ -12,7 +12,7 @@ function HistorialDetallado() {
     useEffect(() => {
         const cargarDetalles = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/residentes/${rut}`);
+                const response = await axios.get(`https://eleam.onrender.com/api/residentes/${rut}`);
                 setPaciente(response.data);
                 setError('');
             } catch (err) {
