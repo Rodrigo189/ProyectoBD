@@ -6,7 +6,7 @@ export default function Dashboard() {
   const location = useLocation(); // Hook para acceder a la ubicación actual
   const navigate = useNavigate(); // Hook para navegar programaticamente
   const queryParams = new URLSearchParams(location.search); // Obtener los parametros de consulta (locations.search seria "?rut=12345678-9")
-  const rut = queryParams.get("rut"); // Obtener el valor del parametro 'rut'
+  const { rut } = useParams(); // Obtener el valor del parametro 'rut'
 
   const [residenteData, setResidenteData] = useState({ // Estado para almacenar los datos del residente
     nombre: "...........................",
