@@ -55,7 +55,7 @@ export default function HistorialClinico() {
 
       {/* Botones */}
       <div className="botones-container">
-        <button className="btn-accion" onClick={() => navigate("/dashboard/${rut}")}>
+        <button className="btn-accion" onClick={() => navigate("/dashboard?rut=${rut}")}>
           ← Salir
         </button>
         <button className="btn-accion" onClick={() => navigate("/buscar-paciente")}>

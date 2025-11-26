@@ -23,7 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/principal" element={<Principal />} />
         <Route path="/login" element={<LoginFuncionario />} />
         <Route path="/login-form" element={<LoginForm />} />
-        <Route path="/dashboard/:rut" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard-funcionario" element={<DashboardFuncionario />} />
         <Route path="/formulario" element={<FormularioTurno />} />
         <Route path="/buscar-paciente" element={<BuscarPaciente />} />

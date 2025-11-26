@@ -19,7 +19,7 @@ const handleSubmit = async (e) => { // Funcion para manejar el envio del formula
     const data = await response.json(); // Parsear la respuesta JSON
 
     if (response.ok && data.existe) { // Si la respuesta es OK y el residente existe
-      navigate(`/dashboard/${rut}`);
+      navigate(`/dashboard?rut=${rut}`);
     } else { // Si el residente no existe o hay un error
       alert("Residente no encontrado o datos incorrectos");
     }
