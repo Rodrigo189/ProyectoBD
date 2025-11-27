@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "@fontsource/inria-sans";
 import { useNavigate } from "react-router-dom";
-import "../styles.css";
+import "../styles/styles.css";
 
 export default function LoginFuncionario() { // Componente del formulario de login
   const [rut, setRut] = useState(""); // Estado para el RUT ingresado

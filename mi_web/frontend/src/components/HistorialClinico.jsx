@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../HistorialClinico.css";
+import "../styles/HistorialClinico.css";
 
 export default function HistorialClinico() {
   const { rut } = useParams();

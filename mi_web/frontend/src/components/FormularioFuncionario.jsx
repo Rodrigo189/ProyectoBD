@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "@fontsource/inria-sans";
-import "../FormularioFuncionario.css";
+import "../styles/FormularioFuncionario.css";
 
 export default function FormularioFuncionario({ funcionario, setEditing, refresh }) {
   const [rut, setRut] = useState(funcionario.rut || ""); // Estado para cada campo del formulario

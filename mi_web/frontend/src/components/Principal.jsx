@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../Principal.css";
+import "../styles/Principal.css";
 
 export default function Principal() { // Componente principal del portal ELEAM
   const navigate = useNavigate(); // Hook para navegar programaticamente

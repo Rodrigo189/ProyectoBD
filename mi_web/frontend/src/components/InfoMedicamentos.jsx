@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import FormularioMedicamento from "./FormularioMedicamento";
-import "../DashboardFuncionario.css";   // 👈 importante: usa este CSS
+import "../styles/DashboardFuncionario.css";   // 👈 importante: usa este CSS
 
 export default function InfoMedicamentos() {
   const { rut } = useParams();

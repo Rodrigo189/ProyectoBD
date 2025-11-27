@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import FormularioFuncionario from "./FormularioFuncionario";
 import FormularioMedicamento from "./FormularioMedicamento";
 import { useNavigate } from "react-router-dom";
-import "../DashboardFuncionario.css";
+import "../styles/DashboardFuncionario.css";
 
 export default function DashboardFuncionario({ usuario }) { // Recibe el nombre del usuario como prop
   const [funcionarios, setFuncionarios] = useState([]); // Estado para almacenar la lista de funcionarios

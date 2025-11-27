@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../MenuPrincipal.css";
+import "../styles/MenuPrincipal.css";
 
 export default function MenuPrincipal() {
   const navigate = useNavigate();

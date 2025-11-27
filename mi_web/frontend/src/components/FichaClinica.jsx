@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import '../FichaClinica.css';
+import '../styles/FichaClinica.css';
 
 function FichaClinica() {
     const { rut } = useParams();

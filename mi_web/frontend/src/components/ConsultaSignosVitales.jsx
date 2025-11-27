@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../ConsultaSignosVitales.css';
+import '../styles/ConsultaSignosVitales.css';
 
 function ConsultaSignosVitales() {
     const [rut, setRut] = useState('');

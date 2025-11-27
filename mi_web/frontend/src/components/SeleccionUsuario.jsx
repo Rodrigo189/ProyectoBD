@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../SeleccionUsuario.css";
+import "../styles/SeleccionUsuario.css";
 
 export default function SeleccionUsuario() {
   const navigate = useNavigate();

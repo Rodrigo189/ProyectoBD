@@ -1,6 +1,6 @@
 import { useState } from "react"; // Hook para manejar el estado
 import { useNavigate } from "react-router-dom"; // Hook para navegar programaticamente
-import "../styles.css"
+import "../styles/styles.css"
 import "@fontsource/inria-sans";
 
 export default function LoginForm() { // Componente del formulario de login
