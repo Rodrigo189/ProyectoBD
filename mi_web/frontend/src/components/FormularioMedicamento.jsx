@@ -76,7 +76,7 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
           <option value="">Seleccione un funcionario</option>
           {funcionarios.map((f, index) => (
             <option key={index} value={`${f.nombres} ${f.apellidos}`}>
-              {f.nombres} {f.apellidos}
+              {f.nombres.split(" ")[0]} {f.apellidos.split(" ")[0]}
             </option>
           ))}
         </select>
