@@ -43,8 +43,6 @@ export default function InfoMedicamentos() {
 
   // Eliminar medicamento
   const handleEliminarMedicamento = async (nombre) => {
-    if (!window.confirm(`¿Eliminar el medicamento "${nombre}"?`)) return;
-
     try {
       const res = await fetch(
         `https://eleam.onrender.com/api/medicamentos/${rut}?nombre=${encodeURIComponent(
