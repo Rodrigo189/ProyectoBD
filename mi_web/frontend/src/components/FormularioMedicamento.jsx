@@ -56,7 +56,7 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
       <input
         placeholder="RUT del Residente"
         value={rut_residente} // Estado del RUT del residente
-        onChange={e => setRutResidente(e.target.value)}
+        disabled
       />
       <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
       <input placeholder="Dosis" value={dosis} onChange={e => setDosis(e.target.value)} />
