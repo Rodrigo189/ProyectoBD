@@ -162,7 +162,6 @@ export default function InfoMedicamentos() {
       {/* Formulario de medicamento (nuevo / editar) */}
       {editingMed && (
         <section>
-          <h3>{editingMed.nombre ? "Editar medicamento" : "Nuevo medicamento"}</h3>
           <FormularioMedicamento
             medicamento={editingMed}
             setEditing={setEditingMed}
