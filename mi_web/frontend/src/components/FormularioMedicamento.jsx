@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../DashboardFuncionario.css";
 
-export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes, funcionarios }) { // Recibe el medicamento a editar, funcion para cerrar el formulario, funcion para refrescar la lista y lista de residentes
+export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes, funcionarios,  mostrarTitulo = true,}) { // Recibe el medicamento a editar, funcion para cerrar el formulario, funcion para refrescar la lista y lista de residentes
   const [rut_residente, setRutResidente] = useState(medicamento.rut_residente || ""); // Estado para cada campo del formulario
   const [nombre, setNombre] = useState(medicamento.nombre || ""); // Estado para cada campo del formulario
   const [dosis, setDosis] = useState(medicamento.dosis || ""); // Estado para cada campo del formulario
@@ -51,7 +51,9 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
 
   return (
     <div className="form-medicamento">
-      <h3>{medicamento.id ? "Editar Medicamento" : "Nuevo Medicamento"}</h3>
+      {mostrarTitulo && (
+        <h3>{medicamento.id ? "Editar Medicamento" : "Nuevo Medicamento"}</h3>
+      )}
 
       <input
         placeholder="RUT del Residente"

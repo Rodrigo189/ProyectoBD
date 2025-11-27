@@ -117,7 +117,6 @@ export default function InfoMedicamentos() {
       <section>
         <h3>Medicamentos asignados</h3>
         <button onClick={handleNuevoMedicamento}>Añadir medicamento</button>
-
         {medicamentos.length === 0 ? (
           <p>No hay medicamentos registrados.</p>
         ) : (
@@ -162,12 +161,14 @@ export default function InfoMedicamentos() {
       {/* Formulario de medicamento (nuevo / editar) */}
       {editingMed && (
         <section>
+          <h3>{editingMed.nombre ? "Editar medicamento" : "Nuevo medicamento"}</h3>
           <FormularioMedicamento
             medicamento={editingMed}
             setEditing={setEditingMed}
             refresh={cargarResidente}
             residentes={[{ rut, nombre: residente.nombre }]}
             funcionarios={funcionarios}
+            mostrarTitulo={false}
           />
         </section>
       )}
