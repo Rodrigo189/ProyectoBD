@@ -113,8 +113,11 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
           </thead>
           <tbody>
             {medicamentos.map(m => { // Mapear cada medicamento a una fila de la tabla
+              const residente = residentes.find(r => r.rut === m.id); // Buscar el residente asociado
+              const nombreResidente = residente ? residente.nombre : m.nombre_residente; // Obtener el nombre del residente
               return (
                 <tr key={`${m.id}-${m.nombre}`}> {/* Usar id y nombre como key unica */}
+
                   <td>{nombreResidente}</td>
                   <td>{m.nombre}</td>
                   <td>{m.dosis}</td>
