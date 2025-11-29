@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
 import FormularioFuncionario from "./FormularioFuncionario";
-import FormularioMedicamento from "./FormularioMedicamento";
 import { useNavigate } from "react-router-dom";
 import "../styles/DashboardFuncionario.css";
 
 export default function DashboardFuncionario({ usuario }) { // Recibe el nombre del usuario como prop
   const [funcionarios, setFuncionarios] = useState([]); // Estado para almacenar la lista de funcionarios
   const [editing, setEditing] = useState(null);  // Estado para almacenar el funcionario que se esta editando
-  const [medicamentos, setMedicamentos] = useState([]);  // Estado para almacenar la lista de medicamentos
-  const [editingMed, setEditingMed] = useState(null); // Estado para almacenar el medicamento que se esta editando
-  const [residentes, setResidentes] = useState([]);  // Estado para almacenar la lista de residentes
   const navigate = useNavigate(); // Hook para navegar programaticamente
 
   const fetchFuncionarios = async () => {  // Funcion para cargar la lista de funcionarios desde la API
@@ -18,32 +14,13 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
     setFuncionarios(data);
   };
 
-  const fetchMedicamentos = async () => { // Funcion para cargar la lista de medicamentos desde la API
-    const res = await fetch("https://eleam.onrender.com/api/medicamentos");
-    const data = await res.json();
-    setMedicamentos(data);
-  };
-
-  const fetchResidentes = async () => { // Funcion para cargar la lista de residentes desde la API
-    const res = await fetch("https://eleam.onrender.com/api/residentes");
-    const data = await res.json();
-    setResidentes(data);
-  };
-
   useEffect(() => { // Cargar datos al montar el componente
     fetchFuncionarios();
-    fetchMedicamentos();
-    fetchResidentes();
   }, []);
   
   const handleEliminarFuncionario = async rut => { // Funcion para eliminar un funcionario
     await fetch(`https://eleam.onrender.com/api/funcionarios/${rut}`, { method: "DELETE" });
     fetchFuncionarios();
-  };
-
-  const handleEliminarMedicamento = async (id, nombre) => { // Funcion para eliminar un medicamento
-    await fetch(`https://eleam.onrender.com/api/medicamentos/${id}?nombre=${encodeURIComponent(nombre)}`, { method: "DELETE" });
-    fetchMedicamentos();
   };
 
   return (
@@ -88,50 +65,6 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
                 </td>
               </tr>
             ))}
-          </tbody>
-
-        </table>
-      </section>
-
-      <section>
-        <h3>Gestión de Medicamentos</h3>
-        <button onClick={() => setEditingMed({})}>Añadir Medicamento</button>
-        {editingMed && ( // Mostrar formulario si se esta editando o añadiendo
-          <FormularioMedicamento
-            medicamento={editingMed}
-            setEditing={setEditingMed}
-            refresh={fetchMedicamentos}
-            residentes={residentes}
-            funcionarios={funcionarios}
-          />
-        )}
-        <table border="1">
-          <thead>
-            <tr>
-              <th>ID</th><th>Residente</th><th>Nombre</th><th>Dosis</th><th>CASO SOS</th><th>Médico</th><th>Inicio</th><th>Termino</th><th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {medicamentos.map(m => { // Mapear cada medicamento a una fila de la tabla
-              const residente = residentes.find(r => r.rut === m.id); // Buscar el residente asociado
-              const nombreResidente = residente ? residente.nombre : m.nombre_residente; // Obtener el nombre del residente
-              return (
-                <tr key={`${m.id}-${m.nombre}`}> {/* Usar id y nombre como key unica */}
-                  <td>{m.id}</td>
-                  <td>{nombreResidente}</td>
-                  <td>{m.nombre}</td>
-                  <td>{m.dosis}</td>
-                  <td>{m.caso_sos ? "S" : "N"}</td>
-                  <td>{m.medico_indicador}</td>
-                  <td>{m.fecha_inicio}</td>
-                  <td>{m.fecha_termino || "-"}</td>
-                  <td>
-                    <button onClick={() => setEditingMed(m.nombre)}>Editar</button>
-                    <button onClick={() => handleEliminarMedicamento(m.id, m.nombre)}>Eliminar</button>
-                  </td>
-                </tr>
-              );
-            })}
           </tbody>
         </table>
       </section>
