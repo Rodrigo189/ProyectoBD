@@ -32,12 +32,7 @@ function FormularioSignosVitales() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const dataToSend = {
-                ...formData,
-                rut: rut, // Aseguramos que el RUT se envíe
-                fecha: new Date().toISOString().split('T')[0]
-            };
-            await axios.post('https://eleam.onrender.com/api/registros-vitales', dataToSend);
+            await axios.post('https://eleam.onrender.com/api/registros-vitales', formData);
             const result = await Swal.fire({
                 title: 'Registro guardado con éxito',
                 icon: 'success',
