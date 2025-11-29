@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/HistorialClinico.css";
-import Breadcrumb from "../styles/Breadcrumb";
+import Breadcrumb from "../styles/Breadcrumb.css";
 
 export default function HistorialClinico() {
   const { rut } = useParams();
