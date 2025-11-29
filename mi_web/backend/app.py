@@ -292,15 +292,37 @@ def actualizar_o_eliminar_medicamento(rut): # Actualiza o elimina un medicamento
 
 # ---------------- REGISTROS VITALES ----------------
 # Permiten registrar parametros clinicos como presion arterial, temperatura o pulso, vinculados a un residente.
-@app.route('/api/registros-vitales', methods=['POST'])
-def crear_registro():
-    data = request.get_json()
-    if "fecha" not in data:
-        data["fecha"] = datetime.now().strftime("%Y-%m-%d")
-    if "hora" not in data:
-        data["hora"] = datetime.now().strftime("%H:%M:%S")
-    registros_col.insert_one(data)
-    return jsonify({"mensaje": "Registro guardado con éxito"}), 201
+@app.route('/api/registros-vitales', methods=['POST', 'GET'])
+def manejar_registros_vitales():
+    if request.method == 'POST':
+        # Crear un nuevo registro de signos vitales
+        data = request.get_json() or {}
+
+        # Si no viene fecha/hora, se completa con la actual
+        if "fecha" not in data:
+            data["fecha"] = datetime.now().strftime("%Y-%m-%d")
+        if "hora" not in data:
+            data["hora"] = datetime.now().strftime("%H:%M:%S")
+
+        registros_col.insert_one(data)
+        return jsonify({"mensaje": "Registro guardado con éxito"}), 201
+
+    else:
+        rut = request.args.get("rut")
+
+        filtro = {}
+        if rut:
+            filtro["rut"] = rut  # solo registros de ese residente
+
+        # Traer todos los registros (o solo de ese rut) ordenados por fecha/hora
+        registros = list(
+            registros_col.find(filtro).sort([("fecha", -1), ("hora", -1)])
+        )
+
+        for r in registros:
+            r["_id"] = str(r["_id"])
+
+        return jsonify(registros), 200
 
 @app.route('/api/registros-vitales/<id>', methods=['PUT', 'DELETE'])
 def actualizar_o_eliminar_registro(id):
