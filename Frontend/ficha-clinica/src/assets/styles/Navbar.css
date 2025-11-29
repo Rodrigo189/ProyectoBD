@@ -93,3 +93,93 @@
 .btn-nav-logout:hover {
   background-color: #d32f2f;
 }
+
+/* Añadir al final de src/assets/styles/Navbar.css */
+
+/* Breadcrumb integrado en línea con el título */
+.navbar-breadcrumb-inline {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbs-inline {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.breadcrumb-item-inline {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-link-inline {
+  color: var(--color-secundario);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-link-inline:hover {
+  color: var(--color-principal);
+  text-decoration: underline;
+}
+
+.breadcrumb-current-inline {
+  color: var(--color-texto);
+  font-weight: 600;
+}
+
+.breadcrumb-separator-inline {
+  color: var(--color-principal);
+  margin: 0 8px;
+  font-weight: 400;
+}
+
+/* Ajustes para el navbar-left para acomodar el breadcrumb */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten en pantallas pequeñas */
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .navbar-breadcrumb-inline {
+    margin-left: 0;
+    margin-top: 5px;
+    width: 100%;
+    order: 3; /* Coloca el breadcrumb debajo en móviles */
+  }
+  
+  .navbar-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .breadcrumbs-inline {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .navbar-links {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  
+  .navbar-title {
+    font-size: 18px;
+  }
+}

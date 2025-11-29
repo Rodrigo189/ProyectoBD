@@ -1,40 +1,83 @@
-// src/pages/FichaClinica.jsx (Corregido y Completo)
+// src/pages/FichaClinica.jsx (CORREGIDO: Exportación en UNA SOLA HOJA)
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom"; 
 import { getFichaCompleta, deleteFicha } from "../services/fichaService";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import styles from "../assets/styles/fichaClinica.module.css";
+import ModalCustom from "../components/ModalCustom.jsx"; 
 
 export default function FichaClinica() { 
   const { rut } = useParams();
   const navigate = useNavigate();
+  const location = useLocation(); 
   const [ficha, setFicha] = useState(null);
   const [loading, setLoading] = useState(true);
   const [rutBusqueda, setRutBusqueda] = useState("");
   const [filtroInicio, setFiltroInicio] = useState("");
   const [filtroFin, setFiltroFin] = useState("");
   const [historialFiltrado, setHistorialFiltrado] = useState([]);
+  
+  // Referencia al contenedor que vamos a fotografiar
   const componenteParaImprimirRef = useRef(null);
+
+  const [modal, setModal] = useState({ open: false, type: 'info', title: '', msg: '', onConfirm: null, confirmText: 'Aceptar' });
+
+  const handleRutChange = (e) => {
+    const input = e.target.value;
+    let rutLimpio = input.replace(/[^0-9kK-]/g, '');
+    const partes = rutLimpio.split('-');
+    if (partes.length > 2) {
+      rutLimpio = partes[0] + '-' + partes.slice(1).join('');
+    }
+    if (rutLimpio.includes('-') && rutLimpio.indexOf('-') !== rutLimpio.length - 2) {
+      const digitos = rutLimpio.replace(/[^0-9kK]/g, '');
+      const digitoVerificador = rutLimpio.replace(/[^kK]/g, '');
+      rutLimpio = digitos.slice(0, -1) + '-' + digitos.slice(-1) + digitoVerificador;
+    }
+    setRutBusqueda(rutLimpio);
+  };
 
   const buscarFicha = (e) => {
     e.preventDefault();
     if (!rutBusqueda.trim()) {
-      alert("⚠️ Ingrese un RUT para buscar la ficha clínica");
+      setModal({ open: true, type: 'warning', title: 'Atención', msg: 'Ingrese un RUT válido para buscar la ficha.' });
       return;
     }
-    navigate(`/fichas/${rutBusqueda}`);
+    const rutLimpio = rutBusqueda.trim().replace(/-/g, '').toUpperCase();
+    const soloDigitos = rutLimpio.replace(/[^0-9]/g, '');
+    if (soloDigitos.length < 7) {
+      setModal({ open: true, type: 'warning', title: 'Atención', msg: 'El RUT debe tener al menos 7 dígitos.' });
+      return;
+    }
+    navigate(`/fichas/${rutLimpio}`, { state: { rutBuscado: rutLimpio } });
   };
 
   useEffect(() => {
+    if (location.state?.rutNotFound) {
+        setLoading(false);
+        return;
+    }
+
     if (!rut) {
       setLoading(false);
       return;
     }
+    
     const fetchFicha = async () => {
       try {
         setLoading(true); 
         const data = await getFichaCompleta(rut);
+        
+        if (!data || data.message === "Ficha no encontrada") {
+             navigate(location.pathname, { replace: true, state: { rutNotFound: true, rutBuscado: rut } });
+             return; 
+        }
+        
+        if (location.state?.rutNotFound) {
+             navigate(location.pathname, { replace: true, state: null });
+        }
+        
         setFicha(data);
         if (data?.historia_clinica?.historial_atenciones) {
           setHistorialFiltrado(data.historia_clinica.historial_atenciones);
@@ -43,17 +86,20 @@ export default function FichaClinica() {
         }
       } catch (error) {
         console.error("Error al obtener la ficha:", error);
+        navigate(location.pathname, { replace: true, state: { rutNotFound: true, rutBuscado: rut } });
         setFicha(null); 
       } finally {
-        setLoading(false);
+        if (!location.state?.rutNotFound) {
+             setLoading(false);
+        }
       }
     };
-    fetchFicha();
-  }, [rut]); 
+    fetchFicha(); 
+  }, [rut, navigate, location.pathname]); 
 
   const aplicarFiltro = () => {
     if (!filtroInicio || !filtroFin) {
-      alert("Seleccione ambas fechas para filtrar.");
+      setModal({ open: true, type: 'info', title: 'Filtros', msg: 'Seleccione ambas fechas para filtrar.' });
       return;
     }
     const inicio = new Date(filtroInicio + "T00:00:00");
@@ -76,95 +122,96 @@ export default function FichaClinica() {
     setFiltroFin("");
   };
 
-  const eliminarFicha = async () => {
-    if (!window.confirm("¿Seguro que deseas eliminar esta ficha clínica?")) return;
+  const solicitarEliminarFicha = () => {
+    setModal({
+        open: true,
+        type: 'warning',
+        title: '¿Eliminar Ficha Completa?',
+        msg: 'ADVERTENCIA: Se eliminará permanentemente la ficha y TODOS sus historiales médicos. Esta acción es irreversible.',
+        confirmText: 'Estoy seguro, Eliminar',
+        onConfirm: ejecutarEliminacion
+    });
+  };
+
+  const ejecutarEliminacion = async () => {
     try {
       await deleteFicha(ficha.rut_residente || ficha.datos_personales.rut);
-      alert("🗑️ Ficha eliminada correctamente");
-      navigate("/fichas"); 
+      setModal({
+        open: true,
+        type: 'success',
+        title: 'Eliminada',
+        msg: 'La ficha ha sido eliminada del sistema.',
+        onConfirm: () => navigate("/fichas"),
+        confirmText: 'Volver al Buscador'
+      });
     } catch (error) {
       console.error("Error al eliminar ficha:", error);
-      alert("❌ No se pudo eliminar la ficha");
+      setModal({ open: true, type: 'error', title: 'Error', msg: 'No se pudo eliminar la ficha.' });
     }
   };
 
+  // === NUEVA FUNCIÓN DE EXPORTACIÓN A PDF (1 SOLA HOJA) ===
   const exportarPDF = () => {
     const input = componenteParaImprimirRef.current;
     if (!input) return;
-    const filtros = input.querySelector(`.${styles.historialFiltros}`);
-    if (filtros) filtros.style.display = 'none';
+
+    // 1. Añadimos clase para modo compacto
+    input.classList.add(styles.pdfMode);
+
     html2canvas(input, { scale: 2, useCORS: true })
       .then(canvas => {
-        if (filtros) filtros.style.display = 'flex';
+        // 2. Quitamos la clase inmediatamente después de la foto
+        input.classList.remove(styles.pdfMode);
+
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
-        const ratio = pdfWidth / imgWidth;
-        const imgFinalHeight = imgHeight * ratio;
-        let position = 0;
-        let heightLeft = imgFinalHeight;
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgFinalHeight);
-        heightLeft -= pdf.internal.pageSize.getHeight();
-        while (heightLeft > 0) {
-          position = heightLeft - imgFinalHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgFinalHeight);
-          heightLeft -= pdf.internal.pageSize.getHeight();
-        }
-        pdf.save(`Ficha-Residente-${ficha.datos_personales.rut}.pdf`);
-      }).catch(err => {
-        if (filtros) filtros.style.display = 'flex';
+        
+        // Dimensiones hoja A4 en mm
+        const pdfWidth = 210; 
+        const pdfHeight = 297; 
+
+        // Dimensiones de la imagen capturada
+        const imgProps = pdf.getImageProperties(imgData);
+        const imgWidth = imgProps.width;
+        const imgHeight = imgProps.height;
+
+        // Calculamos el ratio para ajustar al ancho
+        const ratioWidth = pdfWidth / imgWidth;
+        // Calculamos el ratio para ajustar al alto
+        const ratioHeight = pdfHeight / imgHeight;
+
+        // ELEGIMOS EL RATIO MÁS PEQUEÑO para que quepa ENTERA (ancho y alto)
+        // Esto fuerza a que sea UNA sola hoja
+        let ratio = Math.min(ratioWidth, ratioHeight);
+
+        // Calculamos dimensiones finales
+        const finalWidth = imgWidth * ratio;
+        const finalHeight = imgHeight * ratio;
+
+        // Centramos horizontalmente si sobra espacio
+        const xOffset = (pdfWidth - finalWidth) / 2;
+        
+        // Agregamos la imagen ajustada
+        pdf.addImage(imgData, 'PNG', xOffset, 10, finalWidth, finalHeight); // 10mm de margen superior
+        
+        pdf.save(`Ficha-${ficha.datos_personales.rut}.pdf`);
+      })
+      .catch(err => {
+        input.classList.remove(styles.pdfMode); // Asegurar quitar clase si falla
         console.error("Error al generar el PDF:", err);
-        alert("❌ No se pudo generar el PDF.");
+        setModal({ open: true, type: 'error', title: 'Error PDF', msg: 'No se pudo generar el PDF.' });
       });
   };
 
-  if (loading) return (
-    <div>
-      <p className={styles.loadingMsg}>Cargando ficha...</p>
-    </div>
-  );
+  if (loading) return <div><p className={styles.loadingMsg}>Cargando ficha...</p></div>;
 
-  if (!rut) { 
-    return ( 
-      <div>
-        <div className={styles.searchBox}>
-          <form className={styles.searchForm} onSubmit={buscarFicha}>
-            <label htmlFor="rut" className={styles.label}>
-              Ingrese el RUT del residente
-            </label>
-            <input
-              id="rut"
-              type="text"
-              placeholder="Ej: 11111111-1"
-              value={rutBusqueda}
-              onChange={(e) => setRutBusqueda(e.target.value)}
-              className={styles.input}
-            />
-            <button type="submit" className={styles.btnPrimary}>
-              🔍 Buscar
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
-  if (!ficha || ficha.message === "Ficha no encontrada")
+  if (!ficha)
     return (
       <div>
         <p className={styles.errorMsg}>❌ No se encontró la ficha clínica para el RUT: {rut}.</p>
         <div className={styles.searchBox}>
           <form className={styles.searchForm} onSubmit={buscarFicha}>
-            <input
-              type="text"
-              placeholder="Ej: 11111111-1"
-              value={rutBusqueda}
-              onChange={(e) => setRutBusqueda(e.target.value)}
-              className={styles.input}
-            />
+            <input type="text" placeholder="Ej: 11111111-1" value={rutBusqueda} onChange={handleRutChange} className={styles.input} pattern="[0-9kK-]+" title="Formato: números, guión y la letra K para el dígito verificador" maxLength="12" />
             <button type="submit" className={styles.btnPrimary}>Buscar Otro RUT</button>
           </form>
         </div>
@@ -173,16 +220,18 @@ export default function FichaClinica() {
 
   return (
     <div>
-      
+      <ModalCustom isOpen={modal.open} onClose={() => setModal({...modal, open: false})} type={modal.type} title={modal.title} message={modal.msg} onConfirm={modal.onConfirm} confirmText={modal.confirmText} />
+
       <div className={styles.pageContainer} ref={componenteParaImprimirRef}>
-        
         <div className={styles.printTitle}>
           <h1>Ficha Clínica Integral</h1>
           <h2>Residente: {ficha.datos_personales?.nombre}</h2>
           <h3>RUT: {ficha.rut_residente || ficha.datos_personales.rut}</h3>
         </div>
 
+        {/* Solo mostramos el H2 si NO estamos en modo PDF (manejado por CSS styles.pdfMode si quieres ocultarlo también, pero lo dejamos por ahora) */}
         <h2>Ficha Clínica del Residente</h2>
+        
         <div className={styles.sectionBlock}>
           <h3>Datos Personales</h3>
           <ul>
@@ -283,15 +332,9 @@ export default function FichaClinica() {
       </div>
 
       <div className={styles.actionsContainer}>
-        {/* 🚩 CORRECCIÓN CRÍTICA: La ruta ahora es /fichas/:rut/editar 🚩 */}
-        <button 
-            className={styles.btnPrimary} 
-            onClick={() => navigate(`/fichas/${ficha.rut_residente || ficha.datos_personales.rut}/editar`)}
-        >
-            ✏️ Editar
-        </button>
-        <button className={styles.btnDanger} onClick={eliminarFicha}>🗑️ Eliminar</button>
-        <button className={styles.btnPdf} onClick={exportarPDF}>📄 Exportar PDF</button>
+        <button className={styles.btnPrimary} onClick={() => navigate(`/fichas/${ficha.rut_residente || ficha.datos_personales.rut}/editar`)}>✏️ Editar</button>
+        <button className={styles.btnDanger} onClick={solicitarEliminarFicha}>🗑️ Eliminar</button>
+        <button className={styles.btnPdf} onClick={exportarPDF}>📄 Exportar PDF (1 Hoja)</button>
       </div>
       
     </div>
