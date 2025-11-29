@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import '../styles/FormularioSignosVitales.css';
+import '../FormularioSignosVitales.css';
 
 function FormularioSignosVitales() {
     const { rut } = useParams();
@@ -32,7 +32,12 @@ function FormularioSignosVitales() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('https://eleam.onrender.com/api/registros-vitales', formData);
+            const dataToSend = {
+                ...formData,
+                rut: rut, // Aseguramos que el RUT se envíe
+                fecha: new Date().toISOString().split('T')[0]
+            };
+            await axios.post('https://eleam.onrender.com/api/registros-vitales', dataToSend);
             const result = await Swal.fire({
                 title: 'Registro guardado con éxito',
                 icon: 'success',
