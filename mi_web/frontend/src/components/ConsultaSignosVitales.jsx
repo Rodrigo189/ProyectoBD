@@ -16,7 +16,7 @@ function ConsultaSignosVitales() {
         setSignos(null);
 
         try {
-            const response = await axios.get(`http://localhost:5000/api/registros-vitales/${rut}?fecha=${fecha}`);
+            const response = await axios.get(`https://eleam.onrender.com/api/registros-vitales/${rut}?fecha=${fecha}`);
             if (response.data && response.data.length > 0) {
                 setSignos(response.data);
             } else {

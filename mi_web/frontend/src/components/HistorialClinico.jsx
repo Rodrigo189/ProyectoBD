@@ -46,7 +46,7 @@ export default function HistorialClinico() {
   const cargarHistorial = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/historial-clinico/${rut}`);
+      const response = await axios.get(`https://eleam.onrender.com/api/historial-clinico/${rut}`);
       setFicha(response.data);
       setError("");
     } catch (err) {
@@ -62,7 +62,7 @@ export default function HistorialClinico() {
     
     if (query.length < 1) {
       try {
-        const response = await axios.get(`http://localhost:5000/api/buscar-residentes?q=`);
+        const response = await axios.get(`https://eleam.onrender.com/api/buscar-residentes?q=`);
         setSearchResults(response.data);
         setShowSearchDropdown(response.data.length > 0);
       } catch (err) {
@@ -73,7 +73,7 @@ export default function HistorialClinico() {
     }
 
     try {
-      const response = await axios.get(`http://localhost:5000/api/buscar-residentes?q=${query}`);
+      const response = await axios.get(`https://eleam.onrender.com/api/buscar-residentes?q=${query}`);
       setSearchResults(response.data);
       setShowSearchDropdown(true);
     } catch (err) {
@@ -179,7 +179,7 @@ export default function HistorialClinico() {
         observaciones: formData.observaciones,
       };
 
-      const response = await axios.post(`http://localhost:5000/api/signos-vitales`, nuevoRegistro);
+      const response = await axios.post(`https://eleam.onrender.com/api/signos-vitales`, nuevoRegistro);
       
       console.log("Registro guardado:", response.data);
       
@@ -225,7 +225,7 @@ export default function HistorialClinico() {
       console.log(`Eliminando: ${rut}/${registroAEliminar.fecha}/${registroAEliminar.hora}`);
       
       await axios.delete(
-        `http://localhost:5000/api/signos-vitales/${rut}/${registroAEliminar.fecha}/${registroAEliminar.hora}`
+        `https://eleam.onrender.com/api/signos-vitales/${rut}/${registroAEliminar.fecha}/${registroAEliminar.hora}`
       );
       
       setShowConfirm(false);
