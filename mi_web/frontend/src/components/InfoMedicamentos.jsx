@@ -97,7 +97,14 @@ export default function InfoMedicamentos() {
 
   return (
     <div className="dashboard-funcionario">
+      <button id="boton-especial" onClick={() => navigate(`/`)}>  Salir </button>
       <h2>Gestión de Medicamentos</h2>
+        <div className= "breadcrumbs">
+        <span onClick={() => navigate("/")}>Inicio</span> /
+        <span onClick={() => navigate("/principal")}> Informacion Residente </span> /
+        <span onClick={() => navigate("/login")}> Portal de Residentes </span> /
+        <strong> Administrar medicamentos</strong>
+        </div>
 
       {/* Datos del residente */}
       <section>

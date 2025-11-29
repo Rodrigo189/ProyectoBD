@@ -74,8 +74,7 @@ export default function Dashboard() {
       {/* Botones de acción */}
       <div className="botones-accion">
         <button className="boton" onClick={() => navigate(`/ficha-clinica/${rut}`)}>Ver Ficha Clínica</button>
-        <button className="boton" onClick={() => navigate(`/control-anterior/${rut}`)}>Información Control Anterior</button>
-        <button className="boton" onClick={() => navigate(`/medicamentos/${rut}`)}>Información Medicamentos</button>
+        <button className="boton" onClick={() => navigate(`/medicamentos/${rut}`)}>Administrar Medicamentos</button>
         <button className="boton" onClick={() => navigate(`/historial-clinico/${rut}`)}>Ver Historial Clínico</button>
         <button className="boton" onClick={() => navigate('/')}>Salir</button>
       </div>
