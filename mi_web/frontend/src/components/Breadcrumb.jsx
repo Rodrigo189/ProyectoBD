@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Breadcrumb.css';
+import "../styles/Breadcrumb.css";
 
 function Breadcrumb({ items }) {
   const navigate = useNavigate();
