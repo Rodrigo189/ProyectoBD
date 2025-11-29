@@ -292,37 +292,15 @@ def actualizar_o_eliminar_medicamento(rut): # Actualiza o elimina un medicamento
 
 # ---------------- REGISTROS VITALES ----------------
 # Permiten registrar parametros clinicos como presion arterial, temperatura o pulso, vinculados a un residente.
-@app.route('/api/registros-vitales', methods=['POST', 'GET'])
-def manejar_registros_vitales():
-    if request.method == 'POST':
-        # Crear un nuevo registro de signos vitales
-        data = request.get_json() or {}
-
-        # Si no viene fecha/hora, se completa con la actual
-        if "fecha" not in data:
-            data["fecha"] = datetime.now().strftime("%Y-%m-%d")
-        if "hora" not in data:
-            data["hora"] = datetime.now().strftime("%H:%M:%S")
-
-        registros_col.insert_one(data)
-        return jsonify({"mensaje": "Registro guardado con éxito"}), 201
-
-    else:
-        rut = request.args.get("rut")
-
-        filtro = {}
-        if rut:
-            filtro["rut"] = rut  # solo registros de ese residente
-
-        # Traer todos los registros (o solo de ese rut) ordenados por fecha/hora
-        registros = list(
-            registros_col.find(filtro).sort([("fecha", -1), ("hora", -1)])
-        )
-
-        for r in registros:
-            r["_id"] = str(r["_id"])
-
-        return jsonify(registros), 200
+@app.route('/api/registros-vitales', methods=['POST'])
+def crear_registro():
+    data = request.get_json()
+    if "fecha" not in data:
+        data["fecha"] = datetime.now().strftime("%Y-%m-%d")
+    if "hora" not in data:
+        data["hora"] = datetime.now().strftime("%H:%M:%S")
+    registros_col.insert_one(data)
+    return jsonify({"mensaje": "Registro guardado con éxito"}), 201
 
 @app.route('/api/registros-vitales/<id>', methods=['PUT', 'DELETE'])
 def actualizar_o_eliminar_registro(id):
@@ -401,6 +379,177 @@ def buscar_residente():
         return jsonify({"existe": True, "rut": rut})
     else:
         return jsonify({"existe": False})
+
+# Ruta para insertar datos de prueba
+@app.route('/api/insertar-datos-prueba', methods=['POST'])
+def insertar_datos_prueba():
+    try:
+        # Verificar si el residente ya existe
+        residente_existe = residentes_col.find_one({"rut": "11111111-1"})
+        if not residente_existe:
+            residente_prueba = {
+                "rut": "11111111-1",
+                "nombre": "Ana García",
+                "diagnostico": "Hipertensión",
+                "medico_tratante": "Dr. Martínez",
+                "proximo_control": "2025-10-15",
+                "signos_vitales": [
+                    {
+                        "fecha": "2025-11-03",
+                        "hora": "23:23",
+                        "presionSistolica": "120 mmHg",
+                        "presionDiastolica": "80 mmHg",
+                        "temperatura": "36 °C",
+                        "pulso": "75 lpm",
+                        "saturacionO2": "98 %",
+                        "frecuenciaRespiratoria": "16 rpm",
+                        "hemoglucotest": "100 mg/dL"
+                    },
+                    {
+                        "fecha": "2025-11-03",
+                        "hora": "23:24",
+                        "presionSistolica": "110 mmHg",
+                        "presionDiastolica": "60 mmHg",
+                        "temperatura": "40 °C",
+                        "pulso": "40 lpm",
+                        "saturacionO2": "70 %",
+                        "frecuenciaRespiratoria": "16 rpm",
+                        "hemoglucotest": "120 mg/dL"
+                    },
+                    {
+                        "fecha": "2025-11-03",
+                        "hora": "23:28",
+                        "presionSistolica": "110 mmHg",
+                        "presionDiastolica": "80 mmHg",
+                        "temperatura": "40 °C",
+                        "pulso": "40 lpm",
+                        "saturacionO2": "70 %",
+                        "frecuenciaRespiratoria": "16 rpm",
+                        "hemoglucotest": "100 mg/dL"
+                    },
+                    {
+                        "fecha": "2025-11-04",
+                        "hora": "11:40",
+                        "presionSistolica": "60 mmHg",
+                        "presionDiastolica": "60 mmHg",
+                        "temperatura": "36 °C",
+                        "pulso": "75 lpm",
+                        "saturacionO2": "70 %",
+                        "frecuenciaRespiratoria": "16 rpm",
+                        "hemoglucotest": "100 mg/dL"
+                    },
+                    {
+                        "fecha": "2025-11-27",
+                        "hora": "17:47",
+                        "presionSistolica": "123 mmHg",
+                        "presionDiastolica": "80 mmHg",
+                        "temperatura": "40 °C",
+                        "pulso": "123 lpm",
+                        "saturacionO2": "70 %",
+                        "frecuenciaRespiratoria": "16 rpm",
+                        "hemoglucotest": "100 mg/dL"
+                    }
+                ]
+            }
+            residentes_col.insert_one(residente_prueba)
+            return jsonify({"mensaje": "Datos de prueba insertados correctamente"}), 200
+        else:
+            return jsonify({"mensaje": "El residente ya existe"}), 200
+    except Exception as e:
+        print("Error al insertar datos de prueba:", e)
+        return jsonify({"error": str(e)}), 500
+
+# Rutas para Signos Vitales
+@app.route('/api/signos-vitales', methods=['POST'])
+def crear_signo_vital():
+    try:
+        data = request.get_json()
+        rut = data.get('rut')
+        
+        # Crear el registro de signo vital
+        nuevo_registro = {
+            "fecha": data.get("fecha", datetime.now().strftime("%Y-%m-%d")),
+            "hora": data.get("hora"),
+            "presionSistolica": data.get("presionSistolica"),
+            "presionDiastolica": data.get("presionDiastolica"),
+            "pulso": data.get("pulso"),
+            "saturacionO2": data.get("saturacionO2"),
+            "temperatura": data.get("temperatura"),
+            "frecuenciaRespiratoria": data.get("frecuenciaRespiratoria"),
+            "hemoglucotest": data.get("hemoglucotest"),
+            "diuresisDia": data.get("diuresisDia"),
+            "diuresisNoche": data.get("diuresisNoche"),
+            "deposicion": data.get("deposicion"),
+            "vomito": data.get("vomito"),
+            "peso": data.get("peso"),
+            "registradoPor": data.get("registradoPor"),
+            "cargo": data.get("cargo"),
+            "turno": data.get("turno"),
+            "observaciones": data.get("observaciones")
+        }
+        
+        # Agregar el registro al array signos_vitales del residente
+        result = residentes_col.update_one(
+            {"rut": rut},
+            {"$push": {"signos_vitales": nuevo_registro}}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Residente no encontrado"}), 404
+        
+        return jsonify({"mensaje": "Signo vital guardado correctamente"}), 201
+    except Exception as e:
+        print("Error al guardar signo vital:", e)
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/signos-vitales/<rut>/<fecha>/<hora>', methods=['DELETE'])
+def eliminar_signo_vital(rut, fecha, hora):
+    try:
+        result = residentes_col.update_one(
+            {"rut": rut},
+            {"$pull": {"signos_vitales": {"fecha": fecha, "hora": hora}}}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Residente no encontrado"}), 404
+        
+        if result.modified_count == 0:
+            return jsonify({"error": "Registro no encontrado"}), 404
+        
+        return jsonify({"mensaje": "Registro eliminado correctamente"}), 200
+    except Exception as e:
+        print("Error al eliminar signo vital:", e)
+        return jsonify({"error": str(e)}), 500
+
+# Ruta para buscar residentes por nombre o RUT
+@app.route('/api/buscar-residentes', methods=['GET'])
+def buscar_residentes_api():
+    try:
+        query = request.args.get('q', '').lower().strip()
+        
+        if not query or len(query) < 1:
+            # Si no hay búsqueda, retornar todos los residentes
+            residentes = list(residentes_col.find(
+                {},
+                {"_id": 0, "rut": 1, "nombre": 1}
+            ).limit(50))
+            return jsonify(residentes), 200
+        
+        # Buscar por RUT o nombre
+        residentes = list(residentes_col.find(
+            {
+                "$or": [
+                    {"rut": {"$regex": query, "$options": "i"}},
+                    {"nombre": {"$regex": query, "$options": "i"}}
+                ]
+            },
+            {"_id": 0, "rut": 1, "nombre": 1}
+        ).limit(50))
+        
+        return jsonify(residentes), 200
+    except Exception as e:
+        print("Error al buscar residentes:", e)
+        return jsonify({"error": str(e)}), 500
 
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
