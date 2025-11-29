@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import '../FormularioSignosVitales.css';
+import '../styles/FormularioSignosVitales.css';
 
 function FormularioSignosVitales() {
     const { rut } = useParams();
