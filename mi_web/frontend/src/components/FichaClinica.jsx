@@ -31,32 +31,63 @@ function FichaClinica() {
     if (!paciente) return <div>No se encontró la ficha clínica</div>;
 
     return (
-        <div className="ficha-clinica">
-            <h2>Ficha Clínica</h2>
-
-            <div className="seccion-datos">
-                <h3>Datos del Paciente</h3>
-                <p><strong>RUT:</strong> {paciente.rut}</p>
-                <p><strong>Nombre:</strong> {paciente.nombre}</p>
-                <p><strong>Fecha de Nacimiento:</strong> {paciente.fecha_nacimiento}</p>
-                <p><strong>Fecha de Ingreso:</strong> {paciente.fecha_ingreso}</p>
+        <div className="dashboard-container">
+            {/* Banner */}
+            <div className="banner">
+                <div className="logo" style={{ backgroundImage: "url('/image.png')" }}></div>
+                <div className="portal-title">Portal ELEAM Residente</div>
             </div>
 
-            <div className="seccion-medica">
-                <h3>Información Médica</h3>
-                <p><strong>Médico Tratante:</strong> {paciente.medico_tratante}</p>
-                <p><strong>Próximo Control:</strong> {paciente.proximo_control}</p>
-                <p><strong>Diagnóstico:</strong> {paciente.diagnostico}</p>
+            {/* Datos residente */}
+            <div className="datos-residente">
+                <div className="foto-residente"></div>
+                <div className="info-residente">
+                    <p>Nombre residente: {paciente.nombre}</p>
+                    <p>RUN: {paciente.rut}</p>
+                    <p>Médico tratante: {paciente.medico_tratante}</p>
+                    <p>Próximo control: {paciente.proximo_control}</p>
+                </div>
             </div>
 
-            <div className="seccion-medicamentos">
-                <h3>Medicamentos</h3>
-                <p><strong>Nombre:</strong> {paciente.medicamento?.nombre}</p>
-                <p><strong>Dosis:</strong> {paciente.medicamento?.dosis}</p>
-                <p><strong>Médico Indicador:</strong> {paciente.medicamento?.medico_indicador}</p>
-                <p><strong>Caso SOS:</strong> {paciente.medicamento?.caso_sos ? "Sí" : "No"}</p>
-                <p><strong>Fecha Inicio:</strong> {paciente.medicamento?.fecha_inicio}</p>
-                <p><strong>Fecha Término:</strong> {paciente.medicamento?.fecha_termino || "—"}</p>
+            {/* Ficha Clínica */}
+            <div className="ficha-clinica">
+                <h3>Ficha Clínica</h3>
+                <div className="ficha-detalle">
+                    <div className="seccion-datos">
+                        <h4>Datos del Paciente</h4>
+                        <p><strong>Fecha de Nacimiento:</strong> {paciente.fecha_nacimiento}</p>
+                        <p><strong>Fecha de Ingreso:</strong> {paciente.fecha_ingreso}</p>
+                    </div>
+
+                    <div className="seccion-medica">
+                        <h4>Información Médica</h4>
+                        <p><strong>Diagnóstico:</strong> {paciente.diagnostico}</p>
+                    </div>
+
+                    <div className="seccion-medicamentos">
+                        <h4>Medicamentos</h4>
+                        {paciente.medicamentos && paciente.medicamentos.length > 0 ? (
+                            paciente.medicamentos.map((med, index) => (
+                                <div key={index} className="medicamento">
+                                    <p><strong>Nombre:</strong> {med.nombre}</p>
+                                    <p><strong>Dosis:</strong> {med.dosis}</p>
+                                    <p><strong>Médico Indicador:</strong> {med.medico_indicador}</p>
+                                    <p><strong>Caso SOS:</strong> {med.caso_sos ? "Sí" : "No"}</p>
+                                    <p><strong>Fecha Inicio:</strong> {med.fecha_inicio}</p>
+                                    <p><strong>Fecha Término:</strong> {med.fecha_termino || "—"}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No hay medicamentos registrados</p>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Botones de acción */}
+            <div className="botones-accion">
+                <button className="boton" onClick={() => window.location.href = `/dashboard?rut=${paciente.rut}`}>Volver al Dashboard</button>
+                <button className="boton" onClick={() => window.location.href = '/'}>Salir</button>
             </div>
         </div>
     );

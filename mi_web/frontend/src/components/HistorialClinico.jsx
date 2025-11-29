@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/HistorialClinico.css";
+import Breadcrumb from "../styles/Breadcrumb";
 
 export default function HistorialClinico() {
   const { rut } = useParams();
@@ -13,8 +14,15 @@ export default function HistorialClinico() {
   useEffect(() => {
     const cargarHistorial = async () => {
       try {
-        const response = await axios.get(`https://eleam.onrender.com/api/historial-clinico/${rut}`);
-        setFicha(response.data);
+        // Obtener la ficha clínica
+        const fichaResponse = await axios.get(`https://eleam.onrender.com/api/historial-clinico/${rut}`);
+        // Obtener los signos vitales
+        const signosResponse = await axios.get(`https://eleam.onrender.com/api/registros-vitales?rut=${rut}`);
+        
+        setFicha({
+          ...fichaResponse.data,
+          signos_vitales: signosResponse.data
+        });
         setError("");
       } catch (err) {
         console.error("Error al cargar historial:", err);
@@ -33,69 +41,84 @@ export default function HistorialClinico() {
   const signos = ficha.signos_vitales || [];
 
   return (
-    <div className="historial-clinico-container">
-      {/* Encabezado */}
-      <header className="header">
-        <img
-          src={`${process.env.PUBLIC_URL}/image.png`}
-          alt="Logo ELEAM"
-          className="logo"
-        />
-        <h1>Ficha Clínica</h1>
-      </header>
-
-      {/* Datos del residente */}
-      <section className="info-paciente">
-        <p><strong>RUT:</strong> {ficha.rut}</p>
-        <p><strong>Nombre:</strong> {ficha.nombre}</p>
-        <p><strong>Médico tratante:</strong> {ficha.medico_tratante}</p>
-        <p><strong>Diagnóstico:</strong> {ficha.diagnostico}</p>
-        <p><strong>Próximo control:</strong> {ficha.proximo_control}</p>
-      </section>
-
-      {/* Botones */}
-      <div className="botones-container">
-        <button className="btn-accion" onClick={() => navigate("/")}>
-          ← Salir
-        </button>
-        <button className="btn-accion" onClick={() => navigate("/buscar-paciente")}>
-          Buscar Paciente
-        </button>
-        <button className="btn-accion" onClick={() => navigate(`/formulario-signos-vitales/${rut}`)}>
-          Generar Nuevo Reporte
-        </button>
+    <div className="dashboard-container">
+      {/* Banner */}
+      <div className="banner">
+        <div className="logo" style={{ backgroundImage: "url('/image.png')" }}></div>
+        <div className="portal-title">Portal ELEAM Residente</div>
       </div>
 
-      {/* Últimos registros */}
-      <section className="ultimos-registros">
-        <h3>Signos Vitales</h3>
-        <div className="tabla-container">
-        {signos.length > 0 ? (
-        <table>
-            <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Presión Sistólica</th>
-                <th>Presión Diastólica</th>
-            </tr>
-            </thead>
-            <tbody>
-            {signos.map((s, i) => (
-                <tr key={i}>
-                <td>{s.fecha}</td>
-                <td>{s.hora}</td>
-                <td>{s.presionSistolica}</td>
-                <td>{s.presionDiastolica}</td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
-        ) : (
-        <p>No hay signos vitales registrados para este residente.</p>
-        )}
+      {/* Breadcrumb */}
+      <Breadcrumb items={[
+        { label: 'Portal ELEAM', path: '/' },
+        { label: 'Dashboard', path: `/dashboard?rut=${rut}` },
+        { label: 'Historial Clínico', path: null }
+      ]} />
+
+      {/* Datos residente */}
+      <div className="datos-residente">
+        <div className="foto-residente"></div>
+        <div className="info-residente">
+          <p>Nombre residente: {ficha.nombre}</p>
+          <p>RUN: {ficha.rut}</p>
+          <p>Médico tratante: {ficha.medico_tratante}</p>
+          <p>Próximo control: {ficha.proximo_control}</p>
         </div>
-      </section>
+      </div>
+
+      {/* Historial Clínico */}
+      <div className="historial-clinico">
+        <h3>Historial de Signos Vitales</h3>
+        <div className="tabla-container">
+          {signos.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Hora</th>
+                  <th>Presión Sistólica</th>
+                  <th>Presión Diastólica</th>
+                  <th>Temperatura</th>
+                  <th>Pulso</th>
+                  <th>Sat. O2</th>
+                  <th>Frec. Respiratoria</th>
+                  <th>Hemoglucotest</th>
+                </tr>
+              </thead>
+              <tbody>
+                {signos.map((s, i) => (
+                  <tr key={i}>
+                    <td>{s.fecha}</td>
+                    <td>{s.hora}</td>
+                    <td>{s.presionSistolica} mmHg</td>
+                    <td>{s.presionDiastolica} mmHg</td>
+                    <td>{s.temperatura} °C</td>
+                    <td>{s.pulso} lpm</td>
+                    <td>{s.saturacionO2} %</td>
+                    <td>{s.frecuenciaRespiratoria} rpm</td>
+                    <td>{s.hemoglucotest} mg/dL</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No hay signos vitales registrados para este residente.</p>
+          )}
+        </div>
+
+        <div className="diagnostico-seccion">
+          <h4>Diagnóstico Actual</h4>
+          <p>{ficha.diagnostico}</p>
+        </div>
+      </div>
+
+      {/* Botones de acción */}
+      <div className="botones-accion">
+        <button className="boton" onClick={() => window.location.href = `/dashboard?rut=${ficha.rut}`}>Volver</button>
+        <button className="boton" onClick={() => navigate('/buscar-paciente')}>Búsqueda Paciente</button>
+        <button className="boton" onClick={() => window.location.href = `/formulario-signos-vitales/${rut}`}>Generar Nuevo Reporte</button>
+        <button className="boton" onClick={() => window.location.href = '/'}>Salir</button>
+      </div>
     </div>
   );
 }
