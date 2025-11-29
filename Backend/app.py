@@ -4,7 +4,7 @@ from flasgger import Swagger
 from db_nosql import get_db
 
 # --- IMPORTACIÓN DE MÓDULOS ---
-# Fíjate cómo ahora la ruta incluye 'modules.ficha_clinica'
+# NOTA: Se eliminaron login_routes y funcionarios_routes
 
 from modules.ficha_clinica.routes.residentes_routes import residentes_bp
 from modules.ficha_clinica.routes.apoderados_routes import apoderados_bp
@@ -17,8 +17,6 @@ from modules.ficha_clinica.routes.ingresos_routes import ingresos_bp
 from modules.ficha_clinica.routes.ficha_completa_routes import ficha_completa_bp
 from modules.ficha_clinica.routes.fichas_routes import fichas_bp
 from modules.ficha_clinica.routes.historia_routes import historia_bp
-from modules.ficha_clinica.routes.login_routes import login_bp
-from modules.ficha_clinica.routes.funcionarios_routes import funcionarios_bp
 
 app = Flask(__name__)
 
@@ -38,6 +36,8 @@ swagger = Swagger(app, template={
 })
 
 # --- REGISTRO DE BLUEPRINTS ---
+# Se eliminaron los registros de login y funcionarios
+
 app.register_blueprint(ficha_completa_bp)
 app.register_blueprint(residentes_bp)
 app.register_blueprint(apoderados_bp)
@@ -49,8 +49,6 @@ app.register_blueprint(atenciones_bp)
 app.register_blueprint(ingresos_bp)
 app.register_blueprint(fichas_bp)
 app.register_blueprint(historia_bp)
-app.register_blueprint(login_bp)
-app.register_blueprint(funcionarios_bp)
 
 @app.route('/')
 def home():
@@ -64,7 +62,6 @@ def home():
 def health():
     try:
         db = get_db()
-        # Intentamos un comando simple para verificar conexión real
         db.command('ping')
         return jsonify({"status": "ok", "db": "MongoDB conectado exitosamente"})
     except Exception as e:
