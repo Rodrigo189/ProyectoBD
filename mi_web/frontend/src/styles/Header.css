@@ -1,0 +1,48 @@
+.funcionario-header {
+    background: #eaeaea;
+    padding: 0;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+}
+
+.funcionario-header-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 8px 24px;
+    gap: 32px;
+}
+
+.funcionario-brand {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.funcionario-logo {
+    height: 56px;
+    margin-top: 2px;
+}
+
+.funcionario-brand-texts {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.funcionario-brand-red,
+.funcionario-brand-eleam {
+    font-family: 'Inria Sans', sans-serif;
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: #009688;
+    letter-spacing: 0.5px;
+}
+
+.breadcrumb-container {
+    font-family: 'Inria Sans', sans-serif;
+    font-size: 1.6rem;
+    margin-left: 12px;
+    margin-top: 18px;
+    align-self: center;
+}

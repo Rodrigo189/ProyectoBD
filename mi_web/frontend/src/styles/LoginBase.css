@@ -1,0 +1,166 @@
+:root {
+    --color-principal: #009999;
+    --color-hover: #007777;
+    --color-fondo: #e6e6e6;
+    --color-fondo-header: #f2f2f2;
+    --color-texto: #222;
+    --color-secundario-texto: #444;
+    --radio-boton: 999px;
+    --fuente: Arial, sans-serif;
+}
+
+.login-bg {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    font-family: var(--fuente);
+    background-color: #444;
+    overflow: hidden;
+}
+
+.login-img {
+    flex: 1.4;
+    background: url("../img/fondo.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.login-panel {
+    flex: 0.8;
+    background-color: var(--color-fondo);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    border-left: 2px solid #999;
+    box-sizing: border-box;
+}
+
+.login-header {
+    width: 100%;
+    background-color: var(--color-fondo-header);
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 0;
+}
+
+.login-logo {
+    height: 45px;
+    width: auto;
+}
+
+.login-title {
+    color: var(--color-principal);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.login-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 50px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.login-welcome {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-texto);
+    margin-bottom: 10px;
+}
+
+.login-description {
+    color: var(--color-secundario-texto);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 320px;
+}
+
+.login-btn {
+    width: 100%;
+    background-color: var(--color-principal);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: var(--radio-boton);
+    padding: 14px 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.05s ease;
+}
+
+.login-btn:hover {
+    background-color: var(--color-hover);
+}
+
+.login-btn:active {
+    transform: translateY(1px);
+}
+
+/* Botón Atrás */
+.login-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--color-principal);
+    font-size: 1rem;
+    font-weight: bold;
+    border: 2px solid var(--color-principal);
+    border-radius: var(--radio-boton);
+    padding: 10px 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 40px;
+}
+
+.login-back:hover {
+    background-color: var(--color-principal);
+    color: #fff;
+}
+
+/* Scroll bonito */
+.login-buttons::-webkit-scrollbar {
+    width: 8px;
+}
+
+.login-buttons::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.login-buttons::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+@media (max-width: 900px) {
+    .login-bg {
+        flex-direction: column;
+    }
+
+    .login-img {
+        height: 40vh;
+        flex: none;
+    }
+
+    .login-panel {
+        height: 60vh;
+        border-left: none;
+        border-top: 2px solid #999;
+    }
+}

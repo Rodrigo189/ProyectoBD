@@ -1,0 +1,8 @@
+@import "./LoginBase.css";
+
+/* Ajustes específicos de la pantalla general */
+.login-buttons {
+    overflow-y: auto;
+    max-height: 50vh;
+    padding-right: 10px;
+}
