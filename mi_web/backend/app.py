@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify # Importa Flask y utilidades para manejar solicitudes y respuestas JSON
 from flask_pymongo import PyMongo # Importa PyMongo para interactuar con MongoDB
 from flask_cors import CORS # Importa CORS para manejar solicitudes entre diferentes orígenes
-from datetime import datetime # Importa datetime para manejar fechas y horas
+from datetime import datetime, timedelta # Importa datetime para manejar fechas y horas
 import os
 
 # Responses: 200 OK, 201 Created, 400 Fallo, 404 Not Found, 500 Internal Server Error
