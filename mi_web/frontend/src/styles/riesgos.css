@@ -14,6 +14,31 @@
     background: var(--bg);
     min-height: 100vh;
 }
+/* Migas de Pan */
+.breadcrumbs {
+  font-size: 26px;
+  margin-bottom: 26px;
+  color: #555;
+  font-family: 'Inria Sans', sans-serif;
+/* Se encuentre en la izquierda */
+  text-align: left;
+}
+
+.breadcrumbs span {
+  cursor: pointer;
+  color: #1B9AA4;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.breadcrumbs span:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs strong {
+  color: #000;
+  font-weight: 700;
+}
 
 .riesgo-main {
     max-width: 1200px;

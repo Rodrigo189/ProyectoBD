@@ -2,6 +2,8 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Breadcrumbs.css";
 
+// Breadcrumbs viejos importados de la implementación antigua
+
 let hierarchy;
 hierarchy = {
     "/": ["/"],

@@ -1,0 +1,258 @@
+.estad-bg {
+    background: #f4f5f6;
+    min-height: 100vh;
+}
+
+.estad-main {
+    max-width: 1200px;
+    margin: 22px auto;
+    padding: 0 16px;
+}
+
+/* contenedor principal: sidebar + hero */
+.estad-container {
+    display: flex;
+    gap: 26px;
+    /* centrar verticalmente sidebar con el hero */
+    align-items: center;
+    /* antes: flex-start */
+}
+
+/* sidebar: bajar un poco y centrar los botones verticalmente */
+.estad-sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px 12px;
+    /* empuja los botones hacia abajo */
+    justify-content: center;
+    /* centra la columna respecto al hero */
+}
+
+/* botones: hacerlos más anchos y centrar el contenido */
+.side-btn {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    justify-content: center;
+    /* centra icon + texto */
+    flex-direction: row;
+    background: linear-gradient(180deg, #0ea3a3, #078b8b);
+    color: #fff;
+    border: none;
+    padding: 18px 20px;
+    border-radius: 14px;
+    font-weight: 800;
+    text-align: center;
+    /* centra texto */
+    box-shadow: 0 8px 18px rgba(2, 91, 91, 0.12);
+    cursor: pointer;
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
+    font-size: 16px;
+    min-height: 72px;
+    white-space: normal;
+    /* permite saltos de línea */
+}
+
+/* icon dentro del botón ligeramente separado */
+.side-btn .icon {
+    font-size: 22px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-btn span {
+    line-height: 1.05;
+}
+
+.side-btn:hover {
+    transform: translateY(-3px);
+    opacity: 0.98;
+}
+
+/* hero area */
+.estad-hero-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ajustar caption: mantener arriba y centrado */
+.hero-caption {
+    order: -2;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.hero-caption h2 {
+    margin: 0 0 6px;
+    color: #003233;
+    text-align: left;
+    font-size: 22px;
+}
+
+.help-text {
+    color: #666;
+    font-size: 13px;
+    margin: 0;
+}
+
+/* hero banner with slider */
+.estad-hero {
+    background: #D7EDF4;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(3, 36, 42, 0.06);
+    overflow: hidden;
+    position: relative;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* slides wrapper */
+.slides {
+    display: flex;
+    transition: transform 420ms ease;
+    height: 100%;
+}
+
+.slide {
+    width: 100%;
+    flex: 0 0 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide img {
+    width: 100%;
+    max-width: 560px;
+    /* limita ancho de la imagen */
+    height: auto;
+    max-height: 300px;
+    /* limita la altura para no quedar gigante */
+    object-fit: contain;
+    border-radius: 8px;
+    display: block;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.estad-sidebar {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px 12px;
+    justify-content: center;
+    /* NUEVO: baja un poco la columna de botones */
+    margin-top: 24px;
+}
+
+/* dots */
+.hero-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    justify-content: flex-start;
+    padding-left: 10px;
+    order: 1;
+}
+
+.dot {
+    width: 48px;
+    height: 6px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.12);
+    border: none;
+    cursor: pointer;
+}
+
+.dot.active {
+    background: linear-gradient(90deg, #00a7a7, #007f7f);
+    transform: scale(1.06);
+}
+
+/* grid caption alignment adjustments */
+.hero-caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.hero-caption h2 {
+    text-align: center;
+}
+
+.help-text {
+    text-align: center;
+    color: #666;
+}
+
+/* Migas de Pan */
+.breadcrumbs {
+  font-size: 26px;
+  margin-bottom: 26px;
+  color: #555;
+  font-family: 'Inria Sans', sans-serif;
+/* Se encuentre en la izquierda */
+  text-align: left;
+}
+
+.breadcrumbs span {
+  cursor: pointer;
+  color: #1B9AA4;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.breadcrumbs span:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs strong {
+  color: #000;
+  font-weight: 700;
+}
+
+/* responsive: sidebar arriba */
+@media (max-width: 880px) {
+    .estad-container {
+        flex-direction: column;
+    }
+
+    .estad-sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 8px;
+    }
+
+    .side-btn {
+        flex: 1;
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 10px;
+        min-height: 56px;
+    }
+
+    .hero-controls {
+        justify-content: center;
+    }
+
+    .slide img {
+        max-width: 100%;
+        max-height: 220px;
+    }
+
+    .hero-caption h2 {
+        font-size: 18px;
+    }
+}

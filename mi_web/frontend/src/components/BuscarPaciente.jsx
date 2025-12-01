@@ -15,7 +15,7 @@ function BuscarPaciente() {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/buscar-residente', { rut });
+            const response = await axios.post('https://eleam.onrender.com/api/buscar-residente', { rut });
             
             if (response.data.existe) {
                 // Si encontramos al paciente, navegamos a su historial
