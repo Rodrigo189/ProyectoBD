@@ -17,6 +17,58 @@
     margin: 8px 0 20px;
 }
 
+/* AGREGAR: Contenedor de botones de edición */
+.sis-edit-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+/* AGREGAR: Estilos para botones de edición */
+.sis-btn {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sis-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sis-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.sis-btn-edit {
+    background: linear-gradient(135deg, #0ea3a3, #0c8a8a);
+    color: #fff;
+}
+
+.sis-btn-save {
+    background: linear-gradient(135deg, #28a745, #20883a);
+    color: #fff;
+}
+
+.sis-btn-cancel {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.sis-btn-cancel:hover {
+    background: #d0d0d0;
+}
+
 .sis-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -35,6 +87,26 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
     border: 1px solid rgba(0, 0, 0, 0.04);
     min-height: 110px;
+}
+
+/* AGREGAR: Estilos para inputs en modo edición */
+.sis-card input[type="number"] {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 8px 12px;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid #0ea3a3;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 120px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.sis-card input[type="number"]:focus {
+    border-color: #0c8a8a;
+    box-shadow: 0 0 0 3px rgba(14, 163, 163, 0.1);
 }
 
 .sis-value {
@@ -66,31 +138,6 @@
     font-size: 14px;
     text-align: center;
 }
-/* Migas de Pan */
-.breadcrumbs {
-  font-size: 26px;
-  margin-bottom: 26px;
-  color: #555;
-  font-family: 'Inria Sans', sans-serif;
-/* Se encuentre en la izquierda */
-  text-align: left;
-}
-
-.breadcrumbs span {
-  cursor: pointer;
-  color: #1B9AA4;
-  font-weight: 600;
-  transition: 0.2s;
-}
-
-.breadcrumbs span:hover {
-  text-decoration: underline;
-}
-
-.breadcrumbs strong {
-  color: #000;
-  font-weight: 700;
-}
 
 @media (max-width: 720px) {
     .sis-grid {
@@ -106,5 +153,15 @@
     .sis-value {
         font-family: 'Inria Sans', sans-serif;
         font-size: 24px;
+    }
+
+    /* AGREGAR: Responsive para botones */
+    .sis-edit-controls {
+        flex-direction: column;
+    }
+
+    .sis-btn {
+        width: 100%;
+        justify-content: center;
     }
 }
