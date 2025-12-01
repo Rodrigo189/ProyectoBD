@@ -1,0 +1,280 @@
+:root {
+    --bg: #f4f7f8;
+    --card: #ffffff;
+    --shadow: 0 8px 28px rgba(17, 24, 39, .08);
+    --text: #0b2733;
+    --muted: #6b7b84;
+    --teal: #0ea5a8;
+    --green: #28a745;
+    --yellow: #f0ad4e;
+    --red: #e53935;
+}
+
+.riesgo-bg {
+    background: var(--bg);
+    min-height: 100vh;
+}
+
+.riesgo-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 22px 24px 56px;
+    color: var(--text);
+}
+
+.riesgo-title {
+    font-family: 'Inria Sans', sans-serif;
+    text-align: center;
+    font-weight: 800;
+    font-size: 34px;
+    margin: 8px 0 22px;
+}
+
+/* Contenedor de botones de edición - ALINEADO A LA IZQUIERDA */
+.riesgo-edit-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para botones de edición */
+.riesgo-btn {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.riesgo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.riesgo-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.riesgo-btn-edit {
+    background: linear-gradient(135deg, var(--teal), #0b8a8d);
+    color: #fff;
+}
+
+.riesgo-btn-save {
+    background: linear-gradient(135deg, var(--green), #1e8a37);
+    color: #fff;
+}
+
+.riesgo-btn-cancel {
+    background: #e8eaed;
+    color: #5f6368;
+}
+
+.riesgo-btn-cancel:hover {
+    background: #d8dadd;
+}
+
+.riesgo-content {
+    display: grid;
+    grid-template-columns: 0.95fr 1.2fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.patient-card {
+    font-family: 'Inria Sans', sans-serif;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    width: 100%;
+    line-height: 1.55;
+}
+
+.patient-card .sep {
+    color: #9aa7ad;
+    margin: 0 6px;
+}
+
+.riesgo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.riesgo-item {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+}
+
+.riesgo-item .r-title {
+    font-family: 'Inria Sans', sans-serif;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Estilos para select en modo edición */
+.riesgo-select {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
+    background: #fff;
+}
+
+.riesgo-select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(14, 165, 168, 0.1);
+}
+
+.riesgo-pill {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .2px;
+    color: #fff;
+}
+
+.riesgo-pill.green {
+    background: var(--green);
+}
+
+.riesgo-pill.yellow {
+    background: var(--yellow);
+    color: #222;
+}
+
+.riesgo-pill.red {
+    background: var(--red);
+}
+
+.empty {
+    background: #eef4f6;
+    color: var(--muted);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+}
+
+.recommend-card {
+    background: var(--teal);
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    min-height: 260px;
+    font-family: 'Inria Sans', sans-serif;
+}
+
+.recommend-card h3 {
+    font-family: 'Inria Sans', sans-serif;
+    margin: 0 0 12px;
+    font-weight: 800;
+    font-size: 22px;
+}
+
+.recommend-card ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.recommend-card li {
+    margin: 10px 0;
+}
+
+.recommend-card li::marker {
+    color: #d0f3f4;
+}
+
+/* AGREGAR: Estilos para edición de recomendaciones */
+.recommend-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recommend-item-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.recommend-item-edit span {
+    color: #d0f3f4;
+    font-size: 20px;
+    min-width: 10px;
+}
+
+.recommend-input {
+    font-family: 'Inria Sans', sans-serif;
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.recommend-input:focus {
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.recommend-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-family: 'Inria Sans', sans-serif;
+}
+
+@media (max-width: 980px) {
+    .riesgo-content {
+        grid-template-columns: 1fr;
+    }
+
+    .riesgo-edit-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .riesgo-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

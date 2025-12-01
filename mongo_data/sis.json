@@ -1,0 +1,130 @@
+[
+    {
+        "rut": "11111111-1",
+        "horas": 24,
+        "extra": 2,
+        "ausencias": 1,
+        "vacaciones": 5,
+        "incidentes": 0,
+        "registros": [
+            {
+                "fecha": "2024-09-12",
+                "dia": "Jueves",
+                "turno": "Mañana",
+                "horario": "08:00–16:00",
+                "horas": 8,
+                "observaciones": "Normal"
+            },
+            {
+                "fecha": "2024-09-14",
+                "dia": "Sábado",
+                "turno": "Tarde",
+                "horario": "12:00–20:00",
+                "horas": 8,
+                "observaciones": "Apoyo comedor"
+            },
+            {
+                "fecha": "2024-09-18",
+                "dia": "Miércoles",
+                "turno": "Noche",
+                "horario": "20:00–08:00",
+                "horas": 8,
+                "observaciones": "Feriado"
+            }
+        ]
+    },
+    {
+        "rut": "22222222-2",
+        "horas": 28,
+        "extra": 1,
+        "ausencias": 2,
+        "vacaciones": 3,
+        "incidentes": 1,
+        "registros": [
+            {
+                "fecha": "2024-09-10",
+                "dia": "Martes",
+                "turno": "Noche",
+                "horario": "20:00–08:00",
+                "horas": 12,
+                "observaciones": "Guardia nocturna"
+            },
+            {
+                "fecha": "2024-09-13",
+                "dia": "Viernes",
+                "turno": "Día",
+                "horario": "08:00–16:00",
+                "horas": 8,
+                "observaciones": "Consulta médica"
+            },
+            {
+                "fecha": "2024-09-20",
+                "dia": "Viernes",
+                "turno": "Tarde",
+                "horario": "12:00–20:00",
+                "horas": 8,
+                "observaciones": "Apoyo farmacia"
+            }
+        ]
+    },
+    {
+        "rut": "33333333-3",
+        "horas": 26,
+        "extra": 0,
+        "ausencias": 0,
+        "vacaciones": 7,
+        "incidentes": 0,
+        "registros": [
+            {
+                "fecha": "2024-09-09",
+                "dia": "Lunes",
+                "turno": "Mañana",
+                "horario": "07:00–15:00",
+                "horas": 8,
+                "observaciones": "Ingreso residentes"
+            },
+            {
+                "fecha": "2024-09-11",
+                "dia": "Miércoles",
+                "turno": "Largo",
+                "horario": "08:00–18:00",
+                "horas": 10,
+                "observaciones": "Capacitación"
+            },
+            {
+                "fecha": "2024-09-16",
+                "dia": "Lunes",
+                "turno": "Día",
+                "horario": "08:00–16:00",
+                "horas": 8,
+                "observaciones": "Control signos"
+            }
+        ]
+    },
+    {
+        "rut": "44444444-4",
+        "horas": 16,
+        "extra": 0,
+        "ausencias": 0,
+        "vacaciones": 10,
+        "incidentes": 0,
+        "registros": [
+            {
+                "fecha": "2024-09-05",
+                "dia": "Jueves",
+                "turno": "Administración",
+                "horario": "09:00–17:00",
+                "horas": 8,
+                "observaciones": "Reunión proveedores"
+            },
+            {
+                "fecha": "2024-09-19",
+                "dia": "Jueves",
+                "turno": "Administración",
+                "horario": "09:00–17:00",
+                "horas": 8,
+                "observaciones": "Auditoría"
+            }
+        ]
+    }
+]

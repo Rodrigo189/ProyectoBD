@@ -1,0 +1,220 @@
+[
+    {
+        "rut": "11111111-1",
+        "medicamentos": [
+            {
+                "id": 1,
+                "nombre": "Naproxeno",
+                "grupo": "Analgésicos",
+                "pct": 26
+            },
+            {
+                "id": 2,
+                "nombre": "Diclofenaco",
+                "grupo": "Analgésicos",
+                "pct": 33
+            },
+            {
+                "id": 3,
+                "nombre": "Paracetamol",
+                "grupo": "Analgésicos",
+                "pct": 21
+            },
+            {
+                "id": 4,
+                "nombre": "Azitromicina",
+                "grupo": "Antibióticos",
+                "pct": 38
+            },
+            {
+                "id": 5,
+                "nombre": "Amlodipino",
+                "grupo": "Cardíacos",
+                "pct": 52
+            },
+            {
+                "id": 6,
+                "nombre": "Metformina",
+                "grupo": "Antidiabéticos",
+                "pct": 24
+            }
+        ]
+    },
+    {
+        "rut": "22222222-2",
+        "medicamentos": [
+            {
+                "id": 1,
+                "nombre": "Ibuprofeno",
+                "grupo": "Analgésicos",
+                "pct": 45
+            },
+            {
+                "id": 2,
+                "nombre": "Tramadol",
+                "grupo": "Analgésicos",
+                "pct": 18
+            },
+            {
+                "id": 3,
+                "nombre": "Amoxicilina",
+                "grupo": "Antibióticos",
+                "pct": 62
+            },
+            {
+                "id": 4,
+                "nombre": "Ciprofloxacino",
+                "grupo": "Antibióticos",
+                "pct": 29
+            },
+            {
+                "id": 5,
+                "nombre": "Losartán",
+                "grupo": "Cardíacos",
+                "pct": 71
+            },
+            {
+                "id": 6,
+                "nombre": "Atorvastatina",
+                "grupo": "Cardíacos",
+                "pct": 48
+            },
+            {
+                "id": 7,
+                "nombre": "Glibenclamida",
+                "grupo": "Antidiabéticos",
+                "pct": 36
+            },
+            {
+                "id": 8,
+                "nombre": "Omeprazol",
+                "grupo": "Digestivos",
+                "pct": 55
+            }
+        ]
+    },
+    {
+        "rut": "33333333-3",
+        "medicamentos": [
+            {
+                "id": 1,
+                "nombre": "Aspirina",
+                "grupo": "Analgésicos",
+                "pct": 14
+            },
+            {
+                "id": 2,
+                "nombre": "Ketorolaco",
+                "grupo": "Analgésicos",
+                "pct": 28
+            },
+            {
+                "id": 3,
+                "nombre": "Clindamicina",
+                "grupo": "Antibióticos",
+                "pct": 42
+            },
+            {
+                "id": 4,
+                "nombre": "Ceftriaxona",
+                "grupo": "Antibióticos",
+                "pct": 31
+            },
+            {
+                "id": 5,
+                "nombre": "Enalapril",
+                "grupo": "Cardíacos",
+                "pct": 67
+            },
+            {
+                "id": 6,
+                "nombre": "Bisoprolol",
+                "grupo": "Cardíacos",
+                "pct": 39
+            },
+            {
+                "id": 7,
+                "nombre": "Insulina",
+                "grupo": "Antidiabéticos",
+                "pct": 58
+            },
+            {
+                "id": 8,
+                "nombre": "Ranitidina",
+                "grupo": "Digestivos",
+                "pct": 23
+            },
+            {
+                "id": 9,
+                "nombre": "Lorazepam",
+                "grupo": "Sedantes",
+                "pct": 16
+            }
+        ]
+    },
+    {
+        "rut": "44444444-4",
+        "medicamentos": [
+            {
+                "id": 1,
+                "nombre": "Metamizol",
+                "grupo": "Analgésicos",
+                "pct": 35
+            },
+            {
+                "id": 2,
+                "nombre": "Morfina",
+                "grupo": "Analgésicos",
+                "pct": 12
+            },
+            {
+                "id": 3,
+                "nombre": "Levofloxacino",
+                "grupo": "Antibióticos",
+                "pct": 47
+            },
+            {
+                "id": 4,
+                "nombre": "Metronidazol",
+                "grupo": "Antibióticos",
+                "pct": 25
+            },
+            {
+                "id": 5,
+                "nombre": "Carvedilol",
+                "grupo": "Cardíacos",
+                "pct": 54
+            },
+            {
+                "id": 6,
+                "nombre": "Digoxina",
+                "grupo": "Cardíacos",
+                "pct": 19
+            },
+            {
+                "id": 7,
+                "nombre": "Sitagliptina",
+                "grupo": "Antidiabéticos",
+                "pct": 41
+            },
+            {
+                "id": 8,
+                "nombre": "Lansoprazol",
+                "grupo": "Digestivos",
+                "pct": 33
+            },
+            {
+                "id": 9,
+                "nombre": "Alprazolam",
+                "grupo": "Sedantes",
+                "pct": 22
+            },
+            {
+                "id": 10,
+                "nombre": "Salbutamol",
+                "grupo": "Respiratorios",
+                "pct": 38
+            }
+        ]
+    }
+]
