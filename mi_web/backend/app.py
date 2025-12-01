@@ -126,6 +126,19 @@ def listar_o_crear_funcionarios(): # Maneja la lista y creacion de funcionarios
             else:
                 data["email"] = "desconocido@eleam.cl"
 
+             # Esto se usa para que el otro grupo tenga toda la info lista para editar.
+            data.setdefault("telefono", "")
+            data.setdefault("direccion", "")
+            data.setdefault("nacimiento", "")          # o None si prefieres
+            data.setdefault("tipoContrato", "Indefinido")
+            data.setdefault("inicio", data["fecha_ingreso"])  # por defecto igual a fecha_ingreso
+            data.setdefault("termino", "")             # contrato sin termino definido
+
+            # Campos numericos de remuneraciones
+            data.setdefault("sueldoBruto", 0)
+            data.setdefault("sueldoLiquido", 0)
+            data.setdefault("bonos", 0)
+            data.setdefault("fechaPago", "")           # lo pueden setear despues
 
             # Insertar en MongoDB
             funcionarios_col.insert_one(data)

@@ -47,7 +47,7 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
         <table border="1">
          <thead>
           <tr>
-            <th>RUT</th><th>Nombres</th><th>Apellidos</th><th>Cargo</th><th>Fecha de ingreso</th><th>Asistencia</th><th>Acciones</th>
+            <th>RUT</th><th>Nombres</th><th>Apellidos</th><th>Cargo</th><th>Fecha de ingreso</th><th>Teléfono</th><th>Dirección</th><th>Nacimiento</th><th>Asistencia</th><th>Acciones</th>
           </tr>
         </thead>
           <tbody>
@@ -58,6 +58,9 @@ export default function DashboardFuncionario({ usuario }) { // Recibe el nombre 
                 <td>{f.apellidos}</td>
                 <td>{f.cargo}</td>
                 <td>{f.fecha_ingreso}</td>
+                <td>{f.telefono || "-"}</td>
+                <td>{f.direccion || "-"}</td>
+                <td>{f.nacimiento || "-"}</td>
                 <td>{f.asistencia ? "Sí" : "No"}</td>
                 <td>
                   <button onClick={() => setEditing(f)}>Editar</button>

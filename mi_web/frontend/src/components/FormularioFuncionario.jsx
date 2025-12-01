@@ -9,6 +9,9 @@ export default function FormularioFuncionario({ funcionario, setEditing, refresh
   const [cargo, setCargo] = useState(funcionario.cargo || ""); // Estado para cada campo del formulario
   const [fechaIngreso, setFechaIngreso] = useState(funcionario.fecha_ingreso || ""); // Estado para cada campo del formulario
   const [asistencia, setAsistencia] = useState(!!funcionario.asistencia); // booleano para asistencia
+  const [telefono, setTelefono] = useState(funcionario.telefono || "");
+  const [direccion, setDireccion] = useState(funcionario.direccion || "");
+  const [nacimiento, setNacimiento] = useState(funcionario.nacimiento || "");
 
   const handleSubmit = async () => { // Funcion para manejar el envio del formulario
     const url = funcionario.rut
@@ -21,7 +24,15 @@ export default function FormularioFuncionario({ funcionario, setEditing, refresh
       method,
       headers: { "Content-Type": "application/json" }, // Indicar que se envia JSON
       credentials: "include", // Incluir cookies en la solicitud
-      body: JSON.stringify({ rut, nombres, apellidos, cargo, fecha_ingreso: fechaIngreso, asistencia }) // Cuerpo de la solicitud con los datos del formulario
+      body: JSON.stringify({rut,
+      nombres,
+      apellidos,
+      cargo,
+      fecha_ingreso: fechaIngreso,
+      asistencia,
+      telefono,
+      direccion,
+      nacimiento }) // Cuerpo de la solicitud con los datos del formulario
     });
 
     setTimeout(() => { // Esperar un momento antes de refrescar la lista
@@ -38,6 +49,14 @@ export default function FormularioFuncionario({ funcionario, setEditing, refresh
       <input placeholder="Apellidos" value={apellidos} onChange={e => setApellidos(e.target.value)} />
       <input placeholder="Cargo" value={cargo} onChange={e => setCargo(e.target.value)} />
       <input type="date" value={fechaIngreso} onChange={e => setFechaIngreso(e.target.value)} />
+      <input placeholder="Teléfono" value={telefono} onChange={e => setTelefono(e.target.value)}/>
+      <input placeholder="Dirección" value={direccion} onChange={e => setDireccion(e.target.value)}/>
+      <label>Fecha de nacimiento:</label>
+      <input
+        type="date"
+        value={nacimiento}
+        onChange={e => setNacimiento(e.target.value)}
+      />
       <label>
         Asistencia:
         <input type="checkbox" checked={asistencia} onChange={e => setAsistencia(e.target.checked)} />
