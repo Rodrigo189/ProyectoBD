@@ -1,0 +1,100 @@
+[
+    {
+        "rut": "11111111-1",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Ergonomía",
+                "detalle": "Sobrecarga lumbar",
+                "nivel": "Medio"
+            },
+            {
+                "id": 2,
+                "tipo": "Proceso",
+                "detalle": "Registro atrasado",
+                "nivel": "Bajo"
+            },
+            {
+                "id": 3,
+                "tipo": "Químico",
+                "detalle": "Exposición a desinfectantes",
+                "nivel": "Bajo"
+            }
+        ]
+    },
+    {
+        "rut": "22222222-2",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Bioseguridad",
+                "detalle": "Guantes incompletos",
+                "nivel": "Bajo"
+            },
+            {
+                "id": 2,
+                "tipo": "Accidente",
+                "detalle": "Corte leve",
+                "nivel": "Medio"
+            },
+            {
+                "id": 3,
+                "tipo": "Ergonomía",
+                "detalle": "Postura prolongada",
+                "nivel": "Alto"
+            },
+            {
+                "id": 4,
+                "tipo": "Químico",
+                "detalle": "Manejo medicamentos",
+                "nivel": "Medio"
+            }
+        ]
+    },
+    {
+        "rut": "33333333-3",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Ergonomía",
+                "detalle": "Levantamiento pacientes",
+                "nivel": "Alto"
+            },
+            {
+                "id": 2,
+                "tipo": "Proceso",
+                "detalle": "Protocolo incompleto",
+                "nivel": "Medio"
+            },
+            {
+                "id": 3,
+                "tipo": "Psicosocial",
+                "detalle": "Carga emocional",
+                "nivel": "Medio"
+            },
+            {
+                "id": 4,
+                "tipo": "Biológico",
+                "detalle": "Contacto fluidos",
+                "nivel": "Bajo"
+            }
+        ]
+    },
+    {
+        "rut": "44444444-4",
+        "items": [
+            {
+                "id": 1,
+                "tipo": "Administrativo",
+                "detalle": "Documentación pendiente",
+                "nivel": "Bajo"
+            },
+            {
+                "id": 2,
+                "tipo": "Proceso",
+                "detalle": "Auditoría atrasada",
+                "nivel": "Medio"
+            }
+        ]
+    }
+]
