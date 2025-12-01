@@ -1,6 +1,6 @@
 import perfil from "../img/perfil.png";
 
-// --- Helpers de API (usa proxy http://localhost:5000 desde package.json) ---
+// --- Helpers de API (usa proxy https://eleam.onrender.com desde package.json) ---
 const token = () => localStorage.getItem("token");
 const authHeaders = () => (token() ? { Authorization: `Bearer ${token()}` } : {});
 
@@ -58,6 +58,11 @@ export async function fetchFuncionarioById(idOrRut) {
 // NUEVO: obtener registros SIS por RUT (para dashboard)
 export async function fetchSisByRut(rut) {
     return apiFetch(`/api/sis/${encodeURIComponent(rut)}`);
+}
+
+// AGREGADO: Obtener datos del sistema por usuario (alias para SistemaPage)
+export async function fetchSistemaByUser(idOrRut) {
+    return apiFetch(`/api/sis/${encodeURIComponent(idOrRut)}`);
 }
 
 // Resumen mensual: mapea desde /api/sis/<rut>
@@ -177,6 +182,39 @@ export async function fetchEstadisticasSistema(
         riesgosPorNivel: { bajo: 9, medio: 4, alto: 2 },
         ausentismo: { tasa: 3.8, justificadas: 9, injustificadas: 4 },
     };
+}
+
+// Actualizar probabilidades de un usuario
+export async function updateProbabilidades(idOrRut, items) {
+    const res = await fetch(`/api/probabilidades/${encodeURIComponent(idOrRut)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ items }),
+    });
+    if (!res.ok) throw await res.json().catch(() => ({ error: res.status }));
+    return res.json();
+}
+
+// Actualizar riesgos de un usuario
+export async function updateRiesgos(idOrRut, items) {
+    const res = await fetch(`/api/riesgos/${encodeURIComponent(idOrRut)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify({ items }),
+    });
+    if (!res.ok) throw await res.json().catch(() => ({ error: res.status }));
+    return res.json();
+}
+
+// Actualizar datos del sistema (SIS) de un usuario
+export async function updateSistema(idOrRut, data) {
+    const res = await fetch(`/api/sis/${encodeURIComponent(idOrRut)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", ...authHeaders() },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok) throw await res.json().catch(() => ({ error: res.status }));
+    return res.json();
 }
 
 // Alias compatible
