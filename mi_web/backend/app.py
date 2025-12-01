@@ -14,7 +14,7 @@ import os
 # entre el frontend (React) y el backend (Flask), evitando bloqueos por politica de mismo origen.
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True) #Habilita CORS para todas las rutas /api/*
+CORS(app, resources={r"/api/*": {"origins": ["https://clinica-eleam.onrender.com"] }}, supports_credentials=True) #Habilita CORS para todas las rutas /api/*
 
 # PyMongo se utiliza para establecer la conexion con MongoDB,
 # donde se almacenan los datos medicos, residentes, funcionarios, etc.
