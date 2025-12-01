@@ -174,6 +174,7 @@ export default function InfoMedicamentos() {
             residentes={[{ rut, nombre: residente.nombre }]}
             funcionarios={funcionarios}
             mostrarTitulo={false}
+            rutResidenteFijo={rut}
           />
         </section>
       )}

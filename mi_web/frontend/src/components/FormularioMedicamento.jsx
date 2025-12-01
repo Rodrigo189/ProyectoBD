@@ -1,14 +1,18 @@
 import { useState } from "react";
 import "../styles/DashboardFuncionario.css";
 
-export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes, funcionarios,  mostrarTitulo = true,}) { // Recibe el medicamento a editar, funcion para cerrar el formulario, funcion para refrescar la lista y lista de residentes
-  const [rut_residente, setRutResidente] = useState(medicamento.rut || medicamento.id || ""); // Estado para cada campo del formulario
+export default function FormularioMedicamento({ medicamento, setEditing, refresh, residentes, funcionarios,  mostrarTitulo = true,   rutResidenteFijo,}) { // Recibe el medicamento a editar, funcion para cerrar el formulario, funcion para refrescar la lista y lista de residentes
+  const [rut_residente, setRutResidente] = useState(medicamento.rut_residente || rutResidenteFijo || ""); // Estado para cada campo del formulario
   const [nombre, setNombre] = useState(medicamento.nombre || ""); // Estado para cada campo del formulario
   const [dosis, setDosis] = useState(medicamento.dosis || ""); // Estado para cada campo del formulario
   const [caso_sos, setCasoSos] = useState(medicamento.caso_sos || false); // Estado para cada campo del formulario
   const [medico_indicador, setMedicoIndicador] = useState(medicamento.medico_indicador || ""); // Estado para cada campo del formulario
   const [fecha_inicio, setFechaInicio] = useState(medicamento.fecha_inicio || ""); // Estado para cada campo del formulario
   const [fecha_termino, setFechaTermino] = useState(medicamento.fecha_termino || ""); // Estado para cada campo del formulario
+
+  useEffect(() => {
+    if (rutResidenteFijo) setRutResidente(rutResidenteFijo);
+  }, [rutResidenteFijo]);
 
   const handleSubmit = async () => { // Funcion para manejar el envio del formulario
     if (!rut_residente) {
@@ -58,7 +62,8 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
       <input
         placeholder="RUT del Residente"
         value={rut_residente} // Estado del RUT del residente
-        readOnly
+        onChange={e => setRutResidente(e.target.value)}
+        disabled={!!rutResidenteFijo} 
       />
       <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
       <input placeholder="Dosis" value={dosis} onChange={e => setDosis(e.target.value)} />
