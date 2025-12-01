@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../MenuPrincipal.css";
+import "../styles/MenuPrincipal.css";
 
 export default function MenuPrincipal() {
   const navigate = useNavigate();
@@ -9,15 +9,7 @@ export default function MenuPrincipal() {
     <div className="menu-principal">
       {/* Fondo izquierda */}
       <div
-        className="menu-fondo"
-        style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL + '/ELEAM.png'})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.9,
-        }}
-      ></div>
+        className="menu-fondo" style={{ backgroundImage: `url(${"ELEAM.png"})` }}></div>
 
       {/* Panel derecho */}
       <div className="menu-panel">
@@ -37,7 +29,7 @@ export default function MenuPrincipal() {
         {/* Lista de botones */}
         <div className="menu-botones">
           <button onClick={() => navigate("/login-form")}>FICHA CLÍNICA</button>
-          <button onClick={() => navigate("/login-form?from=signos")}>SIGNOS VITALES</button>
+          <button onClick={() => navigate("/historial-clinico/11111111-1")}>SIGNOS VITALES</button>
           <button onClick={() => navigate("/parametros-clinicos")}>PARÁMETROS CLÍNICOS</button>
           <button onClick={() => navigate("/principal")}>GESTIÓN DE PERSONAL</button>
           <button onClick={() => navigate("/login-form")}>MEDICAMENTOS</button>

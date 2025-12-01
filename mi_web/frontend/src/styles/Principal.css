@@ -1,0 +1,170 @@
+/* --------------------------
+   HEADER PRINCIPAL
+--------------------------- */
+.principal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e4e4e4;
+  height: 96px;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.3);
+  padding: 0 50px;
+  box-sizing: border-box;
+}
+
+.header-logo img {
+  height: 76px;
+  width: auto;
+}
+
+.titulo-header {
+  font-family: 'Inria Sans', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  margin: 0 auto;
+  text-align: center;
+  flex-grow: 1;
+  position: relative;
+  right: 90px; /* centra visualmente con el logo */
+}
+
+/* --------------------------
+   SUB-HEADER
+--------------------------- */
+.sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 60px -20px 50px;
+}
+
+/* Título “Personal De Turno:” */
+.subtitulo {
+  font-family: 'Inria Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+}
+
+/* --------------------------
+   BOTONES EXTERNOS
+--------------------------- */
+.botones-externos {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Botones “Salir” e “Iniciar sesión” */
+.btn-salir,
+.btn-iniciar {
+  background-color: #1B9AA4;
+  color: white;
+  font-family: 'Inria Sans', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  border: none;
+  border-radius: 40px;
+  width: 190px;
+  height: 55px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-salir:hover,
+.btn-iniciar:hover {
+  background-color: #168792;
+  transform: scale(1.03);
+}
+
+.flecha {
+  font-size: 22px;
+  line-height: 0;
+  font-weight: 400;
+}
+
+/* --------------------------
+   CONTENIDO PRINCIPAL
+--------------------------- */
+.principal-main {
+  padding: 25px 60px;
+}
+
+.principal-main h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* --------------------------
+   CUADRÍCULA DE PERSONAL
+--------------------------- */
+.personal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 35px 45px; /* Espaciado más natural */
+  justify-items: center;
+  margin-top: 20px;
+}
+
+/* Tarjeta del personal */
+.personal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px;
+}
+
+.foto-personal {
+  width: 150px;
+  height: 150px;
+  border: 2px solid #000;
+  background: white;
+}
+
+.info-personal {
+  font-size: 17px;
+  line-height: 1.4;
+  margin-top: 6px;
+}
+
+.info-personal strong {
+  font-weight: 700;
+}
+
+.info{
+  color: #168792;
+}
+
+/* Migas de Pan */
+.breadcrumbs {
+  font-size: 26px;
+  margin-bottom: 26px;
+  color: #555;
+  font-family: 'Inria Sans', sans-serif;
+}
+
+.breadcrumbs span {
+  cursor: pointer;
+  color: #1B9AA4;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.breadcrumbs span:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs strong {
+  color: #000;
+  font-weight: 700;
+}

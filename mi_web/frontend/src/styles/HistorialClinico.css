@@ -1,0 +1,557 @@
+/* Estilos para el componente HistorialClinico */
+.historial-clinico-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    position: relative;
+    font-size: 16px;
+}
+
+/* Breadcrumb de Navegación */
+.breadcrumb-nav {
+    background-color: #e8e8e8;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.breadcrumb-nav a {
+    color: #00A3B5;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.breadcrumb-nav a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-nav .separator {
+    color: #999;
+    margin: 0 5px;
+    font-size: 16px;
+}
+
+.breadcrumb-nav .current {
+    color: #333;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.breadcrumb-nav .breadcrumb-button {
+    color: #00A3B5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.breadcrumb-nav .breadcrumb-button:hover {
+    text-decoration: underline;
+}
+
+/* Buscador de Paciente */
+.buscador-section {
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.buscador-container {
+    position: relative;
+    max-width: 400px;
+}
+
+.buscador-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.buscador-input:focus {
+    outline: none;
+    border-color: #00A3B5;
+    box-shadow: 0 0 0 2px rgba(0, 163, 181, 0.1);
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-item {
+    padding: 14px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    font-size: 15px;
+}
+
+.search-item:hover {
+    background-color: #f0f8ff;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item strong {
+    color: #00A3B5;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header .logo {
+    height: 40px;
+    margin-right: 20px;
+}
+
+.header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.info-paciente {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-paciente p {
+    margin: 12px 0;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.info-paciente strong {
+    color: #333;
+    font-weight: 600;
+}
+
+.botones-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-accion {
+    background-color: #00A3B5;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    flex: 1;
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-accion:hover {
+    background-color: #008999;
+}
+
+.ultimos-registros {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ultimos-registros h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.tabla-container {
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th, td {
+    padding: 14px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+}
+
+th {
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Estilos para Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 8px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+    background-color: #f8f9fa;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    flex: 1 1 100%;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #00A3B5;
+    box-shadow: 0 0 0 2px rgba(0, 163, 181, 0.1);
+}
+
+.form-group span {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+}
+
+.radio-group {
+    flex-direction: row;
+    align-items: center;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    margin-right: 15px;
+    font-weight: 400;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 5px;
+    margin-bottom: 0;
+    width: auto;
+}
+
+.validation-error {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 15px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    border-left: 5px solid #c62828;
+    font-weight: 500;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px;
+    border-top: 1px solid #ddd;
+    background-color: #f8f9fa;
+}
+
+.btn-cancelar,
+.btn-guardar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btn-cancelar {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.btn-cancelar:hover {
+    background-color: #e0e0e0;
+}
+
+.btn-guardar {
+    background-color: #00A3B5;
+    color: white;
+}
+
+.btn-guardar:hover {
+    background-color: #008999;
+}
+
+.btn-eliminar {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.btn-eliminar:hover {
+    background-color: #f5c6cb;
+}
+
+/* Modal de Confirmación */
+.modal-confirm {
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-confirm h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.modal-confirm p {
+    margin: 10px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.confirm-warning {
+    color: #c62828;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-aceptar {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btn-aceptar:hover {
+    background-color: #c82333;
+}
+
+/* Botón Flotante Circular */
+.btn-flotante-circular {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #00A3B5;
+    color: white;
+    border: none;
+    font-size: 32px;
+    font-weight: 300;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 163, 181, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.btn-flotante-circular:hover {
+    background-color: #008999;
+    box-shadow: 0 6px 16px rgba(0, 163, 181, 0.4);
+    transform: scale(1.1);
+}
+
+/* Modal de Éxito */
+.modal-success {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #4caf50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0 auto 20px;
+}
+
+.modal-success h3 {
+    font-size: 24px;
+    color: #333;
+    margin: 0 0 10px 0;
+    font-weight: 600;
+}
+
+.modal-success p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.btn-flotante-circular:active {
+    transform: scale(0.95);
+}

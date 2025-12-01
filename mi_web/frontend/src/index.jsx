@@ -12,6 +12,7 @@ import BuscarPaciente from "./components/BuscarPaciente";
 import HistorialClinico from "./components/HistorialClinico";
 import MenuPrincipal from "./components/MenuPrincipal";
 import SeleccionUsuario from "./components/SeleccionUsuario";
+import InfoMedicamentos from "./components/InfoMedicamentos";
 import "@fontsource/inria-sans";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -29,6 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/historial-clinico/:rut" element={<HistorialClinico />} />
         <Route path="/formulario-signos-vitales/:rut" element={<FormularioSignosVitales />} />
         <Route path="/seleccion-usuario" element={<SeleccionUsuario />} />
+        <Route path="/medicamentos/:rut" element={<InfoMedicamentos />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

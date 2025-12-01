@@ -1,27 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../Principal.css";
+import "../styles/Principal.css";
 
-export default function Principal() {
-  const navigate = useNavigate();
+export default function Principal() { // Componente principal del portal ELEAM
+  const navigate = useNavigate(); // Hook para navegar programaticamente
+  const [personal, setPersonal] = useState([]); // Estado para almacenar los funcionarios
 
-  const personal = [
-    { id: 1, nombre: "..... ... ...", cargo: "Enfermera", email: "...@eleam.chile.cl", imagen: "Mujer.png" },
-    { id: 2, nombre: "..... ... ...", cargo: "Médico", email: "...@eleam.chile.cl", imagen: "Hombre.png" },
-    { id: 3, nombre: "..... ... ...", cargo: "Auxiliar", email: "...@eleam.chile.cl", imagen: "Hombre.png" },
-    { id: 4, nombre: "..... ... ...", cargo: "Enfermero", email: "...@eleam.chile.cl", imagen: "Hombre.png" },
-    { id: 5, nombre: "..... ... ...", cargo: "Enfermera", email: "...@eleam.chile.cl", imagen: "Mujer.png" },
-    { id: 6, nombre: "..... ... ...", cargo: "Auxiliar", email: "...@eleam.chile.cl", imagen: "Mujer.png" },
-    { id: 7, nombre: "..... ... ...", cargo: "Médico", email: "...@eleam.chile.cl", imagen: "Hombre.png" },
-    { id: 8, nombre: "..... ... ...", cargo: "Médico", email: "...@eleam.chile.cl", imagen: "Mujer.png" },
-  ];
+  // Logica para cargar funcionarios desde el backend
+  useEffect(() => {
+    const fetchPersonal = async () => {
+      try {
+        const response = await fetch("https://eleam.onrender.com/api/funcionarios");
+        const data = await response.json();
+        setPersonal(data);
+      } catch (error) {
+        console.error("Error al cargar funcionarios:", error);
+      }
+    };
+
+    fetchPersonal();
+  }, []);
 
   return (
     <div className="principal-container">
       {/* Encabezado principal */}
       <header className="principal-header">
         <div className="header-logo">
-          <img src={`${process.env.PUBLIC_URL}/image.png`} alt="Logo ELEAM" />
+          <img src={`${process.env.PUBLIC_URL}/image.png`} alt="Logo ELEAM" /> 
+        </div>
+        <div className="breadcrumbs">
+          <span onClick={() => navigate("/")}>Inicio</span> /
+          <strong>Personal</strong>
         </div>
         <h1 className="titulo-header">Portal ELEAM</h1>
       </header>
@@ -42,20 +51,29 @@ export default function Principal() {
       {/* Cuerpo principal */}
       <main className="principal-main">
         <div className="personal-grid">
-          {personal.map((p) => (
-            <div key={p.id} className="personal-card">
-              <img
-                src={`${process.env.PUBLIC_URL}/${p.imagen}`}
-                alt={p.nombre}
-                className="foto-personal"
-              />
-              <div className="info-personal">
-                <p><strong>Nombre:</strong> {p.nombre}</p>
-                <p><strong>Funcionario:</strong> {p.cargo}</p>
-                <p><strong>Email:</strong> {p.email}</p>
+          {personal.map((p, index) => {
+            const imagen = p.cargo.toLowerCase().includes("enfermera") || p.cargo.toLowerCase().includes("auxiliar")
+              ? "Mujer.png"
+              : "Hombre.png";
+
+            return (
+              <div key={index} className="personal-card">
+                <img
+                  src={`${process.env.PUBLIC_URL}/${imagen}`}
+                  alt={`${p.nombres} ${p.apellidos}`}
+                  className="foto-personal"
+                />
+                <div className="info-personal">
+                  <p className="info"><u><strong>Nombre:</strong></u></p>
+                  <p>{p.nombres.split(" ")[0]} {p.apellidos.split(" ")[0]}</p>
+                  <p className="info"><u><strong>Cargo:</strong></u></p>
+                  <p>{p.cargo}</p>
+                  <p className="info"><u><strong>Email:</strong></u></p>
+                  <p>{p.email}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </main>
     </div>

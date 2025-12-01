@@ -1,5 +1,5 @@
 import React from "react";
-import "../FormularioTurno.css"; // Asegúrate que esté en la misma carpeta
+import "../styles/FormularioTurno.css"; // Asegúrate que esté en la misma carpeta
 
 export default function FormularioTurno() {
   return (
