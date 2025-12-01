@@ -7,6 +7,11 @@ import DashboardFuncionario from "./components/DashboardFuncionario";
 import FormularioTurno from "./components/FormularioTurno";
 import MenuPrincipal from "./components/MenuPrincipal";
 import InfoMedicamentos from "./components/InfoMedicamentos"
+import HistorialClinico from "./components/HistorialClinico"
+import HistorialDetallado from "./components/HistorialDetallado"
+import FichaClinica from "./components/FichaClinica";
+import ConsultaSignosVitales from "./components/ConsultaSignosVitales";
+import BusquedaPaciente from "./components/BusquedaPaciente";
 import LoginGeneral from "./components/LoginPage";
 import LoginSelectionLyP from "./components/LoginSelectPagos";
 import LoginSelectionRyE from "./components/LoginSelectReport";
@@ -40,6 +45,11 @@ function App() {
         <Route path="/formulario" element={<FormularioTurno />} />
         <Route path="/dashboard-funcionario" element={<DashboardFuncionario />} />
         <Route path="/medicamentos/:rut" element={<InfoMedicamentos />} />
+        <Route path="/ficha-clinica/:rut" element={<FichaClinica />} />
+        <Route path="/historial-clinico/:rut" element={<HistorialClinico />} />
+        <Route path="/signos-vitales/:rut" element={<ConsultaSignosVitales />} />
+        <Route path="/signos-vitales" element={<ConsultaSignosVitales />} />
+        <Route path="/buscar-paciente" element={<BusquedaPaciente />} />
         <Route path="/LoginSelectionLyP" element={<LoginSelectionLyP />} />
         <Route path="/LoginSelectionRyE" element={<LoginSelectionRyE />} />
         <Route path="/FuncionarioDashboard" element={<FuncionarioDashboard />} />
