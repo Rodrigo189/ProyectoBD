@@ -1,0 +1,185 @@
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.login-funcionario-bg {
+    min-height: 100vh;
+    width: 100%;
+    background: #e5e5e5;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-family: 'Inria Sans', sans-serif;
+}
+
+.funcionario-back-icon {
+    width: 28px;
+    height: 28px;
+    display: inline-grid;
+    place-items: center;
+    background: #008f8f;
+    color: white;
+    border-radius: 50%;
+    flex: 0 0 28px;
+    /* tamaño fijo del círculo del icono */
+}
+
+.funcionario-back-text {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    font-size: 0.95rem;
+    /* tamaño del texto más compacto */
+}
+
+.funcionario-main {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 26px 16px 48px;
+}
+
+.funcionario-welcome-text {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 8px 0 18px;
+    color: #222;
+    text-align: center;
+}
+
+.funcionario-form-wrap {
+    width: 30vw;
+    height: 55vh;
+    display: flex;
+    justify-content: center;
+}
+
+.funcionario-login-card {
+    width: 100%;
+    max-width: 620px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 26px 36px 34px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    position: relative;
+}
+
+.funcionario-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: -6px 0 8px 0;
+    padding-left: 6px;
+}
+
+.funcionario-badge-bar {
+    width: 120px;
+    height: 16px;
+    background: #22b6b3;
+    border-radius: 8px;
+}
+
+.funcionario-badge-text {
+    margin-top: 6px;
+    color: #009999;
+    font-weight: 800;
+    font-size: 1.17rem;
+}
+
+.funcionario-form-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 12px 0 20px;
+    color: #111;
+}
+
+.funcionario-login-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 1.5px solid #000000;
+    border-radius: 4px;
+    margin-bottom: 18px;
+    height: 42px;
+    box-sizing: border-box;
+    line-height: 1.2;
+}
+
+.funcionario-login-input:focus {
+    outline: none;
+    border-color: #009999;
+    box-shadow: 0 0 0 4px rgba(0, 153, 153, 0.08);
+}
+
+.funcionario-password-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.funcionario-password-row .funcionario-login-input {
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    margin-bottom: 0;
+    height: 42px;
+    /* asegurar misma altura que el botón */
+    box-sizing: border-box;
+}
+
+.funcionario-eye-btn {
+    background: #009999;
+    border: 1.5px solid #009999;
+    color: #fff;
+    padding: 0 12px;
+    /* vertical padding 0, horizontal controlado */
+    height: 42px;
+    /* misma altura que el input */
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    /* centra verticalmente el icono */
+    justify-content: center;
+    box-sizing: border-box;
+    line-height: 1;
+}
+
+.funcionario-login-btn {
+    width: 100%;
+    margin-top: 20px;
+    background: #009999;
+    color: #fff;
+    font-weight: 800;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 999px;
+    font-size: 1.05rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.funcionario-login-btn:hover {
+    background: #007777;
+}
+
+@media (max-width: 700px) {
+
+    .funcionario-login-card {
+        padding: 20px;
+        margin: 0 12px;
+        max-width: 520px;
+    }
+}

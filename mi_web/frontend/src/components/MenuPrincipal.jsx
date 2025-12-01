@@ -33,7 +33,8 @@ export default function MenuPrincipal() {
           <button onClick={() => navigate("/parametros-clinicos")}>PARÁMETROS CLÍNICOS</button>
           <button onClick={() => navigate("/principal")}>GESTIÓN DE PERSONAL</button>
           <button onClick={() => navigate("/login-form")}>MEDICAMENTOS</button>
-          <button onClick={() => navigate("/liquidacion-pagos")}>LIQUIDACIÓN Y PAGOS</button>
+          <button onClick={() => navigate("/LoginSelectionLyP")}>PAGOS Y LIQUIDACIONES</button>
+          <button onClick={() => navigate("/LoginSelectionRyE")}>REPORTES Y ESTADÍSTICAS</button>
         </div>
       </div>
     </div>

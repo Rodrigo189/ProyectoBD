@@ -1,0 +1,14 @@
+@import "./LoginBase.css";
+
+/* Ajustes específicos de selección de usuario */
+.login-panel {
+    justify-content: flex-start;
+}
+
+.login-content {
+    justify-content: center;
+}
+
+.login-buttons {
+    margin-bottom: 30px;
+}

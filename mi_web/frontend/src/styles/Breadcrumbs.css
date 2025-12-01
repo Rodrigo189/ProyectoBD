@@ -1,0 +1,31 @@
+.breadcrumb-container {
+    display: flex;
+    align-items: center;
+    font-family: 'Inria Sans', sans-serif;
+    font-size: 1.1rem;
+    margin: 16px 0 8px 24px;
+    background: transparent;
+}
+
+.breadcrumb-link a {
+    font-family: 'Inria Sans', sans-serif;
+    color: #009688;
+    text-decoration: none;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.breadcrumb-link a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-current {
+    font-family: 'Inria Sans', sans-serif;
+    color: #222;
+    font-weight: bold;
+}
+
+.breadcrumb-separator {
+    margin: 0 8px;
+    color: #888;
+}
