@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify # Importa Flask y utilidades para manejar solicitudes y respuestas JSON
-from flask_pymongo import PyMongo # Importa PyMongo para interactuar con MongoDB
-from flask_cors import CORS # Importa CORS para manejar solicitudes entre diferentes orígenes
-from datetime import datetime # Importa datetime para manejar fechas y horas
+from flask import Flask, request, jsonify
+from flask_pymongo import PyMongo
+from flask_cors import CORS
+from datetime import datetime, timedelta
 import os
 
 # Responses: 200 OK, 201 Created, 400 Fallo, 404 Not Found, 500 Internal Server Error
@@ -14,21 +14,21 @@ import os
 # entre el frontend (React) y el backend (Flask), evitando bloqueos por politica de mismo origen.
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True) #Habilita CORS para todas las rutas /api/*
+CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 # PyMongo se utiliza para establecer la conexion con MongoDB,
 # donde se almacenan los datos medicos, residentes, funcionarios, etc.
 
-app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+app.config["MONGO_URI"] = os.getenv("MONGO_URI", "mongodb://localhost:27017/eleam")
 
 print(">>> URI RECIBIDA:", repr(app.config["MONGO_URI"]))
 
-mongo = PyMongo(app) # Inicializa la conexion con MongoDB
+mongo = PyMongo(app)
 
-try: # Verifica la conexion a la base de datos
+try:
     mongo.db.list_collection_names()
     print("Conexión a MongoDB exitosa")
-except Exception as e: # Captura errores de conexion
+except Exception as e:
     print("Error conectando a MongoDB:", e)
 
 # Cada coleccion representa una entidad dentro del sistema, Son equivalentes a tablas en una base de datos relacional.
@@ -39,8 +39,8 @@ registros_col = mongo.db.signos_vitales
 formularios_col = mongo.db.formularios_turno
 
 # ---------------- RESIDENTES ----------------
-# Incluye operaciones CRUD (leer, actualizar, eliminar), sobre los datos personales y médicos de los residentes
-@app.route('/api/residentes', methods=['POST']) # Crear un nuevo residente
+# Incluye operaciones CRUD (crear, leer, actualizar, eliminar), sobre los datos personales y médicos de los residentes
+@app.route('/api/residentes', methods=['POST'])
 def verificar_residente(): # Verifica si un residente existe segun su RUT
     try:
         data = request.get_json() # Obtiene datos JSON del cuerpo de la solicitud
@@ -85,20 +85,18 @@ def manejar_residente(rut): # Maneja operaciones CRUD para un residente especifi
 
 # ---------------- FUNCIONARIOS ----------------
 # Los funcionarios pueden registrarse, actualizar sus datos y autenticarse.
-@app.route('/api/funcionarios', methods=['GET', 'POST']) # Listar o crear funcionarios
-def listar_o_crear_funcionarios(): # Maneja la lista y creacion de funcionarios
-    if request.method == 'GET': # Listar todos los funcionarios
+@app.route('/api/funcionarios', methods=['GET', 'POST'])
+def listar_o_crear_funcionarios():
+    if request.method == 'GET':
         funcionarios = list(funcionarios_col.find())
         for f in funcionarios:
-            f["_id"] = str(f["_id"]) # Convierte ObjectId a string para JSON
+            f["_id"] = str(f["_id"])
         return jsonify(funcionarios)
 
-    elif request.method == 'POST': # Crear un nuevo funcionario
+    elif request.method == 'POST':  # POST
         try:
-            data = request.get_json() # Obtiene datos JSON del cuerpo de la solicitud
-            print("Datos recibidos para crear funcionario:", data)
-
-            # Validar campo obligatorio
+            data = request.get_json()
+            # DEBUG: imprime lo que recibe el backend
             if not data.get("rut"):
                 return jsonify({"error": "El campo 'rut' es obligatorio"}), 400
 
@@ -106,7 +104,7 @@ def listar_o_crear_funcionarios(): # Maneja la lista y creacion de funcionarios
             existente = funcionarios_col.find_one({"rut": data["rut"]})
             if existente:
                 return jsonify({"error": "Ya existe un funcionario con ese RUT"}), 400
-
+            
             # Asegurar tipos correctos
             data["asistencia"] = bool(data.get("asistencia", False))
 
@@ -114,7 +112,7 @@ def listar_o_crear_funcionarios(): # Maneja la lista y creacion de funcionarios
             from datetime import datetime
             if not data.get("fecha_ingreso"):
                 data["fecha_ingreso"] = datetime.now().strftime("%Y-%m-%d")
-                
+
             # Genera el email del funcionario
             nombres = data.get("nombres", "").strip().split()
             apellidos = data.get("apellidos", "").strip().split()
@@ -125,19 +123,19 @@ def listar_o_crear_funcionarios(): # Maneja la lista y creacion de funcionarios
                 data["email"] = f"{primer_nombre}.{primer_apellido}@eleam.cl"
             else:
                 data["email"] = "desconocido@eleam.cl"
-
+            
 
             # Insertar en MongoDB
             funcionarios_col.insert_one(data)
             print("Funcionario insertado correctamente en la base de datos.")
-            return jsonify({"mensaje": "Funcionario guardado correctamente"}), 201
             print("Insertando en DB:", funcionarios_col.database.name)
-
+            return jsonify({"mensaje": "Funcionario guardado correctamente"}), 201
 
         except Exception as e:
             print("ERROR al guardar funcionario:", e)
             return jsonify({"error": str(e)}), 500
-        
+
+
 # Actualiza o elimina un funcionario en el boton "Eliminar".
 @app.route("/api/funcionarios/<rut>", methods=["PUT", "DELETE"]) # Actualizar o eliminar un funcionario por RUT
 def actualizar_o_eliminar_funcionario(rut): # Maneja la actualizacion y eliminacion de un funcionario
@@ -150,7 +148,6 @@ def actualizar_o_eliminar_funcionario(rut): # Maneja la actualizacion y eliminac
         if result.matched_count == 0:
             return jsonify({"error": "Funcionario no encontrado"}), 404
         return jsonify({"message": "Funcionario actualizado correctamente"})
-
     elif request.method == "DELETE": # Eliminar funcionario
         result = funcionarios_col.delete_one({"rut": rut})
         if result.deleted_count == 0: # Si no se encontro el funcionario
@@ -160,8 +157,8 @@ def actualizar_o_eliminar_funcionario(rut): # Maneja la actualizacion y eliminac
 @app.route('/api/login', methods=['POST']) # Autentica a un funcionario
 def login(): # Maneja el login de funcionarios
     data = request.get_json()
-    rut = data.get("rut") # Extrae RUT y clave
-    clave = data.get("clave")
+    rut = data.get("rut")  #Extrae RUT y clave
+    clave = data.get("clave") 
     user = funcionarios_col.find_one({"rut": rut, "clave": clave}) # Busca en MongoDB
     if user: # Si se encuentra el usuario, devuelve exito
         return jsonify({"mensaje": "Login exitoso", "rut": rut})
@@ -191,7 +188,7 @@ def manejar_medicamentos(): # Maneja la creacion y listado de medicamentos
             "fecha_termino": data.get("fecha_termino")
         }
         # Asegurar que "medicamentos" es una lista
-        residentes_col.update_one( 
+        residentes_col.update_one(
             {"rut": rut_residente},
             {"$push": {"medicamentos": medicamento}}
         )
@@ -211,7 +208,7 @@ def manejar_medicamentos(): # Maneja la creacion y listado de medicamentos
             meds = r.get("medicamentos", [])
             # Si hay listas anidadas (lista dentro de lista), las aplana
             if len(meds) > 0 and isinstance(meds[0], list):
-                meds = [item for sublist in meds for item in sublist] # Aplana la lista
+                meds = [item for sublist in meds for item in sublist]
 
             for m in meds: # Itera sobre cada medicamento
                 if isinstance(m, dict): # Asegura que es un diccionario
@@ -263,7 +260,7 @@ def actualizar_o_eliminar_medicamento(rut): # Actualiza o elimina un medicamento
         if not actualizado: # Si no se encontro el medicamento
             return jsonify({"mensaje": f"No se encontró el medicamento '{nombre_medicamento}'"}), 404 # Respuesta de error
 
-        residentes_col.update_one({"rut": rut}, {"$set": {"medicamentos": residente["medicamentos"]}}) # Guarda los cambios en MongoDB
+        residentes_col.update_one({"rut": rut}, {"$set": {"medicamentos": residente["medicamentos"]}})  #Guarda los cambios en MongoDB
 
         return jsonify({ # Respuesta de exito
             "mensaje": f"Medicamento '{nombre_medicamento}' actualizado correctamente",
@@ -274,7 +271,7 @@ def actualizar_o_eliminar_medicamento(rut): # Actualiza o elimina un medicamento
     else: # Eliminar medicamento
         nombre_medicamento = request.args.get("nombre")
         if not nombre_medicamento:
-            return jsonify({"error": "Debe especificar el nombre del medicamento a eliminar"}), 400
+            return jsonify({"error": "Debe especificar el nombre del medicamento a eliminar"}), 400 
 
         nueva_lista = [m for m in residente["medicamentos"] if m.get("nombre") != nombre_medicamento] # Filtra el medicamento a eliminar
 
@@ -551,6 +548,347 @@ def buscar_residentes_api():
         print("Error al buscar residentes:", e)
         return jsonify({"error": str(e)}), 500
 
+# --- API Mongo extra (Blueprint, datos de dashboards, Auth JWT) ---
+import os  # noqa
+from flask import Blueprint, jsonify, request  # noqa
+try:
+    from flask_cors import CORS  # noqa
+except ImportError:
+    CORS = None
+try:
+    from bson import ObjectId  # noqa
+except Exception:
+    ObjectId = None
+
+# Instanciar PyMongo solo si no existe 'mongo' (ya existe arriba)
+try:
+    mongo  # type: ignore
+except NameError:
+    from flask_pymongo import PyMongo
+    mongo = PyMongo(app)
+
+# Activar CORS para /api/* (si está instalado)
+if CORS:
+    try:
+        CORS(app, resources={r"/api/*": {"origins": "*"}})
+    except Exception:
+        pass
+
+def _oid(x):
+    if ObjectId and isinstance(x, str) and len(x) == 24:
+        try:
+            return ObjectId(x)
+        except Exception:
+            return x
+    return x
+
+def _to_doc(d):
+    if not d:
+        return d
+    d = dict(d)
+    if "_id" in d:
+        d["id"] = str(d.pop("_id"))
+    return d
+
+def _find_funcionario(user_id_or_rut):
+    db = mongo.db
+    f = db.funcionarios.find_one({"_id": _oid(user_id_or_rut)})
+    if f:
+        return f
+    return db.funcionarios.find_one({"rut": user_id_or_rut})
+
+# --- Auth (JWT) agregado ---
+import jwt, bcrypt  # noqa
+
+JWT_SECRET = os.getenv("JWT_SECRET", "dev_secret")
+JWT_EXP_HOURS = int(os.getenv("JWT_EXP_HOURS", "12"))
+
+def _create_token(user):
+    payload = {
+        "sub": str(user["_id"]),
+        "rut": user.get("rut"),
+        "role": user.get("role"),
+        "name": user.get("nombre"),
+        "iat": datetime.utcnow(),
+        "exp": datetime.utcnow() + timedelta(hours=JWT_EXP_HOURS),
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+
+def _verify_token(req):
+    auth = req.headers.get("Authorization", "")
+    if not auth.startswith("Bearer "):
+        return None
+    token = auth.split(" ", 1)[1].strip()
+    try:
+        return jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    except Exception:
+        return None
+
+# --- Reglas de roles y seed desde funcionarios ---
+ALLOWED_ROLES = {"admin", "funcionario"}
+
+def map_role_from_cargo(cargo: str) -> str:
+    c = (cargo or "").lower()
+    return "admin" if "admin" in c else "funcionario"
+
+def seed_users_from_funcionarios(default_fun_pwd="fun123", default_admin_pwd="admin123"):
+    """
+    Crea usuarios reales a partir de la colección 'funcionarios'.
+    - role: admin si 'cargo' contiene 'admin'; si no, 'funcionario'.
+    - username = rut (opcional).
+    - passwordHash: por defecto fun123/admin123 (configurable por env).
+    No sobreescribe si ya existe un usuario con ese rut.
+    """
+    db = mongo.db
+    created = 0
+    fun_hash = bcrypt.hashpw(default_fun_pwd.encode(), bcrypt.gensalt()).decode()
+    adm_hash = bcrypt.hashpw(default_admin_pwd.encode(), bcrypt.gensalt()).decode()
+
+    for f in db.funcionarios.find({}, {"rut": 1, "nombre": 1, "apellido": 1, "cargo": 1, "email": 1}):
+        rut = (f.get("rut") or "").strip()
+        if not rut:
+            continue
+        if db.usuarios.find_one({"rut": rut}):
+            continue
+        role = map_role_from_cargo(f.get("cargo"))
+        pwd_hash = adm_hash if role == "admin" else fun_hash
+        nombre = " ".join(x for x in [f.get("nombre"), f.get("apellido")] if x)
+        db.usuarios.insert_one({
+            "rut": rut,
+            "username": rut,
+            "nombre": nombre or f.get("nombre") or "",
+            "role": role,
+            "passwordHash": pwd_hash,
+            "email": f.get("email"),
+        })
+        created += 1
+    return created
+
+def _ensure_indexes_and_seed():
+    db = mongo.db
+    try:
+        db.funcionarios.create_index("rut", unique=True)
+        db.probabilidades.create_index("rut")
+        db.riesgos.create_index("rut")
+        db.sis.create_index("rut")
+        db.usuarios.create_index("rut", unique=True)
+        db.usuarios.create_index("username", unique=False)
+    except Exception:
+        pass
+
+    # Seed demo opcional (deshabilitado por defecto)
+    if os.getenv("SEED_DEMO_USERS") == "1" and db.usuarios.estimated_document_count() == 0:
+        admin_pwd = bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode()
+        func_pwd  = bcrypt.hashpw(b"fun123",   bcrypt.gensalt()).decode()
+        db.usuarios.insert_many([
+            {"username": "admin", "rut": "99999999-9", "nombre": "Admin", "role": "admin", "passwordHash": admin_pwd},
+            {"username": "func",  "rut": "11111111-1", "nombre": "Funcionario", "role": "funcionario", "passwordHash": func_pwd},
+        ])
+
+_ensure_indexes_and_seed()
+
+# Ejecutar seed real desde funcionarios SIEMPRE al iniciar
+api_bp = Blueprint("api", __name__, url_prefix="/api")
+
+@api_bp.get("/health")
+def api_health():
+    try:
+        mongo.cx.admin.command("ping")
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}, 500
+
+# ---- Auth endpoints ----
+@api_bp.post("/auth/login")
+def api_login():
+    body = request.get_json(force=True) or {}
+    # Preferimos autenticación por RUT (RUN)
+    rut = (body.get("rut") or "").strip()
+    username = (body.get("username") or "").strip()
+    pwd = (body.get("password") or "").encode()
+    role_area = (body.get("roleArea") or "").strip()  # opcional: "admin" | "funcionario"
+
+    q = {"rut": rut} if rut else {"username": username}
+    u = mongo.db.usuarios.find_one(q)
+    if not u or not pwd or not bcrypt.checkpw(pwd, u["passwordHash"].encode()):
+        return jsonify({"error": "invalid_credentials"}), 401
+
+    if role_area and u.get("role") != role_area:
+        return jsonify({"error": "wrong_role", "expected": role_area, "actual": u.get("role")}), 403
+
+    token = _create_token(u)
+    user = {"id": str(u["_id"]), "username": u.get("username"), "rut": u.get("rut"), "nombre": u.get("nombre"), "role": u.get("role")}
+    return jsonify({"token": token, "user": user})
+
+@api_bp.post("/auth/register")
+def api_register():
+    body = request.get_json(force=True) or {}
+    rut = (body.get("rut") or "").strip()
+    role = (body.get("role") or "").strip()
+    password = (body.get("password") or "").strip()
+    username = (body.get("username") or "").strip() or rut
+    nombre = (body.get("nombre") or "").strip()
+    email = (body.get("email") or "").strip()
+
+    if not rut or not role or not password:
+        return jsonify({"error": "missing_fields", "required": ["rut", "role", "password"]}), 400
+    if role not in ALLOWED_ROLES:
+        return jsonify({"error": "invalid_role", "allowed": list(ALLOWED_ROLES)}), 400
+
+    pwd_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    mongo.db.usuarios.update_one(
+        {"rut": rut},
+        {"$set": {"rut": rut, "role": role, "passwordHash": pwd_hash, "username": username, "nombre": nombre, "email": email}},
+        upsert=True,
+    )
+    return jsonify({"ok": True})
+
+@api_bp.get("/auth/me")
+def api_me():
+    claims = _verify_token(request)
+    if not claims:
+        return jsonify({"error": "unauthorized"}), 401
+    return jsonify({"user": claims})
+
+# ---- Datos para dashboards (reales desde Mongo) ----
+@api_bp.get("/funcionarios-list")
+def api_funcionarios():
+    cur = mongo.db.funcionarios.find({})
+    return jsonify([_to_doc(x) for x in cur])
+
+@api_bp.get("/funcionarios/<user_id>")
+def api_funcionario(user_id):
+    f = _find_funcionario(user_id)
+    if not f:
+        return jsonify({"error": "not_found"}), 404
+    return jsonify(_to_doc(f))
+
+@api_bp.get("/probabilidades/<user_id>")
+def api_probabilidades(user_id):
+    f = _find_funcionario(user_id)
+    if not f:
+        return jsonify([])
+    doc = mongo.db.probabilidades.find_one({"rut": f.get("rut")})
+    return jsonify(doc.get("items", [])) if doc else jsonify([])
+
+@api_bp.get("/riesgos/<user_id>")
+def api_riesgos(user_id):
+    f = _find_funcionario(user_id)
+    if not f:
+        return jsonify([])
+    doc = mongo.db.riesgos.find_one({"rut": f.get("rut")})
+    return jsonify(doc.get("items", [])) if doc else jsonify([])
+
+@api_bp.get("/sis/<user_id>")
+def api_sis(user_id):
+    f = _find_funcionario(user_id)
+    if not f:
+        return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0})
+    doc = mongo.db.sis.find_one({"rut": f.get("rut")})
+    if not doc:
+        return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0})
+    d = _to_doc(doc)
+    d.pop("rut", None); d.pop("id", None)
+    return jsonify(d)
+
+# ---- NUEVOS ENDPOINTS PUT PARA EDICIÓN ----
+@api_bp.put("/probabilidades/<user_id>")
+def actualizar_probabilidades(user_id):
+    """Admin puede actualizar probabilidades de otro usuario (no las suyas)"""
+    payload = request.get_json() or {}
+    current_user = _verify_token(request)
+    
+    if not current_user:
+        return jsonify({"error": "unauthorized"}), 401
+    
+    # Verificar que no está editando su propio perfil
+    if current_user["rut"] == user_id:
+        return jsonify({"error": "No puedes editar tus propias probabilidades"}), 403
+    
+    # Verificar que es admin
+    if current_user.get("role") != "admin":
+        return jsonify({"error": "No autorizado"}), 403
+    
+    items = payload.get("items", [])
+    db = mongo.db
+    
+    try:
+        db.probabilidades.update_one(
+            {"rut": user_id},
+            {"$set": {"items": items}},
+            upsert=True
+        )
+        return jsonify({"ok": True, "message": "Probabilidades actualizadas"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@api_bp.put("/riesgos/<user_id>")
+def actualizar_riesgos(user_id):
+    """Admin puede actualizar riesgos de otro usuario (no los suyos)"""
+    payload = request.get_json() or {}
+    current_user = _verify_token(request)
+    
+    if not current_user:
+        return jsonify({"error": "unauthorized"}), 401
+    
+    if current_user["rut"] == user_id:
+        return jsonify({"error": "No puedes editar tus propios riesgos"}), 403
+    
+    if current_user.get("role") != "admin":
+        return jsonify({"error": "No autorizado"}), 403
+    
+    items = payload.get("items", [])
+    db = mongo.db
+    
+    try:
+        db.riesgos.update_one(
+            {"rut": user_id},
+            {"$set": {"items": items}},
+            upsert=True
+        )
+        return jsonify({"ok": True, "message": "Riesgos actualizados"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@api_bp.put("/sis/<user_id>")
+def actualizar_sis(user_id):
+    """Admin puede actualizar datos SIS de otro usuario (no los suyos)"""
+    payload = request.get_json() or {}
+    current_user = _verify_token(request)
+    
+    if not current_user:
+        return jsonify({"error": "unauthorized"}), 401
+    
+    if current_user["rut"] == user_id:
+        return jsonify({"error": "No puedes editar tus propios datos del sistema"}), 403
+    
+    if current_user.get("role") != "admin":
+        return jsonify({"error": "No autorizado"}), 403
+    
+    db = mongo.db
+    
+    try:
+        db.sis.update_one(
+            {"rut": user_id},
+            {"$set": payload},
+            upsert=True
+        )
+        return jsonify({"ok": True, "message": "Datos SIS actualizados"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Registrar el blueprint una sola vez
+if "api" not in app.blueprints:
+    app.register_blueprint(api_bp)
+
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, use_reloader=False)
+    # Seed usuarios desde funcionarios SIEMPRE al iniciar
+    created = seed_users_from_funcionarios(
+        os.getenv("DEFAULT_FUN_PWD", "fun123"),
+        os.getenv("DEFAULT_ADMIN_PWD", "admin123"),
+    )
+    print(f"[seed] usuarios creados desde funcionarios: {created}")
+    app.run(debug=True, port=5000)
