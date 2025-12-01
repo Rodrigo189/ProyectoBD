@@ -1,6 +1,9 @@
+/* eslint-disable eqeqeq */
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Breadcrumbs.css";
+
+// Breadcrumbs viejos importados de la implementación antigua
 
 let hierarchy;
 hierarchy = {
@@ -53,7 +56,7 @@ const aliases = {
 };
 
 function getBreadcrumbParts(path) {
-    if (localStorage.getItem("currentUserRole") == "funcionario") {
+    if (localStorage.getItem("currentUserRole") === "funcionario") {
         hierarchy = {
             "/": ["/"],
             "/LoginSelectionLyP": ["/", "/LoginSelectionLyP"],
@@ -83,7 +86,7 @@ function getBreadcrumbParts(path) {
             "/EstadisticasSistema/:id": ["/", "/LoginSelectionRyE", "/LoginRyEFuncionario", "/FuncionarioDashboard", "/Estadisticas"],
         };
     }
-    if (localStorage.getItem("currentUserRole") == "admin") {
+    if (localStorage.getItem("currentUserRole") === "admin") {
         hierarchy = {
             "/": ["/"],
             "/LoginSelectionLyP": ["/", "/LoginSelectionLyP"],
