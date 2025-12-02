@@ -7,88 +7,6 @@ import html2canvas from 'html2canvas';
 import styles from "../assets/styles/fichaClinica.module.css";
 import ModalCustom from "../components/ModalCustom.jsx"; 
 
-// === Helpers para adaptar el JSON real de Mongo al formato que usa la vista ===
-function calcularEdad(fechaStr) {
-  if (!fechaStr) return null;
-  const hoy = new Date();
-  const fechaNac = new Date(fechaStr);
-  let edad = hoy.getFullYear() - fechaNac.getFullYear();
-  const m = hoy.getMonth() - fechaNac.getMonth();
-  if (m < 0 || (m === 0 && hoy.getDate() < fechaNac.getDate())) {
-    edad--;
-  }
-  return edad;
-}
-
-function normalizarFicha(doc) {
-  // Si ya viene con datos_personales, asumimos que ya está normalizada
-  if (doc.datos_personales) return doc;
-
-  const fc = doc.ficha_clinica || {};
-  const datosSociales = fc.datos_sociales || {};
-  const antecedentes = fc.antecedentes_medicos || {};
-  const ubicacion = fc.ubicacion || {};
-  const historia = fc.historia_clinica || {};
-
-  const edad = calcularEdad(doc.fecha_nacimiento);
-
-  return {
-    // por compatibilidad con tu vista
-    rut_residente: doc.rut,
-    datos_personales: {
-      rut: doc.rut,
-      nombre: doc.nombre,
-      fecha_nacimiento: doc.fecha_nacimiento,
-      edad: edad,
-      sexo: doc.sexo,
-      peso: doc.peso ?? "",                // no viene en el JSON, lo dejamos vacío
-      prevision_salud: doc.prevision_salud,
-      prevision_social: doc.prevision_social ?? "",
-      direccion_actual: doc.direccion ?? "",
-    },
-    ubicacion: {
-      habitacion: ubicacion.habitacion ?? "",
-      ingresa_desde: ubicacion.ingresa_desde ?? "",
-      motivo_institucionalizacion: ubicacion.motivo_institucionalizacion ?? "",
-    },
-    datos_sociales: {
-      religion: datosSociales.religion ?? "",
-      actividad_laboral_previa: datosSociales.actividad_laboral_previa ?? "",
-      estado_civil: datosSociales.estado_civil ?? "",
-      vive_solo: !!datosSociales.vive_solo,
-      calidad_apoyo: datosSociales.calidad_apoyo ?? "",
-      escolaridad: {
-        lectoescritura: datosSociales.escolaridad?.lectoescritura ?? "",
-        analfabeto: datosSociales.escolaridad?.analfabeto ?? "",
-        educacion_basica: datosSociales.escolaridad?.educacion_basica ?? "",
-        educacion_media: datosSociales.escolaridad?.educacion_media ?? "",
-        educacion_superior: datosSociales.escolaridad?.educacion_superior ?? "",
-      },
-    },
-    apoderado: doc.apoderado || {},
-    antecedentes_medicos: {
-      artrosis: !!antecedentes.artrosis,
-      cancer: antecedentes.cancer ?? "",
-      diabetes_tipo_I: !!antecedentes.diabetes_tipo_I,
-      diabetes_tipo_II: !!antecedentes.diabetes_tipo_II,
-      glaucoma: !!antecedentes.glaucoma,
-      epoc: !!antecedentes.epoc,
-      patologia_renal: !!antecedentes.patologia_renal,
-      otras_patologias: antecedentes.otras_patologias ?? "",
-      detalle_patologia_renal: antecedentes.detalle_patologia_renal ?? "",
-    },
-    historia_clinica: {
-      categoria_residente: historia.categoria_residente ?? "",
-      alergias: historia.alergias ?? "",
-      examenes: historia.examenes ?? "",
-      medicamentos_asociados: historia.medicamentos_asociados ?? "",
-      historial_atenciones: Array.isArray(historia.historial_atenciones)
-        ? historia.historial_atenciones
-        : [],
-    },
-  };
-}
-
 export default function FichaClinica() { 
   const { rut } = useParams();
   const navigate = useNavigate();
@@ -134,58 +52,50 @@ export default function FichaClinica() {
     }
     navigate(`/fichas/${rutLimpio}`, { state: { rutBuscado: rutLimpio } });
   };
-  
-  const rutConGuion = rut.includes("-")
-  ? rut
-  : rut.slice(0, -1) + "-" + rut.slice(-1);
 
   useEffect(() => {
-  if (location.state?.rutNotFound) {
+    if (location.state?.rutNotFound) {
+        setLoading(false);
+        return;
+    }
+
+    if (!rut) {
       setLoading(false);
       return;
-  }
-
-  if (!rut) {
-    setLoading(false);
-    return;
-  }
-  
-  const fetchFicha = async () => {
-    try {
-      setLoading(true); 
-      const dataCruda = await getFichaCompleta(rutConGuion);
-
-      if (!dataCruda || dataCruda.message === "Ficha no encontrada") {
-           navigate(location.pathname, { replace: true, state: { rutNotFound: true, rutBuscado: rut } });
-           return; 
-      }
-
-      // AQUI normalizamos el JSON que viene de Mongo
-      const data = normalizarFicha(dataCruda);
-      
-      if (location.state?.rutNotFound) {
-           navigate(location.pathname, { replace: true, state: null });
-      }
-      
-      setFicha(data);
-      if (data?.historia_clinica?.historial_atenciones) {
-        setHistorialFiltrado(data.historia_clinica.historial_atenciones);
-      } else {
-        setHistorialFiltrado([]);
-      }
-    } catch (error) {
-      console.error("Error al obtener la ficha:", error);
-      navigate(location.pathname, { replace: true, state: { rutNotFound: true, rutBuscado: rut } });
-      setFicha(null); 
-    } finally {
-      if (!location.state?.rutNotFound) {
-           setLoading(false);
-      }
     }
-  };
-  fetchFicha(); 
-}, [rut, navigate, location.pathname]);
-
+    
+    const fetchFicha = async () => {
+      try {
+        setLoading(true); 
+        const data = await getFichaCompleta(rut);
+        
+        if (!data || data.message === "Ficha no encontrada") {
+             navigate(location.pathname, { replace: true, state: { rutNotFound: true, rutBuscado: rut } });
+             return; 
+        }
+        
+        if (location.state?.rutNotFound) {
+             navigate(location.pathname, { replace: true, state: null });
+        }
+        
+        setFicha(data);
+        if (data?.historia_clinica?.historial_atenciones) {
+          setHistorialFiltrado(data.historia_clinica.historial_atenciones);
+        } else {
+          setHistorialFiltrado([]);
+        }
+      } catch (error) {
+        console.error("Error al obtener la ficha:", error);
+        navigate(location.pathname, { replace: true, state: { rutNotFound: true, rutBuscado: rut } });
+        setFicha(null); 
+      } finally {
+        if (!location.state?.rutNotFound) {
+             setLoading(false);
+        }
+      }
+    };
+    fetchFicha(); 
+  }, [rut, navigate, location.pathname]); 
 
   const aplicarFiltro = () => {
     if (!filtroInicio || !filtroFin) {

@@ -32,11 +32,7 @@ export default function EditarFicha() {
   useEffect(() => {
     const fetchFicha = async () => {
       try {
-        const rutConGuion = rut.includes("-")
-          ? rut
-          : rut.slice(0, -1) + "-" + rut.slice(-1);
-
-        const data = await getFichaCompleta(rutConGuion);
+        const data = await getFichaCompleta(rut);
         const fichaSegura = {
           ...data,
           datos_personales: data.datos_personales || {},
