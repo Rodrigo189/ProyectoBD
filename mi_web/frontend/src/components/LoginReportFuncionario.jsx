@@ -40,7 +40,7 @@ export default function LoginReportesFuncionario() {
             localStorage.setItem("currentUserRole", res.user.role);
             navigate("/FuncionarioDashboard");
         } catch (e) {
-            setError("Credenciales inválidas");
+            setError(toString(e));
         }
     };
 

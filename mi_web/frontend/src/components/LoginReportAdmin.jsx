@@ -41,7 +41,7 @@ export default function LoginReportesAdministrador() {
             localStorage.setItem("currentUserRole", res.user.role);
             navigate("/AdministradorDashboard");
         } catch (e) {
-            setError("Credenciales inválidas");
+            setError(toString(e));
         }
     };
 
