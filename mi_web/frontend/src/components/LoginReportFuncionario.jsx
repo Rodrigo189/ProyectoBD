@@ -24,6 +24,8 @@ export default function LoginReportesFuncionario() {
             }
             if (!r.ok) throw res;
             if (res?.user?.role !== "funcionario") {
+                console.log(res);
+                console.log(r);
                 setError("No autorizado: requiere cuenta de funcionario.");
                 return;
             }

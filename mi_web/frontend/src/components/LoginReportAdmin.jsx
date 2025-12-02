@@ -24,6 +24,8 @@ export default function LoginReportesAdministrador() {
             }
             if (!r.ok) throw res;
             if (res?.user?.role !== "admin") {
+                console.log(res);
+                console.log(r);
                 setError("No autorizado: requiere cuenta de administrador.");
                 return;
             }
