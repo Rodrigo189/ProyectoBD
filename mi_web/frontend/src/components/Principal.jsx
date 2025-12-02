@@ -65,7 +65,7 @@ export default function Principal() { // Componente principal del portal ELEAM
                 />
                 <div className="info-personal">
                   <p className="info"><u><strong>Nombre:</strong></u></p>
-                  <p>{p.nombres.split(" ")[0]} {p.apellidos.split(" ")[0]}</p>
+                  <p>{p.nombre} {p.apellido}</p>
                   <p className="info"><u><strong>Cargo:</strong></u></p>
                   <p>{p.cargo}</p>
                   <p className="info"><u><strong>Email:</strong></u></p>
