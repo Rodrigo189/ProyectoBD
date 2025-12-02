@@ -22,23 +22,88 @@ const normalizarRut = (rut) => {
 const adaptarDesdeBackend = (doc) => {
   if (!doc) return null;
 
+  const ficha = doc.ficha_clinica || {};
+  const datos_sociales = ficha.datos_sociales || {};
+  const antecedentes = ficha.antecedentes_medicos || {};
+  const ubicacion = ficha.ubicacion || {};
+  const historia = ficha.historia_clinica || {};
+  const escolaridad = datos_sociales.escolaridad || {};
+
   return {
+    // 🔹 Datos personales (nivel raíz)
     datos_personales: {
       rut: doc.rut || "",
       nombre: doc.nombre || "",
-      fecha_nacimiento: doc.datos_personales?.fecha_nacimiento || "",
-      edad: doc.datos_personales?.edad || "",
-      sexo: doc.datos_personales?.sexo || "",
-      peso: doc.datos_personales?.peso || "",
-      prevision_salud: doc.datos_personales?.prevision_salud || "",
-      prevision_social: doc.datos_personales?.prevision_social || "",
-      direccion_actual: doc.datos_personales?.direccion_actual || "",
+      fecha_nacimiento: doc.fecha_nacimiento || "",
+      fecha_ingreso: doc.fecha_ingreso || "",
+      sexo: doc.sexo || "",
+      peso: doc.peso || "",
+      direccion_actual: doc.direccion || "",
+      prevision_salud: doc.prevision_salud || "",
+      medico_tratante: doc.medico_tratante || "",
+      proximo_control: doc.proximo_control || "",
+      diagnostico: doc.diagnostico || "",
     },
-    ubicacion: doc.ubicacion || {},
-    datos_sociales: doc.datos_sociales || {},
-    apoderado: doc.apoderado || {},
-    antecedentes_medicos: doc.antecedentes_medicos || {},
-    historia_clinica: doc.historia_clinica || {},
+
+    // 🔹 Ubicación dentro de ficha_clinica
+    ubicacion: {
+      habitacion: ubicacion.habitacion || "",
+      ingresa_desde: ubicacion.ingresa_desde || "",
+      motivo_institucionalizacion:
+        ubicacion.motivo_institucionalizacion || "",
+    },
+
+    // 🔹 Datos sociales
+    datos_sociales: {
+      religion: datos_sociales.religion || "",
+      actividad_laboral_previa: datos_sociales.actividad_laboral_previa || "",
+      estado_civil: datos_sociales.estado_civil || "",
+      vive_solo: !!datos_sociales.vive_solo,
+      calidad_apoyo: datos_sociales.calidad_apoyo || "",
+      escolaridad: {
+        lectoescritura: escolaridad.lectoescritura || "",
+        analfabeto: escolaridad.analfabeto || "",
+        educacion_basica: escolaridad.educacion_basica || "",
+        educacion_media: escolaridad.educacion_media || "",
+        educacion_superior: escolaridad.educacion_superior || "",
+      },
+    },
+
+    // 🔹 Apoderado
+    apoderado: {
+      nombre: doc.apoderado?.nombre || "",
+      parentesco: doc.apoderado?.parentesco || "",
+      telefono: doc.apoderado?.telefono || "",
+      correo: doc.apoderado?.correo || "",
+    },
+
+    // 🔹 Antecedentes médicos
+    antecedentes_medicos: {
+      artrosis: !!antecedentes.artrosis,
+      cancer: antecedentes.cancer || "",
+      detalle_patologia_renal: antecedentes.detalle_patologia_renal || "",
+      diabetes_tipo_I: !!antecedentes.diabetes_tipo_I,
+      diabetes_tipo_II: !!antecedentes.diabetes_tipo_II,
+      epoc: !!antecedentes.epoc,
+      glaucoma: !!antecedentes.glaucoma,
+      otras_patologias: antecedentes.otras_patologias || "",
+      patologia_renal: !!antecedentes.patologia_renal,
+    },
+
+    // 🔹 Historia clínica
+    historia_clinica: {
+      alergias: historia.alergias || "",
+      categoria_residente: historia.categoria_residente || "",
+      examenes: historia.examenes || "",
+      medicamentos_asociados: historia.medicamentos_asociados || "",
+      historial_atenciones: historia.historial_atenciones || [],
+    },
+
+    // 🔹 Medicamentos y signos vitales (arrays opcionales)
+    medicamentos: Array.isArray(doc.medicamentos) ? doc.medicamentos : [],
+    signos_vitales: Array.isArray(doc.signos_vitales)
+      ? doc.signos_vitales
+      : [],
   };
 };
 
