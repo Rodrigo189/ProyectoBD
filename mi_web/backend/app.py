@@ -833,7 +833,7 @@ def api_health():
 # ---- Auth endpoints ----
 
 
-@api_bp_get("/auth/login")
+@api_bp.get("/auth/login")
 def api_login():
     data = request.get_json()
     rut = data.get("rut")
@@ -1061,3 +1061,4 @@ if __name__ == "__main__":
     )
     print(f"[seed] usuarios creados desde funcionarios: {created}")
     app.run(debug=True, port=5000)
+    app.register_blueprint(api_bp)
