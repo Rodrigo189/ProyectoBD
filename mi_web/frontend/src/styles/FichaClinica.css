@@ -1,41 +1,94 @@
-.ficha-clinica {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+.ficha-clinica-page {
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
 }
 
-.ficha-clinica h2 {
-    color: #333;
-    text-align: center;
-    margin-bottom: 30px;
+/* Tarjeta principal */
+.ficha-card {
+  max-width: 900px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 30px 40px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  font-family: "Inria Sans", sans-serif;
 }
 
+/* Header de la ficha */
+.ficha-header h2 {
+  text-align: center;
+  font-size: 32px;
+  margin: 0 0 10px 0;
+  color: #1b9aa4;
+}
+
+.ficha-header .breadcrumbs {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.ficha-header .breadcrumbs span {
+  color: #1b9aa4;
+  cursor: pointer;
+}
+
+.ficha-header .breadcrumbs strong {
+  color: #333;
+}
+
+/* Secciones en bloques */
 .seccion-datos,
 .seccion-medica,
 .seccion-medicamentos {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9fa;
+  padding: 20px 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e4e8;
 }
 
+/* Títulos de secciones */
 .seccion-datos h3,
 .seccion-medica h3,
 .seccion-medicamentos h3 {
-    color: #007bff;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #dee2e6;
-    padding-bottom: 10px;
+  color: #1b9aa4;
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 6px;
 }
 
-.ficha-clinica p {
-    margin: 10px 0;
-    line-height: 1.6;
+/* Texto */
+.ficha-card p {
+  margin: 6px 0;
+  line-height: 1.5;
+  font-size: 15px;
 }
 
-.ficha-clinica strong {
-    font-weight: 600;
-    color: #495057;
-    margin-right: 10px;
+.ficha-card strong {
+  font-weight: 600;
+  color: #495057;
+  margin-right: 6px;
+}
+
+/* Tablas de medicamentos / signos vitales */
+.seccion-medicamentos table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.seccion-medicamentos th,
+.seccion-medicamentos td {
+  border: 1px solid #dee2e6;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.seccion-medicamentos th {
+  background-color: #e9f5f6;
+  font-weight: 600;
 }
