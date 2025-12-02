@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 from bson import ObjectId
 import os
 import jwt
-import bcrypt  # 🔧 AGREGADO POR TU COMPAÑERO
+import bcrypt
 
 # ==============================================================================
-# 1. TUS IMPORTS (MÓDULO FICHA CLÍNICA)
+# IMPORTS DE MÓDULOS (FICHA CLÍNICA)
 # ==============================================================================
 from modules.ficha_clinica.routes.residentes_routes import residentes_bp
 from modules.ficha_clinica.routes.ficha_completa_routes import ficha_completa_bp
@@ -24,7 +24,6 @@ from modules.ficha_clinica.routes.historia_routes import historia_bp
 # ==============================================================================
 
 app = Flask(__name__)
-# Configuración CORS amplia para permitir conexiones desde cualquier origen
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 # Configuración MongoDB y JWT
@@ -43,14 +42,14 @@ try:
 except Exception as e:
     print("❌ Error conectando a MongoDB:", e)
 
-# Colecciones globales (Usadas por el código de tus compañeros)
+# Colecciones
 residentes_col = mongo.db.residentes
 funcionarios_col = mongo.db.funcionarios
 medicamentos_col = mongo.db.medicamentos
 registros_col = mongo.db.signos_vitales
 formularios_col = mongo.db.formularios_turno
 
-# 🔧 FUNCIONES AUXILIARES (AUTH)
+# FUNCIONES AUXILIARES
 def _create_token(user, rol):
     payload = {
         "sub": str(user.get("_id", "")),
@@ -80,25 +79,23 @@ def map_role_from_cargo(cargo: str) -> str:
     return "funcionario"
 
 def _to_doc(doc):
-    """Convierte ObjectId a string"""
     if doc and "_id" in doc:
         doc["id"] = str(doc["_id"])
         doc.pop("_id", None)
     return doc
 
 def _find_funcionario(user_id):
-    """Busca funcionario por RUT"""
     return funcionarios_col.find_one({"rut": user_id})
 
 # --------------------------------------
-# BLUEPRINT PARA PAGOS/REPORTES (CÓDIGO NUEVO DE COMPAÑEROS)
+# BLUEPRINT GENERAL
 # --------------------------------------
 api_bp = Blueprint("api_bp", __name__, url_prefix="/api")
 
-# Variable de desarrollo
 os.putenv("SEED_DEMO_USERS", "1")
 
-# ---------------- RESIDENTES (VERIFICACIÓN) ----------------
+# ---------------- RESIDENTES ----------------
+
 @app.route('/api/residentes/verificar', methods=['POST'])
 def verificar_residente():
     try:
@@ -130,58 +127,8 @@ def verificar_residente():
         print("Error al verificar residente:", e)
         return jsonify({"error": str(e)}), 500
 
-# ==============================================================================
-# 🔴 SECCIÓN COMENTADA: RESIDENTES CRUD BÁSICO (COMPAÑEROS)
-# Se desactiva porque CHOCA con tu módulo 'residentes_bp' que maneja
-# la ficha completa y la estructura compleja.
-# ==============================================================================
-
-# @app.route("/api/residentes", methods=["GET"])
-# def get_residentes():
-#     residentes = list(residentes_col.find({}, {
-#         "_id": 0,
-#         "rut": 1,
-#         "nombre": 1,
-#         "datos_personales": 1,
-#         "ubicacion": 1
-#     }))
-#     return jsonify(residentes), 200
-
-# @app.route("/api/residentes/<rut>", methods=["GET"])
-# def get_residente(rut):
-#     residente = residentes_col.find_one({"rut": rut}, {"_id": 0})
-#     if not residente:
-#         return jsonify({"message": "No encontrado"}), 404
-#     return jsonify(residente), 200
-
-# @app.route("/api/residentes", methods=["POST"])
-# def crear_residente():
-#     data = request.get_json()
-#     if residentes_col.find_one({"rut": data.get("rut")}):
-#         return jsonify({"error": "El residente ya existe"}), 400
-#     nuevo_residente = {
-#         "rut": data.get("rut"),
-#         "nombre": data.get("nombre"),
-#         "datos_personales": data.get("datos_personales", {}),
-#         # ... campos básicos ...
-#     }
-#     residentes_col.insert_one(nuevo_residente)
-#     return jsonify({"message": "Residente creado correctamente"}), 201
-
-# @app.route("/api/residentes/<rut>", methods=["PUT"])
-# def actualizar_residente(rut):
-#     # ... lógica básica comentada ...
-#     return jsonify({"message": "Usar módulo nuevo"}), 200
-
-# @app.route("/api/residentes/<rut>", methods=["DELETE"])
-# def eliminar_residente(rut):
-#     # ... lógica básica comentada ...
-#     return jsonify({"message": "Usar módulo nuevo"}), 200
-
-# ==============================================================================
-# FIN SECCIÓN COMENTADA
-# ==============================================================================
-
+# NOTA: Las rutas CRUD de residentes se manejan ahora en modules/residentes_routes.py
+# Se han desactivado aquí para evitar conflictos.
 
 # ---------------- FUNCIONARIOS ----------------
 @app.route('/api/funcionarios', methods=['GET', 'POST'])
@@ -268,15 +215,12 @@ def login():
         return jsonify({"mensaje": "Login exitoso", "rut": rut}), 200
     return jsonify({"mensaje": "Credenciales incorrectas"}), 401
 
-# 🔧 ENDPOINT TEMPORAL PARA ACTUALIZAR CONTRASEÑA DEL ADMIN
 @app.route('/api/actualizar-clave-admin', methods=['POST'])
 def actualizar_clave_admin():
-    """Endpoint temporal para actualizar la contraseña del admin 44444444-4"""
     try:
         rut = "44444444-4"
         nueva_clave = "Admin#2024"
         
-        # Actualiza la contraseña en texto plano (para sistema legacy)
         result = funcionarios_col.update_one(
             {"rut": rut},
             {"$set": {"clave": nueva_clave}}
@@ -288,28 +232,14 @@ def actualizar_clave_admin():
         return jsonify({
             "mensaje": "✅ Contraseña actualizada correctamente",
             "rut": rut,
-            "nueva_clave": nueva_clave,
-            "instrucciones": "Ahora puedes hacer login con estas credenciales."
+            "nueva_clave": nueva_clave
         }), 200
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ==============================================================================
-# 🔴 SECCIÓN COMENTADA: MEDICAMENTOS CRUD BÁSICO
-# Tu módulo 'medicamentos_bp' maneja esto ahora.
-# ==============================================================================
-# @app.route('/api/medicamentos', methods=['POST', 'GET'])
-# def manejar_medicamentos():
-#     # ... lógica comentada ...
-#     pass
-
-# @app.route('/api/medicamentos/<rut>', methods=['PUT', 'DELETE'])
-# def actualizar_o_eliminar_medicamento(rut):
-#     # ... lógica comentada ...
-#     pass
-# ==============================================================================
-
+# ---------------- MEDICAMENTOS ----------------
+# NOTA: Las rutas de medicamentos se manejan ahora en modules/medicamentos_routes.py
 
 # ---------------- REGISTROS VITALES ----------------
 @app.route('/api/registros-vitales', methods=['POST'])
@@ -354,8 +284,7 @@ def obtener_formularios():
         f["_id"] = str(f["_id"])
     return jsonify(forms), 200
 
-# ---------------- HISTORIAL CLÍNICO (OLD) ----------------
-# Se mantiene porque tiene URL distinta a tu '/api/ficha'
+# ---------------- HISTORIAL CLÍNICO ----------------
 @app.route('/api/historial-clinico/<rut>', methods=['GET'])
 def obtener_historial_clinico(rut):
     try:
@@ -420,7 +349,6 @@ def insertar_datos_prueba():
                 "proximo_control": "2025-10-15",
                 "signos_vitales": [
                     { "fecha": "2025-11-03", "hora": "23:23", "presionSistolica": "120 mmHg", "presionDiastolica": "80 mmHg", "temperatura": "36 °C", "pulso": "75 lpm", "saturacionO2": "98 %", "frecuenciaRespiratoria": "16 rpm", "hemoglucotest": "100 mg/dL" },
-                    # ... más datos ...
                 ]
             }
             residentes_col.insert_one(residente_prueba)
@@ -519,7 +447,7 @@ def buscar_residentes_api():
         return jsonify({"error": str(e)}), 500
 
 # --------------------------------------
-# 🔧 ENDPOINTS BLUEPRINT (PAGOS/REPORTES)
+# ENDPOINTS BLUEPRINT (PAGOS/REPORTES)
 # --------------------------------------
 
 @api_bp.get("/health")
@@ -530,7 +458,6 @@ def api_health():
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 
-# 🔧 LOGIN CORREGIDO PARA PAGOS/REPORTES
 @api_bp.post("/auth/login")
 def api_login():
     body = request.get_json(force=True) or {}
@@ -545,7 +472,6 @@ def api_login():
     if not funcionario:
         return jsonify({"error": "Credenciales inválidas"}), 401
 
-    # 🔧 VALIDACIÓN FLEXIBLE: bcrypt o texto plano
     stored_password = funcionario.get("clave", "")
     password_valida = False
 
@@ -604,9 +530,8 @@ def api_me():
         return jsonify({"error": "unauthorized"}), 401
     return jsonify({"user": claims}), 200
 
-# ==============================================================================
-# 2. REGISTRO FINAL DE BLUEPRINTS (TU MÓDULO)
-# ==============================================================================
+# Registro de Blueprints
+app.register_blueprint(api_bp)
 app.register_blueprint(residentes_bp)
 app.register_blueprint(ficha_completa_bp)
 app.register_blueprint(patologias_bp)
@@ -618,9 +543,6 @@ app.register_blueprint(alergias_bp)
 app.register_blueprint(apoderados_bp)
 app.register_blueprint(examenes_bp)
 app.register_blueprint(historia_bp)
-
-# Registro del blueprint de tus compañeros
-app.register_blueprint(api_bp)
 
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
