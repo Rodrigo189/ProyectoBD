@@ -79,17 +79,31 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
           required
         >
           <option value="">Seleccione un funcionario</option>
-          {funcionarios.map((f, index) => {
+
+          {(Array.isArray(funcionarios) ? funcionarios : []).map((f, index) => {
+            // Soportar tanto nombres/apellidos como nombre/apellido
             const nombresRaw = (f.nombres || f.nombre || "").trim();
             const apellidosRaw = (f.apellidos || f.apellido || "").trim();
 
-            const primerNombre = nombresRaw.split(" ")[0] || "";
-            const primerApellido = apellidosRaw.split(" ")[0] || "";
+            const primerNombre = nombresRaw ? nombresRaw.split(" ")[0] : "";
+            const primerApellido = apellidosRaw ? apellidosRaw.split(" ")[0] : "";
 
-            const etiqueta = `${primerNombre} ${primerApellido}`.trim();
-            <option key={index} value={etiqueta}>
-              {etiqueta}
-            </option>
+            // Etiqueta para mostrar en el select
+            let etiqueta = `${primerNombre} ${primerApellido}`.trim();
+
+            // Si por alguna razon sigue vacio, usamos rut o email
+            if (!etiqueta) {
+              etiqueta = f.rut || f.email || "Funcionario sin nombre";
+            }
+
+            // Valor que se guardará en medico_indicador
+            const value = etiqueta;
+
+            return (
+              <option key={f._id || index} value={value}>
+                {etiqueta}
+              </option>
+            );
           })}
         </select>
       </label>
