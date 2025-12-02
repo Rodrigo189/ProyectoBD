@@ -22,97 +22,26 @@ const normalizarRut = (rut) => {
 const adaptarDesdeBackend = (doc) => {
   if (!doc) return null;
 
-  // --- Datos personales ---
-  const datosPersonalesRaw = doc.datos_personales || {};
-  const datos_personales = {
-    rut: datosPersonalesRaw.rut || doc.rut || "",
-    nombre: datosPersonalesRaw.nombre || doc.nombre || "",
-    fecha_nacimiento:
-      datosPersonalesRaw.fecha_nacimiento || doc.fecha_nacimiento || "",
-    edad: datosPersonalesRaw.edad || "",
-    sexo: datosPersonalesRaw.sexo || doc.sexo || "",
-    peso: datosPersonalesRaw.peso || doc.peso || "",
-    prevision_salud:
-      datosPersonalesRaw.prevision_salud || doc.prevision_salud || "",
-    prevision_social:
-      datosPersonalesRaw.prevision_social || doc.prevision_social || "",
-    direccion_actual:
-      datosPersonalesRaw.direccion_actual || doc.direccion || "",
-  };
-
-  // --- Ubicación ---
-  const ubicacion =
-    doc.ubicacion ||
-    doc.ficha_clinica?.ubicacion || {
-      habitacion: "",
-      ingresa_desde: "",
-      motivo_institucionalizacion: "",
-    };
-
-  // --- Datos sociales ---
-  const datosSocialesRaw =
-    doc.datos_sociales || doc.ficha_clinica?.datos_sociales || {};
-  const escolaridadRaw = datosSocialesRaw.escolaridad || {};
-  const datos_sociales = {
-    religion: datosSocialesRaw.religion || "",
-    actividad_laboral_previa: datosSocialesRaw.actividad_laboral_previa || "",
-    estado_civil: datosSocialesRaw.estado_civil || "",
-    vive_solo: !!datosSocialesRaw.vive_solo,
-    calidad_apoyo: datosSocialesRaw.calidad_apoyo || "",
-    escolaridad: {
-      lectoescritura: escolaridadRaw.lectoescritura || "",
-      analfabeto: escolaridadRaw.analfabeto || "",
-      educacion_basica: escolaridadRaw.educacion_basica || "",
-      educacion_media: escolaridadRaw.educacion_media || "",
-      educacion_superior: escolaridadRaw.educacion_superior || "",
-    },
-  };
-
-  // --- Apoderado ---
-  const apoderado = doc.apoderado || {
-    nombre: "",
-    parentesco: "",
-    telefono: "",
-    correo: "",
-  };
-
-  // --- Antecedentes médicos ---
-  const antecedentesRaw =
-    doc.antecedentes_medicos || doc.ficha_clinica?.antecedentes_medicos || {};
-  const antecedentes_medicos = {
-    diabetes_tipo_I: !!antecedentesRaw.diabetes_tipo_I,
-    diabetes_tipo_II: !!antecedentesRaw.diabetes_tipo_II,
-    glaucoma: !!antecedentesRaw.glaucoma,
-    patologia_renal: !!antecedentesRaw.patologia_renal,
-    detalle_patologia_renal: antecedentesRaw.detalle_patologia_renal || "",
-    epoc: !!antecedentesRaw.epoc,
-    artrosis: !!antecedentesRaw.artrosis,
-    cancer: antecedentesRaw.cancer || "",
-    otras_patologias: antecedentesRaw.otras_patologias || "",
-  };
-
-  // --- Historia clínica ---
-  const historiaRaw =
-    doc.historia_clinica || doc.ficha_clinica?.historia_clinica || {};
-  const historia_clinica = {
-    categoria_residente: historiaRaw.categoria_residente || "",
-    alergias: historiaRaw.alergias || "",
-    examenes: historiaRaw.examenes || "",
-    medicamentos_asociados: historiaRaw.medicamentos_asociados || "",
-    historial_atenciones: Array.isArray(historiaRaw.historial_atenciones)
-      ? historiaRaw.historial_atenciones
-      : [],
-  };
-
   return {
-    datos_personales,
-    ubicacion,
-    datos_sociales,
-    apoderado,
-    antecedentes_medicos,
-    historia_clinica,
+    datos_personales: {
+      rut: doc.rut || "",
+      nombre: doc.nombre || "",
+      fecha_nacimiento: doc.datos_personales?.fecha_nacimiento || "",
+      edad: doc.datos_personales?.edad || "",
+      sexo: doc.datos_personales?.sexo || "",
+      peso: doc.datos_personales?.peso || "",
+      prevision_salud: doc.datos_personales?.prevision_salud || "",
+      prevision_social: doc.datos_personales?.prevision_social || "",
+      direccion_actual: doc.datos_personales?.direccion_actual || "",
+    },
+    ubicacion: doc.ubicacion || {},
+    datos_sociales: doc.datos_sociales || {},
+    apoderado: doc.apoderado || {},
+    antecedentes_medicos: doc.antecedentes_medicos || {},
+    historia_clinica: doc.historia_clinica || {},
   };
 };
+
 
 /**
  * Adapta la ficha del frontend al formato que espera tu backend
