@@ -1,4 +1,3 @@
-// src/pages/FichaClinica.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/FichaClinica.css";
@@ -59,48 +58,35 @@ export default function FichaClinica() {
   const fechaNac = residente.fecha_nacimiento || "-";
   const fechaIngreso = residente.fecha_ingreso || "-";
 
-  return (
-    <div className="ficha-clinica">
-      <h2>Ficha Clínica</h2>
-
+return (
+  <div className="ficha-clinica-page">
+    <div className="ficha-card">
+      <header className="ficha-header">
+        <h2>Ficha Clínica</h2>
+        <div className="breadcrumbs">
+          <span onClick={() => navigate("/")}>Inicio</span> /
+          <span onClick={() => navigate("/principal")}> Información Residente</span> /
+          <strong> Ficha Clínica</strong>
+        </div>
+      </header>
       {/* DATOS DEL PACIENTE */}
       <section className="seccion-datos">
         <h3>Datos del Paciente</h3>
-        <p>
-          <strong>RUT:</strong> {residente.rut}
-        </p>
-        <p>
-          <strong>Nombre:</strong> {residente.nombre}
-        </p>
-        <p>
-          <strong>Fecha de Nacimiento:</strong> {fechaNac}
-        </p>
-        <p>
-          <strong>Fecha de Ingreso:</strong> {fechaIngreso}
-        </p>
-        <p>
-          <strong>Sexo:</strong> {residente.sexo || "-"}
-        </p>
-        <p>
-          <strong>Dirección:</strong> {residente.direccion || "-"}
-        </p>
-        <p>
-          <strong>Previsión de Salud:</strong> {residente.prevision_salud || "-"}
-        </p>
+        <p><strong>RUT:</strong> {residente.rut}</p>
+        <p><strong>Nombre:</strong> {residente.nombre}</p>
+        <p><strong>Fecha de Nacimiento:</strong> {fechaNac}</p>
+        <p><strong>Fecha de Ingreso:</strong> {fechaIngreso}</p>
+        <p><strong>Sexo:</strong> {residente.sexo || "-"}</p>
+        <p><strong>Dirección:</strong> {residente.direccion || "-"}</p>
+        <p><strong>Previsión de Salud:</strong> {residente.prevision_salud || "-"}</p>
       </section>
 
-      {/* INFORMACIÓN MÉDICA / ANTECEDENTES */}
+      {/* INFORMACIÓN MÉDICA */}
       <section className="seccion-medica">
         <h3>Información Médica</h3>
-        <p>
-          <strong>Médico Tratante:</strong> {residente.medico_tratante || "-"}
-        </p>
-        <p>
-          <strong>Próximo Control:</strong> {residente.proximo_control || "-"}
-        </p>
-        <p>
-          <strong>Diagnóstico:</strong> {residente.diagnostico || "-"}
-        </p>
+        <p><strong>Médico Tratante:</strong> {residente.medico_tratante || "-"}</p>
+        <p><strong>Próximo control:</strong> {residente.proximo_control || "-"}</p>
+        <p><strong>Diagnóstico:</strong> {residente.diagnostico || "-"}</p>
 
         {/* Antecedentes médicos detallados */}
         {Object.keys(antecedentesMedicos).length > 0 && (
@@ -258,6 +244,7 @@ export default function FichaClinica() {
           </table>
         )}
       </section>
+    </div>
     </div>
   );
 }
