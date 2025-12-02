@@ -38,6 +38,9 @@ medicamentos_col = mongo.db.medicamentos
 registros_col = mongo.db.signos_vitales
 formularios_col = mongo.db.formularios_turno
 
+# Colocar SEED_DEMO_USERS, poner "0" para la publicación
+# mientras está en desarrollo, colocar "1"
+os.putenv("SEED_DEMO_USERS", "1")
 # ---------------- RESIDENTES ----------------
 # Incluye operaciones CRUD (leer, actualizar, eliminar), sobre los datos personales y médicos de los residentes
 @app.route('/api/residentes/verificar', methods=['POST'])  # <-- CAMBIADO
