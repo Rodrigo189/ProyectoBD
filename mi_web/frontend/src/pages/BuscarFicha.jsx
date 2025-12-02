@@ -35,44 +35,36 @@ export default function BuscarFicha() {
   const handleBuscar = async (e) => {
     e.preventDefault();
 
-    const rutParaUrl = rutBusqueda.trim().toUpperCase();
+    let rutLimpio = rutBusqueda.trim().replace(/[^0-9kK]/g, '');
 
-    // VALIDACIÓN 1: vacío
-    if (!rutParaUrl) {
-      setModal({
-        open: true,
-        type: 'warning',
-        title: 'Campo Vacío',
-        msg: 'Por favor, ingrese un RUT para realizar la búsqueda.'
+    if (!rutLimpio) {
+      return setModal({
+        open: true, type: "warning",
+        title: "RUT vacío",
+        msg: "Ingrese un RUT para buscar la ficha."
       });
-      return;
     }
 
-    // VALIDACIÓN 2: muy corto
-    if (rutParaUrl.length < 3) {
-      setModal({
-        open: true,
-        type: 'warning',
-        title: 'RUT Incompleto',
-        msg: 'El RUT ingresado parece demasiado corto. Verifique el formato.'
+    // Formateamos a: XXXXXXXX-X
+    if (rutLimpio.length < 2) {
+      return setModal({
+        open: true, type: "warning",
+        title: "RUT inválido",
+        msg: "El RUT es demasiado corto."
       });
-      return;
     }
 
     try {
-      // ⬅️ AQUÍ SE VALIDA EN EL BACKEND
-      await getFichaCompleta(rutParaUrl);
+      rut = rut.replace(/[^0-9kK]/g, '');
+      rut = rut.slice(0, -1) + "-" + rut.slice(-1);
 
-      // Si existe → navegar
-      navigate(`/fichas/${rutParaUrl}`);
-
+      navigate(`/fichas/${rut}`);
     } catch (err) {
-      // SI NO EXISTE → MODAL DE ERROR
       setModal({
         open: true,
         type: "error",
         title: "RUT no encontrado",
-        msg: `No existe ficha clínica para el RUT ${rutParaUrl}.`
+        msg: `No existe ficha clínica para el RUT ${rut}.`
       });
     }
   };

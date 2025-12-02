@@ -134,6 +134,10 @@ export default function FichaClinica() {
     }
     navigate(`/fichas/${rutLimpio}`, { state: { rutBuscado: rutLimpio } });
   };
+  
+  const rutConGuion = rut.includes("-")
+  ? rut
+  : rut.slice(0, -1) + "-" + rut.slice(-1);
 
   useEffect(() => {
   if (location.state?.rutNotFound) {
@@ -149,7 +153,7 @@ export default function FichaClinica() {
   const fetchFicha = async () => {
     try {
       setLoading(true); 
-      const dataCruda = await getFichaCompleta(rut);
+      const dataCruda = await getFichaCompleta(rutConGuion);
 
       if (!dataCruda || dataCruda.message === "Ficha no encontrada") {
            navigate(location.pathname, { replace: true, state: { rutNotFound: true, rutBuscado: rut } });
