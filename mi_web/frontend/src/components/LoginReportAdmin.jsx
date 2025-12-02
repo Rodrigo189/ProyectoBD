@@ -31,7 +31,7 @@ export default function LoginReportesAdministrador() {
                 setError("No autorizado: faltan datos");
                 return;
             }
-            if (r.status === 403 && res?.error === "wrong_role") {
+            if (r.status === 403) {
                 setError("No autorizado: tu cuenta no es Administrador.");
                 return;
             }
