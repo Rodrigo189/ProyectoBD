@@ -750,7 +750,7 @@ ALLOWED_ROLES = {"admin", "funcionario"}
 
 def map_role_from_cargo(cargo: str) -> str:
     c = (cargo or "").lower()
-    return "admin" if "admin" in c else "funcionario"
+    return "admin" if "Administrador" in c or "Administradora" in c else "funcionario"
 
 def seed_users_from_funcionarios(default_fun_pwd="fun123", default_admin_pwd="admin123"):
     """
@@ -828,6 +828,9 @@ def api_health():
         return {"ok": False, "error": str(e)}, 500
 
 # ---- Auth endpoints ----
+
+
+
 @api_bp.post("/auth/login")
 def api_login():
     body = request.get_json(force=True) or {}
