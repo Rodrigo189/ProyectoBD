@@ -65,7 +65,8 @@ return (
         <h2>Ficha Clínica</h2>
         <div className="breadcrumbs">
           <span onClick={() => navigate("/")}>Inicio</span> /
-          <span onClick={() => navigate("/principal")}> Información Residente</span> /
+          <span onClick={() => navigate("/login-form")}> Información Residente</span> /
+          <span onClick={() => navigate("/dashboard")}> Portal de Residentes</span> /
           <strong> Ficha Clínica</strong>
         </div>
       </header>
