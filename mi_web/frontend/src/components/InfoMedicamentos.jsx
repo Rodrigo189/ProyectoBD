@@ -108,8 +108,8 @@ export default function InfoMedicamentos() {
       <h2>Gestión de Medicamentos</h2>
         <div className= "breadcrumbs">
         <span onClick={() => navigate("/")}>Inicio</span> /
-        <span onClick={() => navigate("/principal")}> Informacion Residente </span> /
-        <span onClick={() => navigate("/login")}> Portal de Residentes </span> /
+        <span onClick={() => navigate("/login-form")}> Informacion Residente</span> /
+        <span onClick={() => navigate("/dashboard")}> Portal de Residentes </span> /
         <strong> Administrar medicamentos</strong>
         </div>
 
