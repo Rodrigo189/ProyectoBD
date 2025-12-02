@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../assets/styles/fichaClinica.module.css"; 
 import ModalCustom from "../components/ModalCustom.jsx"; // Importamos el Modal personalizado
+import { getFichaCompleta } from "../services/fichaService"; 
+
 
 export default function BuscarFicha() {
   const [rutBusqueda, setRutBusqueda] = useState("");
@@ -15,7 +17,7 @@ export default function BuscarFicha() {
     msg: '' 
   });
 
-  // Función para formatear el RUT mientras escribes (agrega guion automáticamente)
+  // Funcion para formatear el RUT mientras escribes (agrega guion automaticamente)
   const handleRutChange = (e) => {
     // 1. Limpiar caracteres inválidos
     let valor = e.target.value.replace(/[^0-9kK]/g, '');
@@ -30,13 +32,12 @@ export default function BuscarFicha() {
     setRutBusqueda(valor);
   };
 
-  const handleBuscar = (e) => {
+  const handleBuscar = async (e) => {
     e.preventDefault();
-    
-    // Limpiamos espacios y pasamos a mayúsculas
+
     const rutParaUrl = rutBusqueda.trim().toUpperCase();
 
-    // VALIDACIÓN 1: Campo vacío
+    // VALIDACIÓN 1: vacío
     if (!rutParaUrl) {
       setModal({
         open: true,
@@ -46,8 +47,8 @@ export default function BuscarFicha() {
       });
       return;
     }
-    
-    // VALIDACIÓN 2: RUT muy corto
+
+    // VALIDACIÓN 2: muy corto
     if (rutParaUrl.length < 3) {
       setModal({
         open: true,
@@ -57,10 +58,25 @@ export default function BuscarFicha() {
       });
       return;
     }
-    
-    // Si pasa las validaciones, navegamos
-    navigate(`/fichas/${rutParaUrl}`);
+
+    try {
+      // ⬅️ AQUÍ SE VALIDA EN EL BACKEND
+      await getFichaCompleta(rutParaUrl);
+
+      // Si existe → navegar
+      navigate(`/fichas/${rutParaUrl}`);
+
+    } catch (err) {
+      // SI NO EXISTE → MODAL DE ERROR
+      setModal({
+        open: true,
+        type: "error",
+        title: "RUT no encontrado",
+        msg: `No existe ficha clínica para el RUT ${rutParaUrl}.`
+      });
+    }
   };
+
 
   return (
     <div>

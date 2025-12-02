@@ -41,6 +41,8 @@ import FichaClinicaPage from "./pages/FichaClinica.jsx";  // ficha del grupo (ru
 import CrearFicha from "./pages/CrearFicha.jsx";
 import EditarFicha from "./pages/EditarFicha.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import "./assets/styles/accessibility-button.css";   
+import "./assets/styles/accessibility-mode.css";    
 
 import "@fontsource/inria-sans";
 

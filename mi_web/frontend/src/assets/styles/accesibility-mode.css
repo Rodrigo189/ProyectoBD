@@ -1,0 +1,39 @@
+.accessibility-mode {
+  font-size: 1.15rem !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0.5px !important;
+  filter: contrast(115%) brightness(105%);
+}
+
+/* Mejor contraste y legibilidad */
+.accessibility-mode * {
+  color: #000 !important;
+}
+
+/* Enlaces mas visibles */
+.accessibility-mode a {
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+}
+
+/* Inputs y botones mas grandes */
+.accessibility-mode input,
+.accessibility-mode select,
+.accessibility-mode textarea,
+.accessibility-mode button {
+  font-size: 1.1rem !important;
+  padding: 10px !important;
+}
+
+/* Focus MUY visible para navegacion por teclado */
+.accessibility-mode *:focus {
+  outline: 3px solid #0099ff !important;
+  outline-offset: 3px !important;
+}
+
+/* Recuadros mas notorios */
+.accessibility-mode .card,
+.accessibility-mode section,
+.accessibility-mode div {
+  border-radius: 6px !important;
+}
