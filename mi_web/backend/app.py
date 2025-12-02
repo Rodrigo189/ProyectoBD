@@ -1074,5 +1074,5 @@ if __name__ == "__main__":
         os.getenv("DEFAULT_ADMIN_PWD", "admin123"),
     )
     print(f"[seed] usuarios creados desde funcionarios: {created}")
-    app.run(debug=True, port=5000)
     app.register_blueprint(api_bp)
+    app.run(debug=True, port=5000)
