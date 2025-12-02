@@ -14,7 +14,7 @@ const Breadcrumbs = () => {
     'admin': 'Administración',
     'tratantes': 'Tratantes',
     'login': 'Acceso',
-    '': 'Inicio'
+    'menu': 'Inicio'
   };
 
   // Si estamos en la página de inicio (/ o /menu), no mostrar breadcrumb
@@ -26,7 +26,7 @@ const Breadcrumbs = () => {
     <div className="breadcrumbs-inline">
       {/* Siempre mostrar "Inicio" como primer elemento */}
       <span className="breadcrumb-item-inline">
-        <Link to="/menu" className="breadcrumb-link-inline">
+        <Link to="/" className="breadcrumb-link-inline">
           Inicio
         </Link>
         <span className="breadcrumb-separator-inline"> / </span>
