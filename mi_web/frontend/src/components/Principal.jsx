@@ -17,11 +17,6 @@ export default function Principal() { // Componente principal del portal ELEAM
         console.error("Error al cargar funcionarios:", error);
       }
     };
-
-    fetchPersonal();
-  }, []);
-
-  testSeed(() => {
     const fetchSeed = async () => {
 
       try{
@@ -33,8 +28,10 @@ export default function Principal() { // Componente principal del portal ELEAM
         console.error("Error al cargar seed:", error);
       }
     };
-    testSeed();
-}, []);
+    fetchSeed();
+    fetchPersonal();
+  }, []);
+
 
   return (
     <div className="principal-container">
