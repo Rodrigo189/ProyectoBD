@@ -838,22 +838,18 @@ def api_login():
     body = request.get_json(force=True) or {}
     # Preferimos autenticación por RUT (RUN)
     rut = (body.get("rut") or "").strip()
-    username = (body.get("username") or "").strip()
     pwd = (body.get("password") or "").encode()
     role_area = (body.get("roleArea") or "").strip()  # opcional: "admin" | "funcionario"
-
-    q = {"rut": rut} if rut else {"username": username}
-    u = mongo.db.funcionarios.find_one(q)
-    rol = map_role_from_cargo(u.get("cargo"))
-    if not u or not pwd or not bcrypt.checkpw(pwd, u["passwordHash"].encode()):
+    funcionario = funcionarios_col.find_one({"rut": rut})
+    rol = map_role_from_cargo(funcionario.get("cargo"))
+    if not funcionario or not pwd or not bcrypt.checkpw(pwd, funcionario["passwordHash"].encode()):
         return jsonify({"error": "invalid_credentials"}), 401
 
     if role_area and rol != role_area:
         return jsonify({"error": "wrong_role", "expected": role_area, "actual": rol}), 403
 
-    token = _create_token(u)
-    user = {"id": str(u["_id"]), "username": u.get("username"), "rut": u.get("rut"), "nombre": u.get("nombre"), "role": u.get("role")}
-    return jsonify({"token": token, "user": user}), 200
+    token = _create_token(funcionario)
+    return jsonify({"token": token, "user": funcionario}), 200
 
 @api_bp.post("/auth/register")
 def api_register():
