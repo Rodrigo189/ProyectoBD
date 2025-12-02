@@ -1,0 +1,302 @@
+.prob-bg {
+    background: #f1f4f4;
+    min-height: 100vh;
+}
+
+.prob-main {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 22px 24px 56px;
+}
+
+.prob-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+}
+
+.prob-title {
+    font-family: 'Inria Sans', sans-serif;
+    text-align: center;
+    font-weight: 800;
+    font-size: 34px;
+    margin: 8px 0 6px;
+}
+
+.prob-subtitle {
+    font-family: 'Inria Sans', sans-serif;
+    text-align: center;
+    color: #0ea3a3;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0 0 20px;
+}
+
+.cuantity {
+    font-family: 'Inria Sans', sans-serif;
+    color: #5e6b6b;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+/* AGREGAR: Contenedor de botones de edición */
+.prob-edit-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+/* AGREGAR: Estilos para botones de edición */
+.prob-btn {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.prob-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.prob-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.prob-btn-edit {
+    background: linear-gradient(135deg, #0ea3a3, #0c8a8a);
+    color: #fff;
+}
+
+.prob-btn-save {
+    background: linear-gradient(135deg, #28a745, #20883a);
+    color: #fff;
+}
+
+.prob-btn-cancel {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.prob-btn-cancel:hover {
+    background: #d0d0d0;
+}
+
+/* filtros */
+.prob-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.prob-pill {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 9px 18px;
+    border: 2px solid #dce4e6;
+    border-radius: 999px;
+    background: #fff;
+    color: #0b2733;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.prob-pill:hover {
+    border-color: #0ea3a3;
+    color: #0ea3a3;
+}
+
+.prob-pill.active {
+    background: #0ea3a3;
+    color: #fff;
+    border-color: #0ea3a3;
+}
+
+/* grid de tarjetas */
+.prob-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    animation: fadeInGrid 0.4s ease;
+}
+
+.prob-item {
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prob-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* animación de desvanecimiento del grid */
+@keyframes fadeInGrid {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.prob-grid.fade-in {
+    animation: fadeInGrid 0.4s ease;
+}
+
+/* avatar circular */
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0ea3a3, #0b8a8d);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inria Sans', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.meta {
+    flex: 1;
+}
+
+.name {
+    font-family: 'Inria Sans', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #0b2733;
+    margin-bottom: 4px;
+}
+
+.group {
+    font-family: 'Inria Sans', sans-serif;
+    color: #6b7b84;
+    font-size: 14px;
+}
+
+.progress-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bar {
+    flex: 1;
+    height: 12px;
+    background: #e8eaed;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.pct {
+    font-family: 'Inria Sans', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #0b2733;
+    min-width: 60px;
+    text-align: right;
+}
+
+/* AGREGAR: Estilos para inputs en modo edición */
+.prob-input-edit {
+    font-family: 'Inria Sans', sans-serif;
+    padding: 6px 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    border: 2px solid #0ea3a3;
+    border-radius: 8px;
+    width: 60px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.prob-input-edit:focus {
+    border-color: #0c8a8a;
+    box-shadow: 0 0 0 3px rgba(14, 163, 163, 0.1);
+}
+
+.prob-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #6b7b84;
+    font-family: 'Inria Sans', sans-serif;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #6b7b84;
+    font-family: 'Inria Sans', sans-serif;
+}
+
+@media (max-width: 720px) {
+    .prob-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .prob-edit-controls {
+        flex-direction: column;
+    }
+
+    .prob-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+/* Migas de Pan */
+.breadcrumbs {
+  font-size: 26px;
+  margin-bottom: 26px;
+  color: #555;
+  font-family: 'Inria Sans', sans-serif;
+/* Se encuentre en la izquierda */
+  text-align: left;
+}
+
+.breadcrumbs span {
+  cursor: pointer;
+  color: #1B9AA4;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.breadcrumbs span:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs strong {
+  color: #000;
+  font-weight: 700;
+}

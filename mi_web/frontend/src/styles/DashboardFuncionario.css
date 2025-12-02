@@ -1,0 +1,140 @@
+.dashboard-funcionario {
+  font-family: "Inria Sans", sans-serif;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 30px 40px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Fondo solo dentro del dashboard */
+.dashboard-funcionario-container {
+  background: linear-gradient(180deg, #f0f7f7 0%, #e4f1f2 100%);
+}
+/* Títulos */
+.dashboard-funcionario h2 {
+  text-align: center;
+  font-size: 32px;
+  color: #1b9aa4;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dashboard-funcionario h3 {
+  font-size: 24px;
+  color: #333;
+  border-left: 6px solid #1b9aa4;
+  padding-left: 10px;
+  margin-bottom: 15px;
+}
+
+/* Botones */
+.dashboard-funcionario button {
+  background-color: #1b9aa4;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  margin: 10px 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-funcionario button:hover {
+  background-color: #147a80;
+}
+
+/* Secciones */
+.dashboard-funcionario section {
+  margin-top: 40px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 15px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Tablas */
+.dashboard-funcionario table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-funcionario table th,
+.dashboard-funcionario table td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.dashboard-funcionario table th {
+  background: #1b9aa4;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-funcionario table tr:nth-child(even) {
+  background-color: #f6f9f9;
+}
+
+.dashboard-funcionario table tr:hover {
+  background-color: #e3f5f5;
+}
+
+/* Botones dentro de tablas */
+.dashboard-funcionario table button:first-child {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.dashboard-funcionario table button:first-child:hover {
+  background-color: #e0a800;
+}
+
+.dashboard-funcionario table button:last-child {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.dashboard-funcionario table button:last-child:hover {
+  background-color: #b02a37;
+}
+
+/* Formulario */
+.dashboard-funcionario form {
+  margin-top: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-funcionario form input,
+.dashboard-funcionario form select {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.dashboard-funcionario form label {
+  font-weight: 600;
+  color: #333;
+}
+
+#boton-especial {
+  padding: 12px 25px;
+  height: auto;
+  width: auto;
+  flex: 0 0 auto;
+  background-color: #dc3545;
+}

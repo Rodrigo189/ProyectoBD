@@ -1,0 +1,175 @@
+.funcionarios-bg {
+    min-height: 100vh;
+    background: #e6e6e6;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inria Sans', sans-serif;
+    color: #111;
+}
+
+.funcionarios-main {
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+}
+
+.funcionarios-frame {
+    width: 94%;
+    max-width: 1200px;
+    background: transparent;
+    box-sizing: border-box;
+}
+
+/* cuadrícula superior: título a la izquierda, salir a la derecha */
+.funcionarios-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 6px 0 18px;
+    gap: 12px;
+}
+
+.funcionarios-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #111;
+}
+
+/* boton de salir */
+.funcionarios-salir {
+    background: #009999;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 28px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.funcionarios-salir .salir-icon {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: inline-grid;
+    place-items: center;
+}
+
+/* wrapper de cuadrícula */
+.funcionarios-grid-wrap {
+    background: #fff;
+    border-radius: 8px;
+    padding: 18px;
+    box-sizing: border-box;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* cuadrícula responsiva */
+.funcionarios-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 34px;
+}
+
+/* tarjeta de funcionario */
+.funcionario-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    padding: 6px;
+}
+
+/* cuadrícula de avatar */
+.funcionario-avatar {
+    width: 128px;
+    height: 128px;
+    border: 8px solid #fff;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08) inset, 0 6px 14px rgba(0, 0, 0, 0.08);
+    background: #d3f0ff;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.funcionario-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* informacion debajo del avatar */
+.funcionario-info {
+    margin-top: 12px;
+    text-align: center;
+    font-family: 'Inria Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.funcionario-name {
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #111;
+}
+
+.funcionario-role {
+    color: #333;
+    margin-bottom: 6px;
+}
+
+.funcionario-email {
+    color: #333;
+    opacity: 0.9;
+}
+
+/* cargando */
+.loading {
+    padding: 20px;
+    text-align: center;
+}
+
+/* breakpoint responsivo */
+@media (max-width: 1100px) {
+    .funcionarios-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+    }
+}
+
+@media (max-width: 820px) {
+    .funcionarios-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+    }
+
+    .funcionario-avatar {
+        width: 110px;
+        height: 110px;
+    }
+}
+
+@media (max-width: 480px) {
+    .funcionarios-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .funcionarios-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .funcionarios-salir {
+        align-self: flex-end;
+    }
+}

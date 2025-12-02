@@ -1,0 +1,22 @@
+[
+  {
+    "rut": "12345678-9",
+    "nombres": "Juan",
+    "apellidos": "Pérez",
+    "cargo": "Enfermero",
+    "fecha_ingreso": "2024-01-01",
+    "asistencia": true,
+    "clave" : "clave123",
+    "email" : "Juan.Perez"
+  },
+  {
+    "rut": "98765432-1",
+    "nombres": "María",
+    "apellidos": "López",
+    "cargo": "Médico",
+    "fecha_ingreso": "2024-02-01",
+    "asistencia": false,
+    "clave" : "clave456",
+    "email" : "Maria.Lopez"
+  }
+]

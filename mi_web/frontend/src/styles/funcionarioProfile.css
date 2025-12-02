@@ -1,0 +1,294 @@
+/* fondo oscuro alrededor del marco, igual que la maqueta */
+.perfil-bg {
+    min-height: 100vh;
+    background: #a09e9e;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inria Sans', sans-serif;
+    ;
+    color: #111;
+}
+
+/* centro de la página */
+.perfil-main {
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+}
+
+/* marco blanco con borde azul claro (como la maqueta) */
+.perfil-frame {
+    width: 92%;
+    max-width: 1080px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 18px;
+    box-sizing: border-box;
+    border: 3px solid #9fcdf6;
+    /* borde azul tenue */
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.06) inset, 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+
+/* tarjeta principal con datos */
+.perfil-card {
+    display: flex;
+    gap: 18px;
+    padding: 12px;
+    background: #f1f1f1;
+    border-radius: 6px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* columna izquierda: avatar + datos personales */
+.perfil-left {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    flex: 1 1 60%;
+}
+
+/* avatar con borde azul como maqueta */
+.perfil-avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 6px;
+    background: #d6f0ff;
+    border: 4px solid #1aa7a7;
+    display: grid;
+    place-items: center;
+    font-size: 42px;
+    box-sizing: border-box;
+}
+
+.perfil-conf {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+}
+
+/* detalles texto */
+.perfil-details p,
+.perfil-right p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+/* labels en monoespacio estilo maqueta */
+.label {
+    display: inline-block;
+    width: 120px;
+    font-weight: 600;
+}
+
+/* columna derecha: contacto */
+.perfil-right {
+    flex: 1 1 40%;
+    padding-left: 6px;
+}
+
+/* sección contrato y caja de sueldo */
+.perfil-contract {
+    display: flex;
+    gap: 18px;
+    margin-top: 12px;
+    align-items: stretch;
+}
+
+/* izquierda del contrato ocupa el espacio restante */
+.contract-left {
+    background: #e9e9e9;
+    padding: 14px;
+    border-radius: 8px;
+    flex: 1 1 65%;
+    box-sizing: border-box;
+}
+
+/* caja derecha: resumen de sueldo (verde , menta) */
+.contract-box {
+    background: #6fe0d9;
+    border-radius: 12px;
+    padding: 14px;
+    width: 32%;
+    min-width: 220px;
+    box-sizing: border-box;
+    border: 2px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) inset;
+}
+
+.contract-box .contract-input,
+.contract-box input.contract-input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.contract-box .contract-value {
+    padding: 8px 6px;
+    background: transparent;
+    border-radius: 4px;
+    color: #052;
+    font-weight: 700;
+}
+
+/* botones de la caja */
+.perfil-btn {
+    background: #fff;
+    border: 1px solid #cfcfcf;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.perfil-btn.primary {
+    background: #009999;
+    color: #fff;
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+/* adaptar tamaño de la caja para que inputs no se corten */
+.contract-box {
+    min-width: 260px;
+    padding: 14px;
+    box-sizing: border-box;
+}
+
+
+.contract-box p {
+    margin: 8px 0;
+    font-weight: 600;
+}
+
+/* línea separadora dentro del box */
+.contract-box hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    margin: 8px 0;
+}
+
+.tab-menu {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    opacity: 1;
+    max-height: none;
+    overflow: visible;
+    transition: none;
+}
+
+.tab-menu.open {
+    max-height: 220px;
+    /* suficiente para las pestañas (ajusta si hace falta) */
+    opacity: 1;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    background: #e6e6e6;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.tab-btn.active {
+    background: #1aa7a7;
+    color: #fff;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+
+.summary-card {
+    min-width: 150px;
+    background: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+    text-align: center;
+}
+
+.historial-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.historial-table th,
+.historial-table td {
+    border: 1px solid #dcdcdc;
+    padding: 8px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.month-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid #cfd8dc;
+    background: #ffffff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #003233;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.menu-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* ajustes responsivos */
+@media (max-width: 760px) {
+    .perfil-card {
+        flex-direction: column;
+    }
+
+    .perfil-right {
+        padding-left: 0;
+    }
+
+    .perfil-contract {
+        flex-direction: column;
+    }
+
+    .contract-box {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .hamburger {
+        align-self: flex-start;
+    }
+
+    .month-select {
+        width: 100%;
+    }
+
+    .summary-card {
+        flex: 1 1 calc(50% - 12px);
+    }
+
+    .tab-menu.open {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .menu-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
