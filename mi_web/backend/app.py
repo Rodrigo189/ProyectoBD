@@ -275,6 +275,33 @@ def login():
         return jsonify({"mensaje": "Login exitoso", "rut": rut}), 200
     return jsonify({"mensaje": "Credenciales incorrectas"}), 401
 
+# 🔧 ENDPOINT TEMPORAL PARA ACTUALIZAR CONTRASEÑA DEL ADMIN
+@app.route('/api/actualizar-clave-admin', methods=['POST'])
+def actualizar_clave_admin():
+    """Endpoint temporal para actualizar la contraseña del admin 44444444-4"""
+    try:
+        rut = "44444444-4"
+        nueva_clave = "Admin#2024"
+        
+        # Actualiza la contraseña en texto plano
+        result = funcionarios_col.update_one(
+            {"rut": rut},
+            {"$set": {"clave": nueva_clave}}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+        
+        return jsonify({
+            "mensaje": "✅ Contraseña actualizada correctamente",
+            "rut": rut,
+            "nueva_clave": nueva_clave,
+            "instrucciones": "Ahora puedes hacer login con estas credenciales. ELIMINA ESTE ENDPOINT después de usar."
+        }), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # ---------------- MEDICAMENTOS ----------------
 @app.route('/api/medicamentos', methods=['POST', 'GET'])
 def manejar_medicamentos():
