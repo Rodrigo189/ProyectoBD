@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify # Importa Flask y utilidades para manejar solicitudes y respuestas JSON
+from flask import Flask, request, jsonify Blueprint # Importa Flask y utilidades para manejar solicitudes y respuestas JSON
 from flask_pymongo import PyMongo # Importa PyMongo para interactuar con MongoDB
 from flask_cors import CORS # Importa CORS para manejar solicitudes entre diferentes orígenes
 from datetime import datetime, timedelta # Importa datetime para manejar fechas y horas
+from bson import ObjectId
 import os
+import jwt
 
 # Responses: 200 OK, 201 Created, 400 Fallo, 404 Not Found, 500 Internal Server Error
 # POST: Crear recurso
@@ -21,6 +23,9 @@ CORS(app, resources={r"/api/*": {"origins": "*" }}, supports_credentials=True) #
 
 app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 
+JWT_SECRET = os.environ.get("JWT_SECRET", "secret_dev")
+JWT_EXP_HOURS = 6
+
 print(">>> URI RECIBIDA:", repr(app.config["MONGO_URI"]))
 
 mongo = PyMongo(app) # Inicializa la conexion con MongoDB
@@ -37,6 +42,40 @@ funcionarios_col = mongo.db.funcionarios
 medicamentos_col = mongo.db.medicamentos
 registros_col = mongo.db.signos_vitales
 formularios_col = mongo.db.formularios_turno
+
+def _create_token(user, rol):
+    payload = {
+        "sub": str(user["_id"]),
+        "rut": user["rut"],
+        "role": rol,
+        "name": user.get("nombres"),
+        "iat": datetime.utcnow(),
+        "exp": datetime.utcnow() + timedelta(hours=JWT_EXP_HOURS),
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+
+def _verify_token(req):
+    auth = req.headers.get("Authorization", "")
+    if not auth.startswith("Bearer "):
+        return None
+    token = auth.split(" ", 1)[1].strip()
+    try:
+        return jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    except Exception:
+        return None
+
+def map_role_from_cargo(cargo: str) -> str:
+    c = (cargo or "").lower()
+    if "admin" in c:
+        return "admin"
+    return "funcionario"
+
+
+# --------------------------------------
+# BLUEPRINT GENERAL PARA AUTH + DASHBOARD
+# --------------------------------------
+
+api_bp = Blueprint("api_bp", __name__)
 
 # Colocar SEED_DEMO_USERS, poner "0" para la publicación
 # mientras está en desarrollo, colocar "1"
@@ -668,61 +707,39 @@ def buscar_residentes_api():
     except Exception as e:
         print("Error al buscar residentes:", e)
         return jsonify({"error": str(e)}), 500
-    
-# --- API Mongo extra (Blueprint, datos de dashboards, Auth JWT) ---
-import os  # noqa
-from flask import Blueprint, jsonify, request  # noqa
-try:
-    from flask_cors import CORS  # noqa
-except ImportError:
-    CORS = None
-try:
-    from bson import ObjectId  # noqa
-except Exception:
-    ObjectId = None
 
-# Instanciar PyMongo solo si no existe 'mongo' (ya existe arriba)
-try:
-    mongo  # type: ignore
-except NameError:
-    from flask_pymongo import PyMongo
-    mongo = PyMongo(app)
+@api_bp.post("/auth/login-pagos")
+def api_login_pagos():
+    body = request.get_json(force=True)
+    rut = body.get("rut", "").strip()
+    pwd = body.get("password", "")
+    role_area = body.get("roleArea", "").strip()
 
-# Activar CORS para /api/* (si está instalado)
-if CORS:
-    try:
-        CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
-    except Exception:
-        pass
+    if not rut or not pwd or not role_area:
+        return jsonify({"error": "Faltan datos"}), 400
 
-def _oid(x):
-    if ObjectId and isinstance(x, str) and len(x) == 24:
-        try:
-            return ObjectId(x)
-        except Exception:
-            return x
-    return x
+    f = funcionarios_col.find_one({"rut": rut})
+    if not f:
+        return jsonify({"error": "Funcionario no encontrado"}), 404
 
-def _to_doc(d):
-    if not d:
-        return d
-    d = dict(d)
-    if "_id" in d:
-        d["id"] = str(d.pop("_id"))
-    return d
+    if f.get("clave") != pwd:
+        return jsonify({"error": "Contraseña incorrecta"}), 401
 
-def _find_funcionario(user_id_or_rut):
-    db = mongo.db
-    f = db.funcionarios.find_one({"_id": _oid(user_id_or_rut)})
-    if f:
-        return f
-    return db.funcionarios.find_one({"rut": user_id_or_rut})
+    rol = map_role_from_cargo(f.get("cargo"))
+    if rol != role_area:
+        return jsonify({"error": "Cuenta no autorizada"}), 403
 
-# --- Auth (JWT) agregado ---
-import jwt, bcrypt  # noqa
+    token = _create_token(f, rol)
 
-JWT_SECRET = os.getenv("JWT_SECRET", "dev_secret")
-JWT_EXP_HOURS = int(os.getenv("JWT_EXP_HOURS", "12"))
+    return jsonify({
+        "token": token,
+        "user": {
+            "rut": f["rut"],
+            "role": rol,
+            "cargo": f.get("cargo"),
+            "nombre": f.get("nombre")
+        }
+    }), 200
 
 def _create_token(user, rol):
     payload = {
@@ -755,72 +772,6 @@ def map_role_from_cargo(cargo: str) -> str:
         return null
     return "admin" if "Administrador" in c or "Administradora" in c else "funcionario"
 
-def seed_users_from_funcionarios(default_fun_pwd="fun123", default_admin_pwd="admin123"):
-    """
-    Crea usuarios reales a partir de la colección 'funcionarios'.
-    """
-    db = mongo.db
-    created = 0
-    
-    # Hashea las contraseñas por defecto
-    fun_hash = bcrypt.hashpw(default_fun_pwd.encode(), bcrypt.gensalt()).decode()
-    adm_hash = bcrypt.hashpw(default_admin_pwd.encode(), bcrypt.gensalt()).decode()
-
-
-    for f in db.funcionarios.find({}, {"rut": 1, "nombre": 1, "apellido": 1, "cargo": 1, "email": 1}):
-        rut = (f.get("rut") or "").strip()
-        if not rut:
-            continue
-        
-        # ✅ SI YA EXISTE UN USUARIO CON ESE RUT, LO SALTA
-        if db.usuarios.find_one({"rut": rut}):
-            continue
-        
-
-        role = map_role_from_cargo(f.get("cargo"))  # "admin" o "funcionario"
-        
- 
-        pwd_hash = adm_hash if role == "admin" else fun_hash
-        
-        nombre = " ".join(x for x in [f.get("nombre"), f.get("apellido")] if x)
-       
-        db.usuarios.insert_one({
-            "rut": rut,
-            "username": rut,
-            "nombre": nombre or f.get("nombre") or "",
-            "role": role,
-            "passwordHash": pwd_hash,  # ← Hash de "fun123" o "admin123"
-            "email": f.get("email"),
-        })
-        created += 1
-    
-    return created
-
-def _ensure_indexes_and_seed():
-    db = mongo.db
-    try:
-        db.funcionarios.create_index("rut", unique=True)
-        db.probabilidades.create_index("rut")
-        db.riesgos.create_index("rut")
-        db.sis.create_index("rut")
-        db.usuarios.create_index("rut", unique=True)
-        db.usuarios.create_index("username", unique=False)
-    except Exception:
-        pass
-
-    # Seed demo opcional (deshabilitado por defecto)
-    if os.getenv("SEED_DEMO_USERS") == "1" and db.usuarios.estimated_document_count() == 0:
-        admin_pwd = bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode()
-        func_pwd  = bcrypt.hashpw(b"fun123",   bcrypt.gensalt()).decode()
-        db.usuarios.insert_many([
-            {"username": "admin", "rut": "99999999-9", "nombre": "Admin", "role": "admin", "passwordHash": admin_pwd},
-            {"username": "func",  "rut": "11111111-1", "nombre": "Funcionario", "role": "funcionario", "passwordHash": func_pwd},
-        ])
-
-_ensure_indexes_and_seed()
-
-# Ejecutar seed real desde funcionarios SIEMPRE al iniciar
-api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 @api_bp.get("/health")
 def api_health():
@@ -866,46 +817,6 @@ def api_login():
         }
     }), 200
 
-'''
-
-@api_bp_get("/auth/login")
-def api_login():
-    
-    body = request.get_json(force=True) or {}
-    # Preferimos autenticación por RUT (RUN)
-    rut = (body.get("rut") or "").strip()
-    pwd = (body.get("password") or "").encode()
-    role_area = (body.get("roleArea") or "").strip()  # opcional: "admin" | "funcionario"
-    funcionario = funcionarios_col.find_one({"rut": rut})
-    rol = map_role_from_cargo(funcionario.get("cargo"))
-    if not funcionario or not pwd or not bcrypt.checkpw(pwd, funcionario["passwordHash"].encode()):
-        return jsonify({"error": "invalid_credentials"}), 401
-
-    if role_area and rol != role_area:
-        return jsonify({"error": "wrong_role", "expected": role_area, "actual": rol}), 403
-
-    token = _create_token(u)
-    user 
-    return jsonify({"token": token, "user": user}), 200
-        
-    body = request.get_json(force=True) or {}
-    rut = (body.get("rut") or "").strip()
-    role = (body.get("roleArea") or "").strip()
-    pwd = (body.get("password") or "").strip()
-    funcionario = funcionarios_col.find_one({"rut": rut})
-    
-    if not rut or not pwd or not role:
-        return jsonify({"error": "Faltan datos"}), 400
-    if pwd != funcionario.get("clave"):
-        return jsonify({"error": "Clave incorrecta"}), 401
-    if not funcionario:
-        return jsonify({"erorr": "Usuario no encontrado"}), 404
-    rol = map_role_from_cargo(funcionario.get("cargo"))
-    if rol != role:
-        return jsonify({"error": "wrong_role", "expected": role, "actual": rol}), 403
-    token = _create_token(funcionario)
-    return jsonify({"token": token, "rut": rut, "role", rol}), 200
-    '''
 @api_bp.post("/auth/register")
 def api_register():
     body = request.get_json(force=True) or {}
@@ -939,7 +850,7 @@ def api_me():
 # ---- Datos para dashboards (reales desde Mongo) ----
 @api_bp.get("/funcionarios-list")
 def api_funcionarios():
-    cur = mongo.db.funcionarios.find({})
+    cur = mongo.funcionarios.find({})
     return jsonify([_to_doc(x) for x in cur]), 200
 
 @api_bp.get("/funcionarios/<user_id>")
@@ -954,15 +865,17 @@ def api_probabilidades(user_id):
     f = _find_funcionario(user_id)
     if not f:
         return jsonify([])
-    doc = mongo.db.probabilidades.find_one({"rut": f.get("rut")})
-    return jsonify(doc.get("items", [])), 200 if doc else jsonify([]), 404 
+    doc = mongo.probabilidades.find_one({"rut": f.get("rut")})
+    if not doc:
+        return jsonify([]), 404
+    return jsonify(doc.get("items", [])), 200
 
 @api_bp.get("/riesgos/<user_id>")
 def api_riesgos(user_id):
     f = _find_funcionario(user_id)
     if not f:
         return jsonify([])
-    doc = mongo.db.riesgos.find_one({"rut": f.get("rut")})
+    doc = mongo.riesgos.find_one({"rut": f.get("rut")})
     return jsonify(doc.get("items", [])), 200 if doc else jsonify([]), 404
 
 @api_bp.get("/sis/<user_id>")
@@ -970,7 +883,7 @@ def api_sis(user_id):
     f = _find_funcionario(user_id)
     if not f:
         return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0}), 404
-    doc = mongo.db.sis.find_one({"rut": f.get("rut")})
+    doc = mongo.sis.find_one({"rut": f.get("rut")})
     if not doc:
         return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0}), 404
     d = _to_doc(doc)
@@ -996,10 +909,10 @@ def actualizar_probabilidades(user_id):
         return jsonify({"error": "No autorizado"}), 403
     
     items = payload.get("items", [])
-    db = mongo.db
+
     
     try:
-        db.probabilidades.update_one(
+        mongo.probabilidades.insert_one(
             {"rut": user_id},
             {"$set": {"items": items}},
             upsert=True
@@ -1025,10 +938,10 @@ def actualizar_riesgos(user_id):
         return jsonify({"error": "No autorizado"}), 403
     
     items = payload.get("items", [])
-    db = mongo.db
+    
     
     try:
-        db.riesgos.update_one(
+        mongo.riesgos.update_one(
             {"rut": user_id},
             {"$set": {"items": items}},
             upsert=True
