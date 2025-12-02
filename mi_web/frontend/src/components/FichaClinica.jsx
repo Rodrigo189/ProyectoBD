@@ -1,7 +1,7 @@
-// src/pages/FichaClinica.jsx  (o donde lo tengas)
+// src/pages/FichaClinica.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "../styles/FichaClinica.css"; // si tienes un CSS propio
+import "../styles/FichaClinica.css";
 
 export default function FichaClinica() {
   const { rut } = useParams();
@@ -33,122 +33,170 @@ export default function FichaClinica() {
   }, [rut]);
 
   if (loading) {
-    return <div className="ficha-clinica-page">Cargando ficha clínica...</div>;
+    return <div className="ficha-clinica">Cargando ficha clínica...</div>;
   }
 
   if (error || !residente) {
     return (
-      <div className="ficha-clinica-page">
+      <div className="ficha-clinica">
         <p>{error || "No se encontró la ficha clínica"}</p>
         <button onClick={() => navigate("/")}>Volver al inicio</button>
       </div>
     );
   }
 
-  // Soportar estructuras viejas y nuevas
-  const datosPersonales = residente.datos_personales || {};
-  const antecedentesMedicos = residente.antecedentes_medicos || {};
-  const datosSociales = residente.datos_sociales || {};
+  // --- Mapeo según tu JSON ---
+  const ficha = residente.ficha_clinica || {};
+  const datosSociales = ficha.datos_sociales || {};
+  const escolaridad = datosSociales.escolaridad || {};
+  const antecedentesMedicos = ficha.antecedentes_medicos || {};
+  const ubicacion = ficha.ubicacion || {};
+  const historiaClinica = ficha.historia_clinica || {};
   const apoderado = residente.apoderado || {};
-  const historiaClinica = residente.historia_clinica || {};
   const medicamentos = residente.medicamentos || [];
   const signosVitales = residente.signos_vitales || [];
 
-  const fechaNac =
-    datosPersonales.fecha_nacimiento || residente.fecha_nacimiento || "-";
-  const fechaIngreso =
-    datosPersonales.fecha_ingreso || residente.fecha_ingreso || "-";
+  const fechaNac = residente.fecha_nacimiento || "-";
+  const fechaIngreso = residente.fecha_ingreso || "-";
 
   return (
-    <div className="ficha-clinica-page">
-      <header className="ficha-header">
-        <h1>Ficha Clínica</h1>
-        <div className="breadcrumbs">
-          <span onClick={() => navigate("/")}>Inicio</span> /
-          <span onClick={() => navigate("/principal")}> Información Residente </span> /
-          <strong> Ficha Clínica </strong>
-        </div>
-      </header>
+    <div className="ficha-clinica">
+      <h2>Ficha Clínica</h2>
 
       {/* DATOS DEL PACIENTE */}
-      <section className="card">
-        <h2>Datos del Paciente</h2>
-        <hr />
-        <p><strong>RUT:</strong> {residente.rut}</p>
-        <p><strong>Nombre:</strong> {residente.nombre}</p>
-        <p><strong>Fecha de Nacimiento:</strong> {fechaNac}</p>
-        <p><strong>Fecha de Ingreso:</strong> {fechaIngreso}</p>
-        <p><strong>Sexo:</strong> {datosPersonales.sexo || "-"}</p>
-        <p><strong>Dirección:</strong> {datosPersonales.direccion || residente.direccion || "-"}</p>
-        <p><strong>Previsión de Salud:</strong> {datosPersonales.prevision_salud || "-"}</p>
+      <section className="seccion-datos">
+        <h3>Datos del Paciente</h3>
+        <p>
+          <strong>RUT:</strong> {residente.rut}
+        </p>
+        <p>
+          <strong>Nombre:</strong> {residente.nombre}
+        </p>
+        <p>
+          <strong>Fecha de Nacimiento:</strong> {fechaNac}
+        </p>
+        <p>
+          <strong>Fecha de Ingreso:</strong> {fechaIngreso}
+        </p>
+        <p>
+          <strong>Sexo:</strong> {residente.sexo || "-"}
+        </p>
+        <p>
+          <strong>Dirección:</strong> {residente.direccion || "-"}
+        </p>
+        <p>
+          <strong>Previsión de Salud:</strong> {residente.prevision_salud || "-"}
+        </p>
       </section>
 
       {/* INFORMACIÓN MÉDICA / ANTECEDENTES */}
-      <section className="card">
-        <h2>Información Médica</h2>
-        <hr />
-        <p><strong>Médico Tratante:</strong> {antecedentesMedicos.medico_tratante || residente.medico_tratante || "-"}</p>
-        <p><strong>Próximo control:</strong> {antecedentesMedicos.proximo_control || residente.proximo_control || "-"}</p>
-        <p><strong>Diagnóstico:</strong> {antecedentesMedicos.diagnostico || residente.diagnostico || "-"}</p>
+      <section className="seccion-medica">
+        <h3>Información Médica</h3>
+        <p>
+          <strong>Médico Tratante:</strong> {residente.medico_tratante || "-"}
+        </p>
+        <p>
+          <strong>Próximo Control:</strong> {residente.proximo_control || "-"}
+        </p>
+        <p>
+          <strong>Diagnóstico:</strong> {residente.diagnostico || "-"}
+        </p>
 
-        {/* Si guardaste más antecedentes, los mostramos genéricamente */}
-        {Object.entries(antecedentesMedicos).map(([k, v]) => {
-          if (["medico_tratante", "proximo_control", "diagnostico"].includes(k)) return null;
-          return (
-            <p key={k}>
-              <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
-            </p>
-          );
-        })}
+        {/* Antecedentes médicos detallados */}
+        {Object.keys(antecedentesMedicos).length > 0 && (
+          <>
+            <h3>Antecedentes médicos</h3>
+            {Object.entries(antecedentesMedicos).map(([k, v]) => (
+              <p key={k}>
+                <strong>{k.replace(/_/g, " ")}:</strong>{" "}
+                {typeof v === "boolean" ? (v ? "Sí" : "No") : String(v)}
+              </p>
+            ))}
+          </>
+        )}
+
+        {/* Datos sociales */}
+        {Object.keys(datosSociales).length > 0 && (
+          <>
+            <h3>Datos sociales</h3>
+            {Object.entries(datosSociales)
+              .filter(([k]) => k !== "escolaridad")
+              .map(([k, v]) => (
+                <p key={k}>
+                  <strong>{k.replace(/_/g, " ")}:</strong>{" "}
+                  {typeof v === "boolean" ? (v ? "Sí" : "No") : String(v)}
+                </p>
+              ))}
+
+            {Object.keys(escolaridad).length > 0 && (
+              <>
+                <h3>Escolaridad</h3>
+                {Object.entries(escolaridad).map(([k, v]) => (
+                  <p key={k}>
+                    <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
+                  </p>
+                ))}
+              </>
+            )}
+          </>
+        )}
+
+        {/* Ubicación */}
+        {Object.keys(ubicacion).length > 0 && (
+          <>
+            <h3>Ubicación / Institucionalización</h3>
+            {Object.entries(ubicacion).map(([k, v]) => (
+              <p key={k}>
+                <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
+              </p>
+            ))}
+          </>
+        )}
+
+        {/* Apoderado */}
+        {Object.keys(apoderado).length > 0 && (
+          <>
+            <h3>Apoderado</h3>
+            {Object.entries(apoderado).map(([k, v]) => (
+              <p key={k}>
+                <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
+              </p>
+            ))}
+          </>
+        )}
+
+        {/* Historia clínica */}
+        {Object.keys(historiaClinica).length > 0 && (
+          <>
+            <h3>Historia clínica</h3>
+            {Object.entries(historiaClinica).map(([k, v]) => {
+              if (k === "historial_atenciones") {
+                return (
+                  <p key={k}>
+                    <strong>Historial de atenciones:</strong>{" "}
+                    {Array.isArray(v) && v.length === 0
+                      ? "Sin registros"
+                      : JSON.stringify(v)}
+                  </p>
+                );
+              }
+              return (
+                <p key={k}>
+                  <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
+                </p>
+              );
+            })}
+          </>
+        )}
       </section>
 
-      {/* DATOS SOCIALES */}
-      {Object.keys(datosSociales).length > 0 && (
-        <section className="card">
-          <h2>Datos Sociales</h2>
-          <hr />
-          {Object.entries(datosSociales).map(([k, v]) => (
-            <p key={k}>
-              <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
-            </p>
-          ))}
-        </section>
-      )}
-
-      {/* APODERADO */}
-      {Object.keys(apoderado).length > 0 && (
-        <section className="card">
-          <h2>Apoderado</h2>
-          <hr />
-          {Object.entries(apoderado).map(([k, v]) => (
-            <p key={k}>
-              <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
-            </p>
-          ))}
-        </section>
-      )}
-
-      {/* HISTORIA CLÍNICA (texto largo) */}
-      {Object.keys(historiaClinica).length > 0 && (
-        <section className="card">
-          <h2>Historia Clínica</h2>
-          <hr />
-          {Object.entries(historiaClinica).map(([k, v]) => (
-            <p key={k}>
-              <strong>{k.replace(/_/g, " ")}:</strong> {String(v)}
-            </p>
-          ))}
-        </section>
-      )}
-
-      {/* MEDICAMENTOS */}
-      <section className="card">
-        <h2>Medicamentos</h2>
-        <hr />
+      {/* MEDICAMENTOS + SIGNOS VITALES */}
+      <section className="seccion-medicamentos">
+        <h3>Medicamentos</h3>
         {medicamentos.length === 0 ? (
           <p>No hay medicamentos registrados.</p>
         ) : (
-          <table className="tabla-simple">
+          <table style={{ width: "100%", marginTop: "10px" }}>
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -173,16 +221,12 @@ export default function FichaClinica() {
             </tbody>
           </table>
         )}
-      </section>
 
-      {/* SIGNOS VITALES */}
-      <section className="card">
-        <h2>Signos Vitales</h2>
-        <hr />
+        <h3 style={{ marginTop: "25px" }}>Signos vitales</h3>
         {signosVitales.length === 0 ? (
           <p>No hay registros de signos vitales.</p>
         ) : (
-          <table className="tabla-simple">
+          <table style={{ width: "100%", marginTop: "10px" }}>
             <thead>
               <tr>
                 <th>Fecha</th>
@@ -200,7 +244,9 @@ export default function FichaClinica() {
                 <tr key={i}>
                   <td>{s.fecha}</td>
                   <td>{s.hora}</td>
-                  <td>{s.presionSistolica} / {s.presionDiastolica}</td>
+                  <td>
+                    {s.presionSistolica} / {s.presionDiastolica}
+                  </td>
                   <td>{s.temperatura}</td>
                   <td>{s.pulso}</td>
                   <td>{s.saturacionO2}</td>
@@ -212,12 +258,6 @@ export default function FichaClinica() {
           </table>
         )}
       </section>
-
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <button onClick={() => navigate(`/dashboard?rut=${rut}`)}>
-          Volver al Portal del Residente
-        </button>
-      </div>
     </div>
   );
 }
