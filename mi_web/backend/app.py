@@ -842,8 +842,9 @@ def api_login():
     role_area = (body.get("roleArea") or "").strip()  # opcional: "admin" | "funcionario"
     funcionario = funcionarios_col.find_one({"rut": rut})
     rol = map_role_from_cargo(funcionario.get("cargo"))
-    if not funcionario or not pwd or not bcrypt.checkpw(pwd, funcionario["passwordHash"].encode()):
+    if not funcionario or not pwd or not bcrypt.checkpw(pwd, funcionario.get("clave").encode()):
         return jsonify({"error": "invalid_credentials"}), 401
+
 
     if role_area and rol != role_area:
         return jsonify({"error": "wrong_role", "expected": role_area, "actual": rol}), 403
