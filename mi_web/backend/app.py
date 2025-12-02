@@ -490,10 +490,10 @@ def buscar_residente():
 def obtener_estado_seed():
     try:
         seed = os.getenv("SEED_DEMO_USERS")
-        return (jsonify("mensaje": seed)), 200
+        return (jsonify({"mensaje": seed})), 200
     except Exception as e:
         print('No se encontró la variable "SEED_DEMO_USERS"')
-        return (jsonify("error": str(e))), 404
+        return (jsonify({"error": str(e)})), 404
 
 # Ruta para insertar datos de prueba
 @app.route('/api/insertar-datos-prueba', methods=['POST'])
