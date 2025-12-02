@@ -29,12 +29,19 @@ export default function InfoMedicamentos() {
   const cargarFuncionarios = async () => {
     try {
       const res = await fetch("https://eleam.onrender.com/api/funcionarios");
+      if (!res.ok) {
+        const txt = await res.text();
+        console.error("Error HTTP al cargar funcionarios:", res.status, txt);
+        return;
+      }
       const data = await res.json();
+      console.log("Funcionarios cargados:", data); // 👈 para verlo en consola
       setFuncionarios(data);
     } catch (e) {
       console.error("Error al cargar funcionarios:", e);
     }
   };
+
 
   useEffect(() => {
     cargarResidente();

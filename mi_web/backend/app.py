@@ -679,7 +679,7 @@ except NameError:
 # Activar CORS para /api/* (si está instalado)
 if CORS:
     try:
-        CORS(app, resources={r"/api/*": {"origins": "*"}})
+        CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True))
     except Exception:
         pass
 
