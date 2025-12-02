@@ -17,9 +17,9 @@ export default function LoginPagosFuncionario() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ rut: run, password, roleArea: "funcionario" })
             });
-            console.log(r);
+            console.log(str(r));
             const res = await r.json().catch(() => ({}));
-            console.log(res);
+            console.log(str(res));
             if (r.status === 403 && res?.error === "wrong_role") {
                 setError("No autorizado: tu cuenta no es Funcionario.");
                 return;
