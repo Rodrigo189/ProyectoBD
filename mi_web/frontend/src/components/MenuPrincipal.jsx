@@ -29,8 +29,6 @@ export default function MenuPrincipal() {
         {/* Lista de botones */}
         <div className="menu-botones">
           <button onClick={() => navigate("/fichas")}>FICHA CLÍNICA</button>
-          <button onClick={() => navigate("/historial-clinico")}>SIGNOS VITALES</button>
-          <button onClick={() => navigate("/parametros-clinicos")}>PARÁMETROS CLÍNICOS</button>
           <button onClick={() => navigate("/principal")}>GESTIÓN DE PERSONAL</button>
           <button onClick={() => navigate("/login-form")}>MEDICAMENTOS</button>
           <button onClick={() => navigate("/LoginSelectionLyP")}>PAGOS Y LIQUIDACIONES</button>

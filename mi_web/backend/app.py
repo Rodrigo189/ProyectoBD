@@ -40,15 +40,14 @@ formularios_col = mongo.db.formularios_turno
 
 # ---------------- RESIDENTES ----------------
 # Incluye operaciones CRUD (leer, actualizar, eliminar), sobre los datos personales y médicos de los residentes
-@app.route('/api/residentes', methods=['POST']) # Crear un nuevo residente
-def verificar_residente(): # Verifica si un residente existe segun su RUT
+@app.route('/api/residentes/verificar', methods=['POST'])  # <-- CAMBIADO
+def verificar_residente():  # Verifica si un residente existe segun su RUT
     try:
         data = request.get_json() # Obtiene datos JSON del cuerpo de la solicitud
         if not data or "rut" not in data: # Verifica que el RUT este presente
             return jsonify({"error": "RUT es requerido"}), 400 # Respuesta de error si falta RUT
 
         rut = str(data["rut"]).strip().replace(".", "").upper() # Normaliza el RUT
-
 
         # Buscar residente en MongoDB
         residente = residentes_col.find_one({"rut": rut})
@@ -74,14 +73,106 @@ def verificar_residente(): # Verifica si un residente existe segun su RUT
         print("Error al verificar residente:", e)
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/residentes/<rut>', methods=['GET', 'PUT', 'DELETE']) # Leer, actualizar o eliminar un residente por RUT
-def manejar_residente(rut): # Maneja operaciones CRUD para un residente especifico
-    if request.method == 'GET': # Obtener datos del residente
-        residente = residentes_col.find_one({"rut": rut})
-        if not residente: # Si no se encuentra, devuelve error 404
-            return jsonify({"mensaje": "Residente no encontrado"}), 404
-        residente["_id"] = str(residente["_id"]) # Convierte ObjectId a string para JSON
-        return jsonify(residente)
+# ------------------------------------------------------------
+# GET /api/residentes
+# Obtener la lista de residentes (solo los datos basicos)
+# ------------------------------------------------------------
+@app.route("/api/residentes", methods=["GET"])
+def get_residentes():
+    residentes = list(residentes_col.find({}, {
+        "_id": 0,
+        "rut": 1,
+        "nombre": 1,
+        "datos_personales": 1,
+        "ubicacion": 1
+    }))
+
+    return jsonify(residentes), 200
+
+
+# ------------------------------------------------------------
+# GET /api/residentes/<rut>
+# Obtener la ficha clínica completa
+# ------------------------------------------------------------
+@app.route("/api/residentes/<rut>", methods=["GET"])
+def get_residente(rut):
+    residente = residentes_col.find_one({"rut": rut}, {"_id": 0})
+    if not residente:
+        return jsonify({"message": "No encontrado"}), 404
+    return jsonify(residente), 200
+
+
+# ------------------------------------------------------------
+# POST /api/residentes
+# Crear residente con ficha COMPLETA en un solo documento
+# ------------------------------------------------------------
+@app.route("/api/residentes", methods=["POST"])
+def crear_residente():
+    data = request.get_json()
+
+    if residentes_col.find_one({"rut": data.get("rut")}):
+        return jsonify({"error": "El residente ya existe"}), 400
+
+    nuevo_residente = {
+        "rut": data.get("rut"),
+        "nombre": data.get("nombre"),
+        "datos_personales": data.get("datos_personales", {}),
+        "ubicacion": data.get("ubicacion", {}),
+        "datos_sociales": data.get("datos_sociales", {}),
+        "apoderado": data.get("apoderado", {}),
+        "antecedentes_medicos": data.get("antecedentes_medicos", {}),
+        "historia_clinica": data.get("historia_clinica", {}),
+    }
+
+    residentes_col.insert_one(nuevo_residente)
+
+    return jsonify({"message": "Residente creado correctamente"}), 201
+
+
+# ------------------------------------------------------------
+# PUT /api/residentes/<rut>
+# Actualizar ficha clinica completa
+# ------------------------------------------------------------
+@app.route("/api/residentes/<rut>", methods=["PUT"])
+def actualizar_residente(rut):
+    data = request.get_json()
+
+    campos = {
+        "nombre": data.get("nombre"),
+        "datos_personales": data.get("datos_personales"),
+        "ubicacion": data.get("ubicacion"),
+        "datos_sociales": data.get("datos_sociales"),
+        "apoderado": data.get("apoderado"),
+        "antecedentes_medicos": data.get("antecedentes_medicos"),
+        "historia_clinica": data.get("historia_clinica"),
+    }
+
+    # Eliminamos campos None
+    campos = {k: v for k, v in campos.items() if v is not None}
+
+    resultado = residentes_col.update_one(
+        {"rut": rut},
+        {"$set": campos}
+    )
+
+    if resultado.matched_count == 0:
+        return jsonify({"message": "Residente no encontrado"}), 404
+
+    return jsonify({"message": "Residente actualizado"}), 200
+
+
+# ------------------------------------------------------------
+# DELETE /api/residentes/<rut>
+# Eliminacion total de la ficha
+# ------------------------------------------------------------
+@app.route("/api/residentes/<rut>", methods=["DELETE"])
+def eliminar_residente(rut):
+    resultado = residentes_col.delete_one({"rut": rut})
+
+    if resultado.deleted_count == 0:
+        return jsonify({"message": "Residente no encontrado"}), 404
+
+    return jsonify({"message": "Residente eliminado"}), 200
 
 # ---------------- FUNCIONARIOS ----------------
 # Los funcionarios pueden registrarse, actualizar sus datos y autenticarse.
@@ -896,10 +987,6 @@ def actualizar_sis(user_id):
         return jsonify({"ok": True, "message": "Datos SIS actualizados"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-# Registrar el blueprint una sola vez
-if "api" not in app.blueprints:
-    app.register_blueprint(api_bp)
 
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
