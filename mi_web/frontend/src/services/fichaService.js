@@ -34,53 +34,18 @@ function normalizarFicha(doc) {
       rut: doc.rut,
       nombre: doc.nombre,
       fecha_nacimiento: doc.fecha_nacimiento,
-      edad: edad,
+      edad: calcularEdad(doc.fecha_nacimiento),
       sexo: doc.sexo,
-      peso: doc.peso ?? "",
+      peso: doc.peso,
       prevision_salud: doc.prevision_salud,
       prevision_social: doc.prevision_social ?? "",
-      direccion_actual: doc.direccion ?? "",
+      direccion_actual: doc.direccion,
     },
-    ubicacion: {
-      habitacion: ubicacion.habitacion ?? "",
-      ingresa_desde: ubicacion.ingresa_desde ?? "",
-      motivo_institucionalizacion: ubicacion.motivo_institucionalizacion ?? "",
-    },
-    datos_sociales: {
-      religion: datosSociales.religion ?? "",
-      actividad_laboral_previa: datosSociales.actividad_laboral_previa ?? "",
-      estado_civil: datosSociales.estado_civil ?? "",
-      vive_solo: !!datosSociales.vive_solo,
-      calidad_apoyo: datosSociales.calidad_apoyo ?? "",
-      escolaridad: {
-        lectoescritura: datosSociales.escolaridad?.lectoescritura ?? "",
-        analfabeto: datosSociales.escolaridad?.analfabeto ?? "",
-        educacion_basica: datosSociales.escolaridad?.educacion_basica ?? "",
-        educacion_media: datosSociales.escolaridad?.educacion_media ?? "",
-        educacion_superior: datosSociales.escolaridad?.educacion_superior ?? "",
-      },
-    },
-    apoderado: doc.apoderado || {},
-    antecedentes_medicos: {
-      artrosis: !!antecedentes.artrosis,
-      cancer: antecedentes.cancer ?? "",
-      diabetes_tipo_I: !!antecedentes.diabetes_tipo_I,
-      diabetes_tipo_II: !!antecedentes.diabetes_tipo_II,
-      glaucoma: !!antecedentes.glaucoma,
-      epoc: !!antecedentes.epoc,
-      patologia_renal: !!antecedentes.patologia_renal,
-      otras_patologias: antecedentes.otras_patologias ?? "",
-      detalle_patologia_renal: antecedentes.detalle_patologia_renal ?? "",
-    },
-    historia_clinica: {
-      categoria_residente: historia.categoria_residente ?? "",
-      alergias: historia.alergias ?? "",
-      examenes: historia.examenes ?? "",
-      medicamentos_asociados: historia.medicamentos_asociados ?? "",
-      historial_atenciones: Array.isArray(historia.historial_atenciones)
-        ? historia.historial_atenciones
-        : [],
-    },
+    ubicacion: doc.ficha_clinica?.ubicacion ?? {},
+    datos_sociales: doc.ficha_clinica?.datos_sociales ?? {},
+    antecedentes_medicos: doc.ficha_clinica?.antecedentes_medicos ?? {},
+    historia_clinica: doc.ficha_clinica?.historia_clinica ?? {},
+    apoderado: doc.apoderado ?? {}
   };
 }
 
