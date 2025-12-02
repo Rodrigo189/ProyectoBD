@@ -16,38 +16,34 @@ function calcularEdad(fechaStr) {
 }
 
 function normalizarFicha(doc) {
-  // Si ya viene en el modelo nuevo (con datos_personales), no tocamos nada
-  if (doc.datos_personales) return doc;
-
-  // Compatibilidad con el modelo antiguo (si algun dia queda algo viejo en la BD)
-  const fc = doc.ficha_clinica || {};
-  const datosSociales = fc.datos_sociales || {};
-  const antecedentes = fc.antecedentes_medicos || {};
-  const ubicacion = fc.ubicacion || {};
-  const historia = fc.historia_clinica || {};
-
-  const edad = calcularEdad(doc.fecha_nacimiento);
 
   return {
     rut_residente: doc.rut,
+
     datos_personales: {
       rut: doc.rut,
       nombre: doc.nombre,
       fecha_nacimiento: doc.fecha_nacimiento,
       edad: calcularEdad(doc.fecha_nacimiento),
       sexo: doc.sexo,
-      peso: doc.peso,
-      prevision_salud: doc.prevision_salud,
+      peso: doc.peso ?? "",
+      prevision_salud: doc.prevision_salud ?? "",
       prevision_social: doc.prevision_social ?? "",
-      direccion_actual: doc.direccion,
+      direccion_actual: doc.direccion ?? "",
     },
+
     ubicacion: doc.ficha_clinica?.ubicacion ?? {},
+
     datos_sociales: doc.ficha_clinica?.datos_sociales ?? {},
+
     antecedentes_medicos: doc.ficha_clinica?.antecedentes_medicos ?? {},
+
     historia_clinica: doc.ficha_clinica?.historia_clinica ?? {},
+
     apoderado: doc.apoderado ?? {}
   };
 }
+
 
 /**
  * Obtener ficha completa por RUT
