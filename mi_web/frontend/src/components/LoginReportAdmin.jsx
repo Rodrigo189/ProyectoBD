@@ -12,7 +12,7 @@ export default function LoginReportesAdministrador() {
     const handleLogin = async ({ run, password }) => {
         setError("");
         try {
-            const r = await fetch("/api/auth/login", {
+            const r = await fetch("/api/auth/login-pagos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ rut: run, password, roleArea: "admin" })

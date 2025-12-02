@@ -832,7 +832,7 @@ def api_health():
 
 # ---- Auth endpoints ----
 
-@api_bp.post("/auth/login")
+@api_bp.post("/auth/login-pagos")
 def api_login():
     body = request.get_json(force=True) or {}
     rut = (body.get("rut") or "").strip()
