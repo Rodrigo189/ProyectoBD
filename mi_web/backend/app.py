@@ -172,7 +172,7 @@ def eliminar_residente(rut):
     if resultado.deleted_count == 0:
         return jsonify({"message": "Residente no encontrado"}), 404
 
-    return jsonify({"message": "Residente eliminado"}), 200
+    return jsonify({"message": "Residente eliminado"}), 201
 
 # ---------------- FUNCIONARIOS ----------------
 # Los funcionarios pueden registrarse, actualizar sus datos y autenticarse.
@@ -182,7 +182,7 @@ def listar_o_crear_funcionarios(): # Maneja la lista y creacion de funcionarios
         funcionarios = list(funcionarios_col.find())
         for f in funcionarios:
             f["_id"] = str(f["_id"]) # Convierte ObjectId a string para JSON
-        return jsonify(funcionarios)
+        return jsonify(funcionarios), 200
 
     elif request.method == 'POST': # Crear un nuevo funcionario
         try:
@@ -255,13 +255,13 @@ def actualizar_o_eliminar_funcionario(rut): # Maneja la actualizacion y eliminac
         result = funcionarios_col.update_one({"rut": rut}, {"$set": data})
         if result.matched_count == 0:
             return jsonify({"error": "Funcionario no encontrado"}), 404
-        return jsonify({"message": "Funcionario actualizado correctamente"})
+        return jsonify({"message": "Funcionario actualizado correctamente"}), 201
 
     elif request.method == "DELETE": # Eliminar funcionario
         result = funcionarios_col.delete_one({"rut": rut})
         if result.deleted_count == 0: # Si no se encontro el funcionario
             return jsonify({"error": "Funcionario no encontrado"}), 404
-        return jsonify({"message": "Funcionario eliminado correctamente"})
+        return jsonify({"message": "Funcionario eliminado correctamente"}), 201
 
 @app.route('/api/login', methods=['POST']) # Autentica a un funcionario
 def login(): # Maneja el login de funcionarios
@@ -270,7 +270,7 @@ def login(): # Maneja el login de funcionarios
     clave = data.get("clave")
     user = funcionarios_col.find_one({"rut": rut, "clave": clave}) # Busca en MongoDB
     if user: # Si se encuentra el usuario, devuelve exito
-        return jsonify({"mensaje": "Login exitoso", "rut": rut})
+        return jsonify({"mensaje": "Login exitoso", "rut": rut}), 200
     return jsonify({"mensaje": "Credenciales incorrectas"}), 401
 
 # ---------------- MEDICAMENTOS ----------------
@@ -332,7 +332,7 @@ def manejar_medicamentos(): # Maneja la creacion y listado de medicamentos
                         "fecha_termino": m.get("fecha_termino")
                     })
 
-        return jsonify(medicamentos) # Devuelve la lista de medicamentos
+        return jsonify(medicamentos), 200 # Devuelve la lista de medicamentos
 
 @app.route('/api/medicamentos/<rut>', methods=['PUT', 'DELETE'])
 def actualizar_o_eliminar_medicamento(rut): # Actualiza o elimina un medicamento de un residente
@@ -420,12 +420,12 @@ def actualizar_o_eliminar_registro(id):
         result = registros_col.update_one({"_id": obj_id}, {"$set": data})
         if result.matched_count == 0:
             return jsonify({"mensaje": "Registro no encontrado"}), 404
-        return jsonify(data)
+        return jsonify(data), 201
     else:
         result = registros_col.delete_one({"_id": obj_id})
         if result.deleted_count == 0:
             return jsonify({"mensaje": "Registro no encontrado"}), 404
-        return jsonify({"mensaje": "Registro eliminado"})
+        return jsonify({"mensaje": "Registro eliminado"}), 201
 
 # ---------------- FORMULARIOS ----------------
 # Permiten registrar informacion relacionada a los turnos de los funcionarios.
@@ -440,7 +440,7 @@ def obtener_formularios(): # Devuelve todos los formularios de turno almacenados
     forms = list(formularios_col.find()) # Obtiene todos los formularios de MongoDB
     for f in forms:
         f["_id"] = str(f["_id"])
-    return jsonify(forms)
+    return jsonify(forms), 200
 
 # ---------------- HISTORIAL CLÍNICO ----------------
 # Devuelve toda la informacion clinica relevante del residente, incluyendo su diagnostico, medico tratante, proximo control y signos vitales.
@@ -482,9 +482,9 @@ def buscar_residente():
     residente = residentes_col.find_one({"rut": rut})
 
     if residente:
-        return jsonify({"existe": True, "rut": rut})
+        return jsonify({"existe": True, "rut": rut}), 200
     else:
-        return jsonify({"existe": False})
+        return jsonify({"existe": False}), 404
 
 # Ruta para insertar datos de prueba
 @app.route('/api/insertar-datos-prueba', methods=['POST'])
@@ -811,7 +811,7 @@ api_bp = Blueprint("api", __name__, url_prefix="/api")
 def api_health():
     try:
         mongo.cx.admin.command("ping")
-        return {"ok": True}
+        return {"ok": True}, 200
     except Exception as e:
         return {"ok": False, "error": str(e)}, 500
 
@@ -835,7 +835,7 @@ def api_login():
 
     token = _create_token(u)
     user = {"id": str(u["_id"]), "username": u.get("username"), "rut": u.get("rut"), "nombre": u.get("nombre"), "role": u.get("role")}
-    return jsonify({"token": token, "user": user})
+    return jsonify({"token": token, "user": user}), 200
 
 @api_bp.post("/auth/register")
 def api_register():
@@ -858,27 +858,27 @@ def api_register():
         {"$set": {"rut": rut, "role": role, "passwordHash": pwd_hash, "username": username, "nombre": nombre, "email": email}},
         upsert=True,
     )
-    return jsonify({"ok": True})
+    return jsonify({"ok": True}), 200
 
 @api_bp.get("/auth/me")
 def api_me():
     claims = _verify_token(request)
     if not claims:
         return jsonify({"error": "unauthorized"}), 401
-    return jsonify({"user": claims})
+    return jsonify({"user": claims}), 200
 
 # ---- Datos para dashboards (reales desde Mongo) ----
 @api_bp.get("/funcionarios-list")
 def api_funcionarios():
     cur = mongo.db.funcionarios.find({})
-    return jsonify([_to_doc(x) for x in cur])
+    return jsonify([_to_doc(x) for x in cur]), 200
 
 @api_bp.get("/funcionarios/<user_id>")
 def api_funcionario(user_id):
     f = _find_funcionario(user_id)
     if not f:
         return jsonify({"error": "not_found"}), 404
-    return jsonify(_to_doc(f))
+    return jsonify(_to_doc(f)), 200
 
 @api_bp.get("/probabilidades/<user_id>")
 def api_probabilidades(user_id):
@@ -886,7 +886,7 @@ def api_probabilidades(user_id):
     if not f:
         return jsonify([])
     doc = mongo.db.probabilidades.find_one({"rut": f.get("rut")})
-    return jsonify(doc.get("items", [])) if doc else jsonify([])
+    return jsonify(doc.get("items", [])), 200 if doc else jsonify([]), 404 
 
 @api_bp.get("/riesgos/<user_id>")
 def api_riesgos(user_id):
@@ -894,19 +894,19 @@ def api_riesgos(user_id):
     if not f:
         return jsonify([])
     doc = mongo.db.riesgos.find_one({"rut": f.get("rut")})
-    return jsonify(doc.get("items", [])) if doc else jsonify([])
+    return jsonify(doc.get("items", [])), 200 if doc else jsonify([]), 404
 
 @api_bp.get("/sis/<user_id>")
 def api_sis(user_id):
     f = _find_funcionario(user_id)
     if not f:
-        return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0})
+        return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0}), 404
     doc = mongo.db.sis.find_one({"rut": f.get("rut")})
     if not doc:
-        return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0})
+        return jsonify({"turnos": 0, "horas": 0, "incidentes": 0, "extra": 0}), 404
     d = _to_doc(doc)
     d.pop("rut", None); d.pop("id", None)
-    return jsonify(d)
+    return jsonify(d), 200
 
 # ---- NUEVOS ENDPOINTS PUT PARA EDICIÓN ----
 @api_bp.put("/probabilidades/<user_id>")
@@ -935,7 +935,7 @@ def actualizar_probabilidades(user_id):
             {"$set": {"items": items}},
             upsert=True
         )
-        return jsonify({"ok": True, "message": "Probabilidades actualizadas"})
+        return jsonify({"ok": True, "message": "Probabilidades actualizadas"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -964,7 +964,7 @@ def actualizar_riesgos(user_id):
             {"$set": {"items": items}},
             upsert=True
         )
-        return jsonify({"ok": True, "message": "Riesgos actualizados"})
+        return jsonify({"ok": True, "message": "Riesgos actualizados"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -992,7 +992,7 @@ def actualizar_sis(user_id):
             {"$set": payload},
             upsert=True
         )
-        return jsonify({"ok": True, "message": "Datos SIS actualizados"})
+        return jsonify({"ok": True, "message": "Datos SIS actualizados"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
