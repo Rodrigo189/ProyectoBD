@@ -30,7 +30,7 @@ export default function MenuPrincipal() {
         <div className="menu-botones">
           <button onClick={() => navigate("/fichas")}>FICHA CLÍNICA</button>
           <button onClick={() => navigate("/principal")}>GESTIÓN DE PERSONAL</button>
-          <button onClick={() => navigate("/residentes/verificar")}>MEDICAMENTOS</button>
+          <button onClick={() => navigate("/login-form")}>MEDICAMENTOS</button>
           <button onClick={() => navigate("/LoginSelectionLyP")}>PAGOS Y LIQUIDACIONES</button>
           <button onClick={() => navigate("/LoginSelectionRyE")}>REPORTES Y ESTADÍSTICAS</button>
         </div>

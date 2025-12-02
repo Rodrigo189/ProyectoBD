@@ -10,7 +10,7 @@ export default function LoginForm() { // Componente del formulario de login
 const handleSubmit = async (e) => { // Funcion para manejar el envio del formulario
   e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
   try { // Manejar errores con try-catch
-    const response = await fetch("https://eleam.onrender.com/api/login-form", {
+    const response = await fetch("https://eleam.onrender.com/api/residentes/verificar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rut }),
