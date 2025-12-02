@@ -743,34 +743,42 @@ def map_role_from_cargo(cargo: str) -> str:
 def seed_users_from_funcionarios(default_fun_pwd="fun123", default_admin_pwd="admin123"):
     """
     Crea usuarios reales a partir de la colección 'funcionarios'.
-    - role: admin si 'cargo' contiene 'admin'; si no, 'funcionario'.
-    - username = rut (opcional).
-    - passwordHash: por defecto fun123/admin123 (configurable por env).
-    No sobreescribe si ya existe un usuario con ese rut.
     """
     db = mongo.db
     created = 0
+    
+    # Hashea las contraseñas por defecto
     fun_hash = bcrypt.hashpw(default_fun_pwd.encode(), bcrypt.gensalt()).decode()
     adm_hash = bcrypt.hashpw(default_admin_pwd.encode(), bcrypt.gensalt()).decode()
+
 
     for f in db.funcionarios.find({}, {"rut": 1, "nombre": 1, "apellido": 1, "cargo": 1, "email": 1}):
         rut = (f.get("rut") or "").strip()
         if not rut:
             continue
+        
+        # ✅ SI YA EXISTE UN USUARIO CON ESE RUT, LO SALTA
         if db.usuarios.find_one({"rut": rut}):
             continue
-        role = map_role_from_cargo(f.get("cargo"))
+        
+
+        role = map_role_from_cargo(f.get("cargo"))  # "admin" o "funcionario"
+        
+ 
         pwd_hash = adm_hash if role == "admin" else fun_hash
+        
         nombre = " ".join(x for x in [f.get("nombre"), f.get("apellido")] if x)
+       
         db.usuarios.insert_one({
             "rut": rut,
             "username": rut,
             "nombre": nombre or f.get("nombre") or "",
             "role": role,
-            "passwordHash": pwd_hash,
+            "passwordHash": pwd_hash,  # ← Hash de "fun123" o "admin123"
             "email": f.get("email"),
         })
         created += 1
+    
     return created
 
 def _ensure_indexes_and_seed():
@@ -987,6 +995,7 @@ def actualizar_sis(user_id):
         return jsonify({"ok": True, "message": "Datos SIS actualizados"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
