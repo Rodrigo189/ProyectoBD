@@ -21,6 +21,21 @@ export default function Principal() { // Componente principal del portal ELEAM
     fetchPersonal();
   }, []);
 
+  testSeed(() => {
+    const fetchSeed = async () => {
+
+      try{
+        
+        const response = await fetch("https://eleam.onrender.com/api/obtener-estado-seed");
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error al cargar seed:", error);
+      }
+    };
+    testSeed();
+}, []);
+
   return (
     <div className="principal-container">
       {/* Encabezado principal */}
