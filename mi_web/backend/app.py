@@ -750,6 +750,8 @@ ALLOWED_ROLES = {"admin", "funcionario"}
 
 def map_role_from_cargo(cargo: str) -> str:
     c = (cargo or "").lower()
+    if not c:
+        return null
     return "admin" if "Administrador" in c or "Administradora" in c else "funcionario"
 
 def seed_users_from_funcionarios(default_fun_pwd="fun123", default_admin_pwd="admin123"):
@@ -841,12 +843,13 @@ def api_login():
     role_area = (body.get("roleArea") or "").strip()  # opcional: "admin" | "funcionario"
 
     q = {"rut": rut} if rut else {"username": username}
-    u = mongo.db.usuarios.find_one(q)
+    u = mongo.db.funcionarios.find_one(q)
+    rol = map_role_from_cargo(u.get("cargo"))
     if not u or not pwd or not bcrypt.checkpw(pwd, u["passwordHash"].encode()):
         return jsonify({"error": "invalid_credentials"}), 401
 
-    if role_area and u.get("role") != role_area:
-        return jsonify({"error": "wrong_role", "expected": role_area, "actual": u.get("role")}), 403
+    if role_area and rol != role_area:
+        return jsonify({"error": "wrong_role", "expected": role_area, "actual": rol}), 403
 
     token = _create_token(u)
     user = {"id": str(u["_id"]), "username": u.get("username"), "rut": u.get("rut"), "nombre": u.get("nombre"), "role": u.get("role")}
