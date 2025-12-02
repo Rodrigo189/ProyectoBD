@@ -724,12 +724,13 @@ import jwt, bcrypt  # noqa
 JWT_SECRET = os.getenv("JWT_SECRET", "dev_secret")
 JWT_EXP_HOURS = int(os.getenv("JWT_EXP_HOURS", "12"))
 
-def _create_token(user):
+def _create_token(user, rol):
     payload = {
         "sub": str(user["_id"]),
-        "rut": user.get("rut"),
-        "role": user.get("role"),
-        "name": user.get("nombre"),
+        "rut": user["rut"],
+        "role": rol,
+        "name": user["nombres"],
+        "last names": user["apellidos"],
         "iat": datetime.utcnow(),
         "exp": datetime.utcnow() + timedelta(hours=JWT_EXP_HOURS),
     }
@@ -832,10 +833,30 @@ def api_health():
 # ---- Auth endpoints ----
 
 
+@api_bp_get("/auth/login")
+def api_login():
+    data = request.get_json()
+    rut = data.get("rut")
+    psw = data.get("password")
+    roleArea = data.get("roleArea")
+    resultado = funcionarios_col.find_one({"rut": rut}, {"clave": psw})
+    cargo = resultado["cargo"]
+    rol = map_role_from_cargo(cargo)
+    if resultado.matched_count == 0:
+        return jsonify({"error": "Funcionario no encontrado"}), 404
+    if data.rut == None or data.psw == None or roleArea == None:
+        return jsonify({"error": "Faltan datos"}), 400
+    if psw != resultado["clave"]:
+        return jsonify({"error": "Contraseña incorrecta"}), 401
+    if rol != roleArea:
+        return jsonify({"error": "Cuenta no autorizada"}), 403
+    token = _create_token(resultado, rol)
+    return jsonify({"token": token, "rut": rut, "role": rol}), 200
+'''
 
 @api_bp_get("/auth/login")
 def api_login():
-    '''
+    
     body = request.get_json(force=True) or {}
     # Preferimos autenticación por RUT (RUN)
     rut = (body.get("rut") or "").strip()
@@ -852,7 +873,7 @@ def api_login():
     token = _create_token(u)
     user 
     return jsonify({"token": token, "user": user}), 200
-    '''
+        
     body = request.get_json(force=True) or {}
     rut = (body.get("rut") or "").strip()
     role = (body.get("roleArea") or "").strip()
@@ -870,7 +891,7 @@ def api_login():
         return jsonify({"error": "wrong_role", "expected": role, "actual": rol}), 403
     token = _create_token(funcionario)
     return jsonify({"token": token, "rut": rut, "role", rol}), 200
-    
+    '''
 @api_bp.post("/auth/register")
 def api_register():
     body = request.get_json(force=True) or {}
