@@ -832,26 +832,40 @@ def api_health():
 
 # ---- Auth endpoints ----
 
-
-@api_bp.get("/auth/login")
+@api_bp.post("/auth/login")
 def api_login():
-    data = request.get_json()
-    rut = data.get("rut")
-    psw = data.get("password")
-    roleArea = data.get("roleArea")
-    resultado = funcionarios_col.find_one({"rut": rut}, {"clave": psw})
-    cargo = resultado["cargo"]
-    rol = map_role_from_cargo(cargo)
-    if resultado.matched_count == 0:
-        return jsonify({"error": "Funcionario no encontrado"}), 404
-    if data.rut == None or data.psw == None or roleArea == None:
+    body = request.get_json(force=True) or {}
+    rut = (body.get("rut") or "").strip()
+    password = (body.get("password") or "")
+    role_area = (body.get("roleArea") or "").strip()
+
+    if not rut or not password or not role_area:
         return jsonify({"error": "Faltan datos"}), 400
-    if psw != resultado["clave"]:
+
+    funcionario = funcionarios_col.find_one({"rut": rut})
+    if not funcionario:
+        return jsonify({"error": "Funcionario no encontrado"}), 404
+
+    # La clave almacenada es en texto plano:
+    if funcionario.get("clave") != password:
         return jsonify({"error": "Contraseña incorrecta"}), 401
-    if rol != roleArea:
+
+    rol = map_role_from_cargo(funcionario.get("cargo"))
+    if rol != role_area:
         return jsonify({"error": "Cuenta no autorizada"}), 403
-    token = _create_token(resultado, rol)
-    return jsonify({"token": token, "rut": rut, "role": rol}), 200
+
+    token = _create_token(funcionario, rol)
+
+    return jsonify({
+        "token": token,
+        "user": {
+            "rut": funcionario["rut"],
+            "role": rol,
+            "cargo": funcionario.get("cargo"),
+            "nombre": funcionario.get("nombre")
+        }
+    }), 200
+
 '''
 
 @api_bp_get("/auth/login")
