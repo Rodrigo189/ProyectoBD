@@ -23,7 +23,6 @@ export default function FormularioFuncionario({ funcionario, setEditing, refresh
     await fetch(url, { // Llamada a la API para crear o actualizar el funcionario
       method,
       headers: { "Content-Type": "application/json" }, // Indicar que se envia JSON
-      credentials: "include", // Incluir cookies en la solicitud
       body: JSON.stringify({rut,
       nombres,
       apellidos,
