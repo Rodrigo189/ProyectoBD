@@ -5,10 +5,23 @@ from datetime import datetime, timedelta
 from bson import ObjectId
 import os
 import jwt
-import bcrypt  # 🔧 AGREGADO
+import bcrypt
 
-# Flask permite levantar el servidor web, CORS habilita la comunicacion
-# entre el frontend (React) y el backend (Flask)
+# ==============================================================================
+# IMPORTS DE MÓDULOS (FICHA CLÍNICA)
+# ==============================================================================
+from modules.ficha_clinica.routes.residentes_routes import residentes_bp
+from modules.ficha_clinica.routes.ficha_completa_routes import ficha_completa_bp
+from modules.ficha_clinica.routes.patologias_routes import patologias_bp
+from modules.ficha_clinica.routes.ingresos_routes import ingresos_bp
+from modules.ficha_clinica.routes.medicamentos_routes import medicamentos_bp
+from modules.ficha_clinica.routes.fichas_routes import fichas_bp
+from modules.ficha_clinica.routes.atenciones_routes import atenciones_bp
+from modules.ficha_clinica.routes.alergias_routes import alergias_bp
+from modules.ficha_clinica.routes.apoderados_routes import apoderados_bp
+from modules.ficha_clinica.routes.examenes_routes import examenes_bp
+from modules.ficha_clinica.routes.historia_routes import historia_bp
+# ==============================================================================
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
@@ -36,7 +49,7 @@ medicamentos_col = mongo.db.medicamentos
 registros_col = mongo.db.signos_vitales
 formularios_col = mongo.db.formularios_turno
 
-# 🔧 FUNCIONES AUXILIARES
+# FUNCIONES AUXILIARES
 def _create_token(user, rol):
     payload = {
         "sub": str(user.get("_id", "")),
@@ -66,25 +79,23 @@ def map_role_from_cargo(cargo: str) -> str:
     return "funcionario"
 
 def _to_doc(doc):
-    """Convierte ObjectId a string"""
     if doc and "_id" in doc:
         doc["id"] = str(doc["_id"])
         doc.pop("_id", None)
     return doc
 
 def _find_funcionario(user_id):
-    """Busca funcionario por RUT"""
     return funcionarios_col.find_one({"rut": user_id})
 
 # --------------------------------------
-# BLUEPRINT PARA PAGOS/REPORTES
+# BLUEPRINT GENERAL
 # --------------------------------------
 api_bp = Blueprint("api_bp", __name__, url_prefix="/api")
 
-# Variable de desarrollo
 os.putenv("SEED_DEMO_USERS", "1")
 
 # ---------------- RESIDENTES ----------------
+
 @app.route('/api/residentes/verificar', methods=['POST'])
 def verificar_residente():
     try:
@@ -116,79 +127,8 @@ def verificar_residente():
         print("Error al verificar residente:", e)
         return jsonify({"error": str(e)}), 500
 
-@app.route("/api/residentes", methods=["GET"])
-def get_residentes():
-    residentes = list(residentes_col.find({}, {
-        "_id": 0,
-        "rut": 1,
-        "nombre": 1,
-        "datos_personales": 1,
-        "ubicacion": 1
-    }))
-    return jsonify(residentes), 200
-
-@app.route("/api/residentes/<rut>", methods=["GET"])
-def get_residente(rut):
-    residente = residentes_col.find_one({"rut": rut}, {"_id": 0})
-    if not residente:
-        return jsonify({"message": "No encontrado"}), 404
-    return jsonify(residente), 200
-
-@app.route("/api/residentes", methods=["POST"])
-def crear_residente():
-    data = request.get_json()
-
-    if residentes_col.find_one({"rut": data.get("rut")}):
-        return jsonify({"error": "El residente ya existe"}), 400
-
-    nuevo_residente = {
-        "rut": data.get("rut"),
-        "nombre": data.get("nombre"),
-        "datos_personales": data.get("datos_personales", {}),
-        "ubicacion": data.get("ubicacion", {}),
-        "datos_sociales": data.get("datos_sociales", {}),
-        "apoderado": data.get("apoderado", {}),
-        "antecedentes_medicos": data.get("antecedentes_medicos", {}),
-        "historia_clinica": data.get("historia_clinica", {}),
-    }
-
-    residentes_col.insert_one(nuevo_residente)
-    return jsonify({"message": "Residente creado correctamente"}), 201
-
-@app.route("/api/residentes/<rut>", methods=["PUT"])
-def actualizar_residente(rut):
-    data = request.get_json()
-
-    campos = {
-        "nombre": data.get("nombre"),
-        "datos_personales": data.get("datos_personales"),
-        "ubicacion": data.get("ubicacion"),
-        "datos_sociales": data.get("datos_sociales"),
-        "apoderado": data.get("apoderado"),
-        "antecedentes_medicos": data.get("antecedentes_medicos"),
-        "historia_clinica": data.get("historia_clinica"),
-    }
-
-    campos = {k: v for k, v in campos.items() if v is not None}
-
-    resultado = residentes_col.update_one(
-        {"rut": rut},
-        {"$set": campos}
-    )
-
-    if resultado.matched_count == 0:
-        return jsonify({"message": "Residente no encontrado"}), 404
-
-    return jsonify({"message": "Residente actualizado"}), 200
-
-@app.route("/api/residentes/<rut>", methods=["DELETE"])
-def eliminar_residente(rut):
-    resultado = residentes_col.delete_one({"rut": rut})
-
-    if resultado.deleted_count == 0:
-        return jsonify({"message": "Residente no encontrado"}), 404
-
-    return jsonify({"message": "Residente eliminado"}), 200
+# NOTA: Las rutas CRUD de residentes se manejan ahora en modules/residentes_routes.py
+# Se han desactivado aquí para evitar conflictos.
 
 # ---------------- FUNCIONARIOS ----------------
 @app.route('/api/funcionarios', methods=['GET', 'POST'])
@@ -275,15 +215,12 @@ def login():
         return jsonify({"mensaje": "Login exitoso", "rut": rut}), 200
     return jsonify({"mensaje": "Credenciales incorrectas"}), 401
 
-# 🔧 ENDPOINT TEMPORAL PARA ACTUALIZAR CONTRASEÑA DEL ADMIN
 @app.route('/api/actualizar-clave-admin', methods=['POST'])
 def actualizar_clave_admin():
-    """Endpoint temporal para actualizar la contraseña del admin 44444444-4"""
     try:
         rut = "44444444-4"
         nueva_clave = "Admin#2024"
         
-        # Actualiza la contraseña en texto plano
         result = funcionarios_col.update_one(
             {"rut": rut},
             {"$set": {"clave": nueva_clave}}
@@ -295,129 +232,14 @@ def actualizar_clave_admin():
         return jsonify({
             "mensaje": "✅ Contraseña actualizada correctamente",
             "rut": rut,
-            "nueva_clave": nueva_clave,
-            "instrucciones": "Ahora puedes hacer login con estas credenciales. ELIMINA ESTE ENDPOINT después de usar."
+            "nueva_clave": nueva_clave
         }), 200
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 # ---------------- MEDICAMENTOS ----------------
-@app.route('/api/medicamentos', methods=['POST', 'GET'])
-def manejar_medicamentos():
-    if request.method == 'POST':
-        data = request.get_json()
-        rut_residente = data.get("rut_residente")
-
-        if not rut_residente:
-            return jsonify({"error": "Falta el RUT del residente"}), 400
-
-        residente = residentes_col.find_one({"rut": rut_residente})
-        if not residente:
-            return jsonify({"error": f"No se encontró residente con RUT {rut_residente}"}), 404
-
-        medicamento = {
-            "nombre": data.get("nombre"),
-            "dosis": data.get("dosis"),
-            "caso_sos": data.get("caso_sos", False),
-            "medico_indicador": data.get("medico_indicador"),
-            "fecha_inicio": data.get("fecha_inicio"),
-            "fecha_termino": data.get("fecha_termino")
-        }
-        
-        residentes_col.update_one( 
-            {"rut": rut_residente},
-            {"$push": {"medicamentos": medicamento}}
-        )
-        
-        return jsonify({
-            "mensaje": "Medicamento asignado correctamente",
-            "id": rut_residente,
-            "nombre_residente": residente.get("nombre")
-        }), 200
-
-    else:
-        residentes = list(residentes_col.find({}, {"_id": 0, "rut": 1, "nombre": 1, "medicamentos": 1, "medicamento": 1}))
-        medicamentos = []
-
-        for r in residentes:
-            meds = r.get("medicamentos", [])
-            if len(meds) > 0 and isinstance(meds[0], list):
-                meds = [item for sublist in meds for item in sublist]
-
-            for m in meds:
-                if isinstance(m, dict):
-                    medicamentos.append({
-                        "id": r.get("rut"),
-                        "nombre_residente": r.get("nombre"),
-                        "nombre": m.get("nombre"),
-                        "dosis": m.get("dosis"),
-                        "caso_sos": m.get("caso_sos", False),
-                        "medico_indicador": m.get("medico_indicador"),
-                        "fecha_inicio": m.get("fecha_inicio"),
-                        "fecha_termino": m.get("fecha_termino")
-                    })
-
-        return jsonify(medicamentos), 200
-
-@app.route('/api/medicamentos/<rut>', methods=['PUT', 'DELETE'])
-def actualizar_o_eliminar_medicamento(rut):
-    data = request.get_json() if request.method == 'PUT' else None
-    residente = residentes_col.find_one({"rut": rut})
-
-    if not residente:
-        return jsonify({"mensaje": "Residente no encontrado"}), 404
-
-    if "medicamentos" not in residente or not isinstance(residente["medicamentos"], list):
-        if "medicamento" in residente and residente["medicamento"]:
-            residente["medicamentos"] = [residente["medicamento"]]
-        else:
-            residente["medicamentos"] = []
-
-    if request.method == 'PUT':
-        nombre_medicamento = data.get("nombre")
-        actualizado = False
-
-        for m in residente["medicamentos"]:
-            if m.get("nombre") == nombre_medicamento:
-                m.update({
-                    "dosis": data.get("dosis", m.get("dosis")),
-                    "caso_sos": data.get("caso_sos", m.get("caso_sos")),
-                    "medico_indicador": data.get("medico_indicador", m.get("medico_indicador")),
-                    "fecha_inicio": data.get("fecha_inicio", m.get("fecha_inicio")),
-                    "fecha_termino": data.get("fecha_termino", m.get("fecha_termino"))
-                })
-                actualizado = True
-                break
-
-        if not actualizado:
-            return jsonify({"mensaje": f"No se encontró el medicamento '{nombre_medicamento}'"}), 404
-
-        residentes_col.update_one({"rut": rut}, {"$set": {"medicamentos": residente["medicamentos"]}})
-
-        return jsonify({
-            "mensaje": f"Medicamento '{nombre_medicamento}' actualizado correctamente",
-            "id": rut,
-            "nombre_residente": residente.get("nombre")
-        }), 200
-
-    else:
-        nombre_medicamento = request.args.get("nombre")
-        if not nombre_medicamento:
-            return jsonify({"error": "Debe especificar el nombre del medicamento a eliminar"}), 400
-
-        nueva_lista = [m for m in residente["medicamentos"] if m.get("nombre") != nombre_medicamento]
-
-        if len(nueva_lista) == len(residente["medicamentos"]):
-            return jsonify({"mensaje": f"No se encontró el medicamento '{nombre_medicamento}'"}), 404
-
-        residentes_col.update_one({"rut": rut}, {"$set": {"medicamentos": nueva_lista}})
-
-        return jsonify({
-            "mensaje": f"Medicamento '{nombre_medicamento}' eliminado del residente {residente.get('nombre')}",
-            "id": rut,
-            "nombre_residente": residente.get("nombre")
-        }), 200
+# NOTA: Las rutas de medicamentos se manejan ahora en modules/medicamentos_routes.py
 
 # ---------------- REGISTROS VITALES ----------------
 @app.route('/api/registros-vitales', methods=['POST'])
@@ -526,61 +348,7 @@ def insertar_datos_prueba():
                 "medico_tratante": "Dr. Martínez",
                 "proximo_control": "2025-10-15",
                 "signos_vitales": [
-                    {
-                        "fecha": "2025-11-03",
-                        "hora": "23:23",
-                        "presionSistolica": "120 mmHg",
-                        "presionDiastolica": "80 mmHg",
-                        "temperatura": "36 °C",
-                        "pulso": "75 lpm",
-                        "saturacionO2": "98 %",
-                        "frecuenciaRespiratoria": "16 rpm",
-                        "hemoglucotest": "100 mg/dL"
-                    },
-                    {
-                        "fecha": "2025-11-03",
-                        "hora": "23:24",
-                        "presionSistolica": "110 mmHg",
-                        "presionDiastolica": "60 mmHg",
-                        "temperatura": "40 °C",
-                        "pulso": "40 lpm",
-                        "saturacionO2": "70 %",
-                        "frecuenciaRespiratoria": "16 rpm",
-                        "hemoglucotest": "120 mg/dL"
-                    },
-                    {
-                        "fecha": "2025-11-03",
-                        "hora": "23:28",
-                        "presionSistolica": "110 mmHg",
-                        "presionDiastolica": "80 mmHg",
-                        "temperatura": "40 °C",
-                        "pulso": "40 lpm",
-                        "saturacionO2": "70 %",
-                        "frecuenciaRespiratoria": "16 rpm",
-                        "hemoglucotest": "100 mg/dL"
-                    },
-                    {
-                        "fecha": "2025-11-04",
-                        "hora": "11:40",
-                        "presionSistolica": "60 mmHg",
-                        "presionDiastolica": "60 mmHg",
-                        "temperatura": "36 °C",
-                        "pulso": "75 lpm",
-                        "saturacionO2": "70 %",
-                        "frecuenciaRespiratoria": "16 rpm",
-                        "hemoglucotest": "100 mg/dL"
-                    },
-                    {
-                        "fecha": "2025-11-27",
-                        "hora": "17:47",
-                        "presionSistolica": "123 mmHg",
-                        "presionDiastolica": "80 mmHg",
-                        "temperatura": "40 °C",
-                        "pulso": "123 lpm",
-                        "saturacionO2": "70 %",
-                        "frecuenciaRespiratoria": "16 rpm",
-                        "hemoglucotest": "100 mg/dL"
-                    }
+                    { "fecha": "2025-11-03", "hora": "23:23", "presionSistolica": "120 mmHg", "presionDiastolica": "80 mmHg", "temperatura": "36 °C", "pulso": "75 lpm", "saturacionO2": "98 %", "frecuenciaRespiratoria": "16 rpm", "hemoglucotest": "100 mg/dL" },
                 ]
             }
             residentes_col.insert_one(residente_prueba)
@@ -651,7 +419,6 @@ def eliminar_signo_vital(rut, fecha, hora):
         print("Error al eliminar signo vital:", e)
         return jsonify({"error": str(e)}), 500
 
-# Ruta para buscar residentes por nombre o RUT
 @app.route('/api/buscar-residentes', methods=['GET'])
 def buscar_residentes_api():
     try:
@@ -680,7 +447,7 @@ def buscar_residentes_api():
         return jsonify({"error": str(e)}), 500
 
 # --------------------------------------
-# 🔧 ENDPOINTS BLUEPRINT (PAGOS/REPORTES)
+# ENDPOINTS BLUEPRINT (PAGOS/REPORTES)
 # --------------------------------------
 
 @api_bp.get("/health")
@@ -691,7 +458,6 @@ def api_health():
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
 
-# 🔧 LOGIN CORREGIDO PARA PAGOS/REPORTES
 @api_bp.post("/auth/login")
 def api_login():
     body = request.get_json(force=True) or {}
@@ -706,7 +472,6 @@ def api_login():
     if not funcionario:
         return jsonify({"error": "Credenciales inválidas"}), 401
 
-    # 🔧 VALIDACIÓN FLEXIBLE: bcrypt o texto plano
     stored_password = funcionario.get("clave", "")
     password_valida = False
 
@@ -765,8 +530,19 @@ def api_me():
         return jsonify({"error": "unauthorized"}), 401
     return jsonify({"user": claims}), 200
 
-# Registrar Blueprint
+# Registro de Blueprints
 app.register_blueprint(api_bp)
+app.register_blueprint(residentes_bp)
+app.register_blueprint(ficha_completa_bp)
+app.register_blueprint(patologias_bp)
+app.register_blueprint(ingresos_bp)
+app.register_blueprint(medicamentos_bp)
+app.register_blueprint(fichas_bp)
+app.register_blueprint(atenciones_bp)
+app.register_blueprint(alergias_bp)
+app.register_blueprint(apoderados_bp)
+app.register_blueprint(examenes_bp)
+app.register_blueprint(historia_bp)
 
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
