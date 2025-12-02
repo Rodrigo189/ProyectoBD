@@ -79,11 +79,18 @@ export default function FormularioMedicamento({ medicamento, setEditing, refresh
           required
         >
           <option value="">Seleccione un funcionario</option>
-          {funcionarios.map((f, index) => (
-            <option key={index} value={`${f.nombres.split(" ")[0]} ${f.apellidos.split(" ")[0]}`}>
-              {f.nombres.split(" ")[0]} {f.apellidos.split(" ")[0]}
+          {funcionarios.map((f, index) => {
+            const nombresRaw = (f.nombres || f.nombre || "").trim();
+            const apellidosRaw = (f.apellidos || f.apellido || "").trim();
+
+            const primerNombre = nombresRaw.split(" ")[0] || "";
+            const primerApellido = apellidosRaw.split(" ")[0] || "";
+
+            const etiqueta = `${primerNombre} ${primerApellido}`.trim();
+            <option key={index} value={etiqueta}>
+              {etiqueta}
             </option>
-          ))}
+          })}
         </select>
       </label>
       <input type="date" value={fecha_inicio} onChange={e => setFechaInicio(e.target.value)} />
