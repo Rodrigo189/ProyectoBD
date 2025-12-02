@@ -14,7 +14,7 @@ const Breadcrumbs = () => {
     'admin': 'Administración',
     'tratantes': 'Tratantes',
     'login': 'Acceso',
-    'menu': 'Inicio'
+    '': 'Inicio'
   };
 
   // Si estamos en la página de inicio (/ o /menu), no mostrar breadcrumb
