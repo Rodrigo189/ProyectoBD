@@ -18,17 +18,24 @@ export default function LoginReportesAdministrador() {
                 body: JSON.stringify({ rut: run, password, roleArea: "admin" })
             });
             const res = await r.json().catch(() => ({}));
+            if (r.status === 404){
+                setError("Not found");
+                return;
+            }
+            if (r.status === 401){
+                setError("No autorizado: contraseña incorrecta");
+                return;
+            }
+            
+            if (r.status === 400){
+                setError("No autorizado: faltan datos");
+                return;
+            }
             if (r.status === 403 && res?.error === "wrong_role") {
                 setError("No autorizado: tu cuenta no es Administrador.");
                 return;
             }
-            if (!r.ok) throw res;
-            if (res?.user?.role !== "admin") {
-                console.log(res);
-                console.log(r);
-                setError("No autorizado: requiere cuenta de administrador.");
-                return;
-            }
+            
             localStorage.setItem("token", res.token);
             localStorage.setItem("currentUserId", res.user.rut || res.user.id);
             localStorage.setItem("currentUserRole", res.user.role);
