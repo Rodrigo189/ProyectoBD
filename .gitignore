@@ -5,6 +5,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # Ignora archivos innecesarios que pueden entrar en el repo
 
 *.txt
+!requirements.txt
 *.pdf
 *.zip
 *.rar
