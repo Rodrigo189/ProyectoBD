@@ -154,16 +154,6 @@ def actualizar_o_eliminar_funcionario(rut): # Maneja la actualizacion y eliminac
             return jsonify({"error": "Funcionario no encontrado"}), 404
         return jsonify({"message": "Funcionario eliminado correctamente"})
 
-@app.route('/api/login', methods=['POST']) # Autentica a un funcionario
-def login(): # Maneja el login de funcionarios
-    data = request.get_json()
-    rut = data.get("rut")  #Extrae RUT y clave
-    clave = data.get("clave") 
-    user = funcionarios_col.find_one({"rut": rut, "clave": clave}) # Busca en MongoDB
-    if user: # Si se encuentra el usuario, devuelve exito
-        return jsonify({"mensaje": "Login exitoso", "rut": rut})
-    return jsonify({"mensaje": "Credenciales incorrectas"}), 401
-
 # ---------------- MEDICAMENTOS ----------------
 # Maneja la creacion, actualizacion y eliminacion de medicamentos asociados a cada residente.
 @app.route('/api/medicamentos', methods=['POST', 'GET']) # Crear o listar medicamentos

@@ -1,11 +1,13 @@
 import perfil from "../img/perfil.png";
 
-// --- Helpers de API (usa proxy https://eleam.onrender.com desde package.json) ---
+// --- Helpers de API ---
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 const token = () => localStorage.getItem("token");
 const authHeaders = () => (token() ? { Authorization: `Bearer ${token()}` } : {});
 
 async function apiFetch(path, opts = {}) {
-    const res = await fetch(path, {
+    const url = path.startsWith("http") ? path : `${API_BASE}${path}`;
+    const res = await fetch(url, {
         headers: { "Content-Type": "application/json", ...authHeaders(), ...(opts.headers || {}) },
         ...opts,
     });
@@ -208,7 +210,8 @@ export async function updateRiesgos(idOrRut, items) {
 
 // Actualizar datos del sistema (SIS) de un usuario
 export async function updateSistema(idOrRut, data) {
-    const res = await fetch(`/api/sis/${encodeURIComponent(idOrRut)}`, {
+    const url = `${API_BASE}/api/sis/${encodeURIComponent(idOrRut)}`;
+    const res = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify(data),

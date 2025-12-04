@@ -64,7 +64,7 @@ npm start
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $frontendCmd | Out-Null
 
 Write-Host "`nListo:" -ForegroundColor Green
-Write-Host "  Backend:  https://eleam.onrender.com"
+Write-Host "  Backend:  http://localhost:5000"
 Write-Host "  Frontend: http://localhost:3000"
 Write-Host "  Mongo:    mongodb://localhost:27017/eleam"
 Write-Host "`nUsa -RecreateMongo para borrar y recrear el contenedor, -Seed:$false para no reimportar."

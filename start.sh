@@ -162,7 +162,7 @@ esac
 
 
 echo -e "\e[32m Listo\e[0m"
-echo "  Backend: https://eleam.onrender.com"
+echo "  Backend: http://localhost:5000"
 echo "  Frontend: http://localhost:3000"
 echo "  Mongo: mongodb://localhost:27017/eleam"
 echo "  Usa -r para borrar y recrear el contenedor, -s para no reimportar"

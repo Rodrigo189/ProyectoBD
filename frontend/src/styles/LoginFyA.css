@@ -55,15 +55,15 @@ body,
 }
 
 .funcionario-form-wrap {
-    width: 30vw;
-    height: 55vh;
+    width: 100%;
+    max-width: 420px;
     display: flex;
     justify-content: center;
 }
 
 .funcionario-login-card {
     width: 100%;
-    max-width: 620px;
+    max-width: 420px;
     background: #fff;
     border-radius: 20px;
     padding: 26px 36px 34px;

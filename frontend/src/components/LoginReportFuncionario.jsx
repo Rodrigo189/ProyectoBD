@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/LoginFyA.css";
 import Header from "./Header";
@@ -8,11 +8,14 @@ export default function LoginReportesFuncionario() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const goBack = () => { if (window.history.length > 1) window.history.back(); };
-    localStorage.clear();
+    useEffect(() => {
+        localStorage.clear();
+    }, []);
     const handleLogin = async ({ run, password }) => {
         setError("");
         try {
-            const r = await fetch("/api/auth/login", {
+            const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+            const r = await fetch(`${API_BASE}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ rut: run, password, roleArea: "funcionario" })

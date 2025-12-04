@@ -32,19 +32,19 @@ Front-end: React
 
 Back-end: Flask
 
-BD: MySQL
+BD: MongoDB (Docker)
 
 Entrada Grupo 14:En el login hay diferentes usuarios, cada uno con su rol, RUN y contraseña, a continuacion se deja informacion de logeo de cada uno de esos usuarios:
 
 Administradores
 
-Sofía Administradora — RUN: 44444444-4 — Contraseña: Admin#2024
+Sofía Rojas — RUN: 44444444-4 — Contraseña: admin123
 
 Funcionarios
 
-Juanito Pérez — RUN: 11111111-1 — Contraseña: ClaveJuanito2024!
-María González — RUN: 22222222-2 — Contraseña: ClaveMaria2024!
-Pedro Soto — RUN: 33333333-3 — Contraseña: ClavePedro2024!
+Juanito Pérez — RUN: 11111111-1 — Contraseña: fun123
+María González — RUN: 22222222-2 — Contraseña: fun123
+Pedro Soto — RUN: 33333333-3 — Contraseña: fun123
 
 Teniendo claro esto aqui va el paso a paso de como ejecutar backend,frontend y BD:
 
@@ -89,7 +89,7 @@ Arranque normal (sin recrear ni reimportar):
 URLs:
 
 Frontend: http://localhost:3000
-Backend: https://eleam.onrender.com
+Backend:  http://localhost:5000
 Mongo: mongodb://localhost:27017/eleam
 
 Verificar datos importados:
