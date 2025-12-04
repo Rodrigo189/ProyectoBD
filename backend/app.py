@@ -873,12 +873,13 @@ def actualizar_sis(user_id):
 if "api" not in app.blueprints:
     app.register_blueprint(api_bp)
 
+# Seed usuarios al cargar el módulo (funciona con gunicorn)
+created = seed_users_from_funcionarios(
+    os.getenv("DEFAULT_FUN_PWD", "fun123"),
+    os.getenv("DEFAULT_ADMIN_PWD", "admin123"),
+)
+print(f"[seed] usuarios creados desde funcionarios: {created}")
+
 # ---------------- INICIO APP ----------------
 if __name__ == "__main__":
-    # Seed usuarios desde funcionarios SIEMPRE al iniciar
-    created = seed_users_from_funcionarios(
-        os.getenv("DEFAULT_FUN_PWD", "fun123"),
-        os.getenv("DEFAULT_ADMIN_PWD", "admin123"),
-    )
-    print(f"[seed] usuarios creados desde funcionarios: {created}")
     app.run(debug=True, port=5000)
