@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import "../styles/funcionarioProfile.css";
 import perfil from "../img/perfil.png";
+import { fetchFuncionarioById } from "./funcionariosApi";
 
 export default function PerfilFuncionario() {
     // Hooks primero
@@ -19,9 +20,7 @@ export default function PerfilFuncionario() {
         async function load() {
             if (!rut) { setError("No hay RUN en sesión"); setLoading(false); return; }
             try {
-                const r = await fetch(`/api/funcionarios/${encodeURIComponent(rut)}`);
-                const data = await r.json();
-                if (!r.ok) throw data;
+                const data = await fetchFuncionarioById(rut);
                 if (alive) setFun(data);
             } catch (e) {
                 if (alive) setError("No se pudo cargar el funcionario");

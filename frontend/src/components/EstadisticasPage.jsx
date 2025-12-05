@@ -51,7 +51,7 @@ export default function StatsTemplate() {
                     <section className="estad-hero-area">
                         <div className="hero-caption">
                             <h2>Área de Reportes</h2>
-                            <p className="help-text">Selecciona una opción para ver datos y gráficos.</p>
+                            <p className="help-text">Selecciona una opción para ver datos y sugerencias.</p>
                         </div>
 
                         <div className="estad-hero">

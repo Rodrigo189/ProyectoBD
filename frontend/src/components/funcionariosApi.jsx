@@ -88,7 +88,8 @@ export async function fetchHistorialByUser(idOrRut) {
 
 // Actualizar remuneración (PUT /api/funcionarios/:rut)
 export async function updateRemuneracion(idOrRut, payload) {
-    const res = await fetch(`/api/funcionarios/${encodeURIComponent(idOrRut)}`, {
+    const url = `${API_BASE}/api/funcionarios/${encodeURIComponent(idOrRut)}`;
+    const res = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify(payload),
@@ -188,7 +189,8 @@ export async function fetchEstadisticasSistema(
 
 // Actualizar probabilidades de un usuario
 export async function updateProbabilidades(idOrRut, items) {
-    const res = await fetch(`/api/probabilidades/${encodeURIComponent(idOrRut)}`, {
+    const url = `${API_BASE}/api/probabilidades/${encodeURIComponent(idOrRut)}`;
+    const res = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ items }),
@@ -199,7 +201,8 @@ export async function updateProbabilidades(idOrRut, items) {
 
 // Actualizar riesgos de un usuario
 export async function updateRiesgos(idOrRut, items) {
-    const res = await fetch(`/api/riesgos/${encodeURIComponent(idOrRut)}`, {
+    const url = `${API_BASE}/api/riesgos/${encodeURIComponent(idOrRut)}`;
+    const res = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...authHeaders() },
         body: JSON.stringify({ items }),

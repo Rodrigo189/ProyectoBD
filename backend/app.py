@@ -759,7 +759,8 @@ def api_probabilidades(user_id):
     if not f:
         return jsonify([])
     doc = mongo.db.probabilidades.find_one({"rut": f.get("rut")})
-    return jsonify(doc.get("items", [])) if doc else jsonify([])
+    # Buscar "medicamentos" o "items"
+    return jsonify(doc.get("medicamentos", doc.get("items", []))) if doc else jsonify([])
 
 @api_bp.get("/riesgos/<user_id>")
 def api_riesgos(user_id):
