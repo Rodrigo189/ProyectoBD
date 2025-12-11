@@ -42,31 +42,31 @@ body,
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 60px 20px 56px;
+    padding: 80px 20px 56px;
 }
 
 .funcionario-welcome-text {
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 800;
-    margin: 0 0 28px;
+    margin: 0 0 32px;
     color: #222;
     text-align: center;
 }
 
 .funcionario-form-wrap {
     width: 100%;
-    max-width: 520px;
+    max-width: 580px;
     display: flex;
     justify-content: center;
 }
 
 .funcionario-login-card {
     width: 100%;
-    max-width: 520px;
+    max-width: 580px;
     background: #fff;
-    border-radius: 24px;
-    padding: 36px 48px 44px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 28px;
+    padding: 44px 56px 52px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.14);
     position: relative;
 }
 
@@ -74,42 +74,42 @@ body,
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: -6px 0 12px 0;
+    margin: -6px 0 16px 0;
     padding-left: 8px;
 }
 
 .funcionario-badge-bar {
-    width: 140px;
-    height: 18px;
+    width: 160px;
+    height: 20px;
     background: #22b6b3;
-    border-radius: 9px;
+    border-radius: 10px;
 }
 
 .funcionario-badge-text {
-    margin-top: 8px;
+    margin-top: 10px;
     color: #009999;
     font-weight: 800;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
 }
 
 .funcionario-form-title {
     display: flex;
     align-items: center;
-    gap: 14px;
-    font-size: 1.8rem;
+    gap: 16px;
+    font-size: 2rem;
     font-weight: 800;
-    margin: 16px 0 26px;
+    margin: 20px 0 32px;
     color: #111;
 }
 
 .funcionario-login-input {
     width: 100%;
-    padding: 14px 16px;
-    font-size: 1.1rem;
+    padding: 16px 18px;
+    font-size: 1.15rem;
     border: 2px solid #000000;
-    border-radius: 6px;
-    margin-bottom: 22px;
-    height: 52px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    height: 58px;
     box-sizing: border-box;
     line-height: 1.2;
 }
@@ -117,7 +117,7 @@ body,
 .funcionario-login-input:focus {
     outline: none;
     border-color: #009999;
-    box-shadow: 0 0 0 4px rgba(0, 153, 153, 0.1);
+    box-shadow: 0 0 0 4px rgba(0, 153, 153, 0.12);
 }
 
 .funcionario-password-row {
@@ -128,9 +128,9 @@ body,
 
 .funcionario-password-row .funcionario-login-input {
     border-right: none;
-    border-radius: 6px 0 0 6px;
+    border-radius: 8px 0 0 8px;
     margin-bottom: 0;
-    height: 52px;
+    height: 58px;
     box-sizing: border-box;
 }
 
@@ -138,9 +138,9 @@ body,
     background: #009999;
     border: 2px solid #009999;
     color: #fff;
-    padding: 0 16px;
-    height: 52px;
-    border-radius: 0 6px 6px 0;
+    padding: 0 18px;
+    height: 58px;
+    border-radius: 0 8px 8px 0;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -149,20 +149,25 @@ body,
     line-height: 1;
 }
 
+.funcionario-eye-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
 .funcionario-login-btn {
     width: 100%;
-    margin-top: 28px;
+    margin-top: 32px;
     background: #009999;
     color: #fff;
     font-weight: 800;
     border: none;
-    padding: 16px 22px;
+    padding: 18px 24px;
     border-radius: 999px;
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
     cursor: pointer;
     transition: background 0.2s ease;
 }
@@ -173,20 +178,20 @@ body,
 
 @media (max-width: 700px) {
     .funcionario-login-card {
-        padding: 28px 24px;
+        padding: 32px 28px;
         margin: 0 16px;
         max-width: 100%;
     }
 
     .funcionario-form-title {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
 
     .funcionario-welcome-text {
-        font-size: 28px;
+        font-size: 30px;
     }
 
     .funcionario-main {
-        padding: 40px 16px 40px;
+        padding: 50px 16px 40px;
     }
 }

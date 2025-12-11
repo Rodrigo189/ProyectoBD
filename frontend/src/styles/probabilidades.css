@@ -4,23 +4,24 @@
 }
 
 .prob-main {
-    max-width: 1500px;
+    width: 95%;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 28px 32px 60px;
+    padding: 36px 40px 70px;
 }
 
 .prob-card {
     background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
 }
 
 .prob-title {
     font-family: 'Inria Sans', sans-serif;
     text-align: center;
     font-weight: 800;
-    font-size: 38px;
-    margin: 12px 0 8px;
+    font-size: 44px;
+    margin: 16px 0 12px;
 }
 
 .prob-subtitle {
@@ -28,42 +29,40 @@
     text-align: center;
     color: #0ea3a3;
     font-weight: 700;
-    font-size: 22px;
-    margin: 0 0 28px;
+    font-size: 26px;
+    margin: 0 0 36px;
 }
 
 .cuantity {
     font-family: 'Inria Sans', sans-serif;
     color: #5e6b6b;
-    font-size: 15px;
-    margin-bottom: 10px;
+    font-size: 16px;
+    margin-bottom: 12px;
 }
 
-/* Contenedor de botones de edición */
 .prob-edit-controls {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
-/* Estilos para botones de edición */
 .prob-btn {
     font-family: 'Inria Sans', sans-serif;
-    padding: 12px 24px;
+    padding: 14px 28px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .prob-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .prob-btn:disabled {
@@ -91,23 +90,22 @@
     background: #d0d0d0;
 }
 
-/* filtros */
 .prob-filter {
     display: flex;
-    gap: 12px;
-    margin-bottom: 32px;
+    gap: 14px;
+    margin-bottom: 40px;
     flex-wrap: wrap;
 }
 
 .prob-pill {
     font-family: 'Inria Sans', sans-serif;
-    padding: 11px 22px;
+    padding: 13px 26px;
     border: 2px solid #dce4e6;
     border-radius: 999px;
     background: #fff;
     color: #0b2733;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 17px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -123,35 +121,33 @@
     border-color: #0ea3a3;
 }
 
-/* grid de tarjetas */
 .prob-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 32px;
     animation: fadeInGrid 0.4s ease;
 }
 
 .prob-item {
     background: #fff;
-    border-radius: 18px;
-    padding: 26px;
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .prob-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
 }
 
-/* animación de desvanecimiento del grid */
 @keyframes fadeInGrid {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(12px);
     }
 
     to {
@@ -164,10 +160,9 @@
     animation: fadeInGrid 0.4s ease;
 }
 
-/* avatar circular */
 .avatar {
-    width: 72px;
-    height: 72px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background: linear-gradient(135deg, #0ea3a3, #0b8a8d);
     color: #fff;
@@ -176,8 +171,8 @@
     justify-content: center;
     font-family: 'Inria Sans', sans-serif;
     font-weight: 800;
-    font-size: 32px;
-    margin-bottom: 10px;
+    font-size: 36px;
+    margin-bottom: 12px;
 }
 
 .meta {
@@ -187,53 +182,52 @@
 .name {
     font-family: 'Inria Sans', sans-serif;
     font-weight: 700;
-    font-size: 20px;
+    font-size: 22px;
     color: #0b2733;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .group {
     font-family: 'Inria Sans', sans-serif;
     color: #6b7b84;
-    font-size: 15px;
+    font-size: 16px;
 }
 
-/* barra de progreso */
 .progress-row {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
 }
 
 .bar {
     flex: 1;
-    height: 14px;
+    height: 16px;
     background: #e8eef0;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
 .fill {
     height: 100%;
-    border-radius: 10px;
+    border-radius: 12px;
     transition: width 0.4s ease;
 }
 
 .pct {
     font-family: 'Inria Sans', sans-serif;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 18px;
     color: #0b2733;
-    min-width: 60px;
+    min-width: 70px;
     text-align: right;
 }
 
 .prob-input-edit {
-    width: 70px;
-    padding: 8px;
+    width: 80px;
+    padding: 10px;
     border: 2px solid #0ea3a3;
-    border-radius: 6px;
-    font-size: 15px;
+    border-radius: 8px;
+    font-size: 16px;
     font-weight: 700;
     text-align: center;
 }
@@ -241,18 +235,18 @@
 .prob-empty {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 40px;
+    padding: 48px;
     color: #6b7b84;
-    font-size: 16px;
+    font-size: 18px;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .prob-main {
-        padding: 20px 16px 40px;
+        padding: 24px 20px 50px;
     }
 
     .prob-title {
-        font-size: 28px;
+        font-size: 32px;
     }
 
     .prob-grid {

@@ -1,7 +1,7 @@
 :root {
     --bg: #f4f7f8;
     --card: #ffffff;
-    --shadow: 0 8px 28px rgba(17, 24, 39, .08);
+    --shadow: 0 10px 32px rgba(17, 24, 39, .08);
     --text: #0b2733;
     --muted: #6b7b84;
     --teal: #0ea5a8;
@@ -16,9 +16,10 @@
 }
 
 .riesgo-main {
-    max-width: 1400px;
+    width: 95%;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 28px 32px 60px;
+    padding: 36px 40px 70px;
     color: var(--text);
 }
 
@@ -26,36 +27,34 @@
     font-family: 'Inria Sans', sans-serif;
     text-align: center;
     font-weight: 800;
-    font-size: 38px;
-    margin: 12px 0 28px;
+    font-size: 44px;
+    margin: 16px 0 36px;
 }
 
-/* Contenedor de botones de edición */
 .riesgo-edit-controls {
     display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 14px;
+    margin-bottom: 28px;
 }
 
-/* Estilos para botones de edición */
 .riesgo-btn {
     font-family: 'Inria Sans', sans-serif;
-    padding: 12px 26px;
+    padding: 14px 30px;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    gap: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .riesgo-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .riesgo-btn:disabled {
@@ -85,65 +84,64 @@
 
 .riesgo-content {
     display: grid;
-    grid-template-columns: 1fr 1.3fr;
-    gap: 36px;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 48px;
     align-items: start;
 }
 
 .right-col {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
 }
 
 .patient-card {
     font-family: 'Inria Sans', sans-serif;
     background: var(--card);
-    border-radius: 16px;
+    border-radius: 18px;
     box-shadow: var(--shadow);
-    padding: 20px 24px;
+    padding: 24px 28px;
     width: 100%;
-    line-height: 1.6;
-    font-size: 16px;
+    line-height: 1.7;
+    font-size: 17px;
 }
 
 .patient-card .sep {
     color: #9aa7ad;
-    margin: 0 8px;
+    margin: 0 10px;
 }
 
 .riesgo-list {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 20px;
 }
 
 .riesgo-item {
     background: var(--card);
-    border-radius: 14px;
+    border-radius: 16px;
     box-shadow: var(--shadow);
-    padding: 18px 22px;
+    padding: 22px 26px;
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 16px;
+    gap: 18px;
 }
 
 .riesgo-item .r-title {
     font-family: 'Inria Sans', sans-serif;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 18px;
     color: var(--text);
 }
 
-/* Estilos para select en modo edición */
 .riesgo-select {
     font-family: 'Inria Sans', sans-serif;
-    padding: 10px 16px;
-    border-radius: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
     border: 2px solid #e0e0e0;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
     outline: none;
     transition: border-color 0.2s ease;
@@ -152,16 +150,16 @@
 
 .riesgo-select:focus {
     border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(14, 165, 168, 0.1);
+    box-shadow: 0 0 0 4px rgba(14, 165, 168, 0.1);
 }
 
 .riesgo-pill {
     font-family: 'Inria Sans', sans-serif;
-    padding: 10px 22px;
+    padding: 12px 26px;
     border-radius: 999px;
     font-weight: 700;
-    font-size: 15px;
-    letter-spacing: .2px;
+    font-size: 16px;
+    letter-spacing: .3px;
     color: #fff;
 }
 
@@ -181,71 +179,71 @@
 .empty {
     background: #eef4f6;
     color: var(--muted);
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 14px;
+    padding: 24px;
     text-align: center;
-    font-size: 16px;
+    font-size: 17px;
 }
 
 .recommend-card {
     background: var(--teal);
     color: #fff;
-    border-radius: 22px;
-    padding: 26px 30px;
+    border-radius: 24px;
+    padding: 32px 36px;
     box-shadow: var(--shadow);
     width: 100%;
-    min-height: 300px;
+    min-height: 340px;
     font-family: 'Inria Sans', sans-serif;
 }
 
 .recommend-card h3 {
     font-family: 'Inria Sans', sans-serif;
-    margin: 0 0 16px;
-    font-size: 22px;
+    margin: 0 0 20px;
+    font-size: 26px;
 }
 
 .recommend-card ul {
     margin: 0;
-    padding-left: 20px;
+    padding-left: 24px;
 }
 
 .recommend-card li {
-    margin-bottom: 12px;
-    font-size: 16px;
-    line-height: 1.5;
+    margin-bottom: 14px;
+    font-size: 17px;
+    line-height: 1.6;
 }
 
 .recommend-edit {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 }
 
 .recommend-item-edit {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .recommend-input {
     flex: 1;
-    padding: 10px 14px;
+    padding: 12px 16px;
     border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.92);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
     .riesgo-content {
         grid-template-columns: 1fr;
     }
 
     .riesgo-main {
-        padding: 20px 16px 40px;
+        padding: 24px 20px 50px;
     }
 
     .riesgo-title {
-        font-size: 28px;
+        font-size: 32px;
     }
 }

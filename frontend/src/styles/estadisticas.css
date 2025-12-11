@@ -4,22 +4,22 @@
 }
 
 .estad-main {
-    max-width: 1400px;
+    width: 95%;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 32px 24px;
+    padding: 40px 32px;
 }
 
 .estad-container {
     display: flex;
-    gap: 36px;
+    gap: 48px;
     align-items: flex-start;
-    min-height: 500px;
+    min-height: 550px;
 }
 
-/* Migas de Pan */
 .breadcrumbs {
-    font-size: 26px;
-    margin-bottom: 26px;
+    font-size: 28px;
+    margin-bottom: 28px;
     color: #555;
     font-family: 'Inria Sans', sans-serif;
     text-align: left;
@@ -42,92 +42,94 @@
 }
 
 .estad-sidebar {
-    width: 340px;
-    min-width: 300px;
+    width: 380px;
+    min-width: 340px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    padding: 20px 0;
+    gap: 28px;
+    padding: 24px 0;
     justify-content: flex-start;
 }
 
 .side-btn {
     display: flex;
-    gap: 16px;
+    gap: 18px;
     align-items: center;
     justify-content: center;
     flex-direction: row;
     background: linear-gradient(180deg, #0ea3a3, #078b8b);
     color: #fff;
     border: none;
-    padding: 22px 28px;
-    border-radius: 16px;
+    padding: 26px 32px;
+    border-radius: 18px;
     font-family: 'Inria Sans', sans-serif;
     font-weight: 800;
     text-align: center;
-    box-shadow: 0 8px 18px rgba(2, 91, 91, 0.12);
+    box-shadow: 0 10px 24px rgba(2, 91, 91, 0.14);
     cursor: pointer;
-    transition: transform .12s ease, box-shadow .12s ease, opacity .12s;
-    font-size: 18px;
-    min-height: 80px;
+    transition: transform .15s ease, box-shadow .15s ease;
+    font-size: 20px;
+    min-height: 90px;
     white-space: normal;
 }
 
 .side-btn .icon {
-    font-family: 'Inria Sans', sans-serif;
-    font-size: 26px;
-    width: 44px;
+    font-size: 30px;
+    width: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .side-btn span {
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
 .side-btn:hover {
-    transform: translateY(-3px);
-    opacity: 0.98;
-    box-shadow: 0 12px 24px rgba(2, 91, 91, 0.18);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(2, 91, 91, 0.2);
 }
 
 .estad-hero-area {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
 .hero-caption {
     order: -2;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
 .hero-caption h2 {
     font-family: 'Inria Sans', sans-serif;
-    margin: 0 0 8px;
+    margin: 0 0 10px;
     color: #003233;
     text-align: center;
-    font-size: 28px;
+    font-size: 32px;
 }
 
 .help-text {
     font-family: 'Inria Sans', sans-serif;
     color: #666;
-    font-size: 15px;
+    font-size: 16px;
     margin: 0;
 }
 
 .estad-hero {
     background: #D7EDF4;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(3, 36, 42, 0.06);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 12px 36px rgba(3, 36, 42, 0.08);
     overflow: hidden;
     position: relative;
-    min-height: 320px;
+    min-height: 380px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,28 +151,27 @@
 
 .slide img {
     width: 100%;
-    max-width: 650px;
+    max-width: 720px;
     height: auto;
-    max-height: 380px;
+    max-height: 440px;
     object-fit: contain;
-    border-radius: 10px;
+    border-radius: 12px;
     display: block;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .hero-controls {
     display: flex;
-    gap: 12px;
-    margin-top: 12px;
+    gap: 14px;
+    margin-top: 14px;
     justify-content: center;
-    padding-left: 0;
     order: 1;
 }
 
 .dot {
-    width: 56px;
-    height: 8px;
-    border-radius: 8px;
+    width: 64px;
+    height: 10px;
+    border-radius: 10px;
     background: rgba(0, 0, 0, 0.12);
     border: none;
     cursor: pointer;
@@ -179,20 +180,13 @@
 
 .dot.active {
     background: linear-gradient(90deg, #00a7a7, #007f7f);
-    transform: scale(1.06);
+    transform: scale(1.08);
 }
 
-.hero-caption {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
     .estad-container {
         flex-direction: column;
-        gap: 24px;
+        gap: 32px;
     }
 
     .estad-sidebar {
@@ -203,7 +197,11 @@
     }
 
     .side-btn {
-        flex: 1 1 200px;
-        max-width: 280px;
+        flex: 1 1 240px;
+        max-width: 320px;
+    }
+
+    .estad-main {
+        padding: 24px 16px;
     }
 }
