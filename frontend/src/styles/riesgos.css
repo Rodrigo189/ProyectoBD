@@ -16,9 +16,9 @@
 }
 
 .riesgo-main {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 22px 24px 56px;
+    padding: 28px 32px 60px;
     color: var(--text);
 }
 
@@ -26,30 +26,30 @@
     font-family: 'Inria Sans', sans-serif;
     text-align: center;
     font-weight: 800;
-    font-size: 34px;
-    margin: 8px 0 22px;
+    font-size: 38px;
+    margin: 12px 0 28px;
 }
 
-/* Contenedor de botones de edición - ALINEADO A LA IZQUIERDA */
+/* Contenedor de botones de edición */
 .riesgo-edit-controls {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 /* Estilos para botones de edición */
 .riesgo-btn {
     font-family: 'Inria Sans', sans-serif;
-    padding: 10px 22px;
+    padding: 12px 26px;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -85,63 +85,65 @@
 
 .riesgo-content {
     display: grid;
-    grid-template-columns: 0.95fr 1.2fr;
-    gap: 28px;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 36px;
     align-items: start;
 }
 
 .right-col {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
 .patient-card {
     font-family: 'Inria Sans', sans-serif;
     background: var(--card);
-    border-radius: 14px;
+    border-radius: 16px;
     box-shadow: var(--shadow);
-    padding: 14px 18px;
+    padding: 20px 24px;
     width: 100%;
-    line-height: 1.55;
+    line-height: 1.6;
+    font-size: 16px;
 }
 
 .patient-card .sep {
     color: #9aa7ad;
-    margin: 0 6px;
+    margin: 0 8px;
 }
 
 .riesgo-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
 .riesgo-item {
     background: var(--card);
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: var(--shadow);
-    padding: 14px 16px;
+    padding: 18px 22px;
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
 }
 
 .riesgo-item .r-title {
     font-family: 'Inria Sans', sans-serif;
     font-weight: 600;
+    font-size: 16px;
     color: var(--text);
 }
 
 /* Estilos para select en modo edición */
 .riesgo-select {
     font-family: 'Inria Sans', sans-serif;
-    padding: 8px 14px;
-    border-radius: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
     border: 2px solid #e0e0e0;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     outline: none;
     transition: border-color 0.2s ease;
@@ -155,10 +157,10 @@
 
 .riesgo-pill {
     font-family: 'Inria Sans', sans-serif;
-    padding: 8px 18px;
+    padding: 10px 22px;
     border-radius: 999px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     letter-spacing: .2px;
     color: #fff;
 }
@@ -179,128 +181,71 @@
 .empty {
     background: #eef4f6;
     color: var(--muted);
-    border-radius: 10px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
+    font-size: 16px;
 }
 
 .recommend-card {
     background: var(--teal);
     color: #fff;
-    border-radius: 20px;
-    padding: 20px 24px;
+    border-radius: 22px;
+    padding: 26px 30px;
     box-shadow: var(--shadow);
     width: 100%;
-    min-height: 260px;
+    min-height: 300px;
     font-family: 'Inria Sans', sans-serif;
 }
 
 .recommend-card h3 {
     font-family: 'Inria Sans', sans-serif;
-    margin: 0 0 12px;
-    font-weight: 800;
+    margin: 0 0 16px;
     font-size: 22px;
 }
 
 .recommend-card ul {
     margin: 0;
-    padding-left: 18px;
+    padding-left: 20px;
 }
 
 .recommend-card li {
-    margin: 10px 0;
+    margin-bottom: 12px;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
-.recommend-card li::marker {
-    color: #d0f3f4;
-}
-
-/* AGREGAR: Estilos para edición de recomendaciones */
 .recommend-edit {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .recommend-item-edit {
     display: flex;
     align-items: center;
-    gap: 8px;
-}
-
-.recommend-item-edit span {
-    color: #d0f3f4;
-    font-size: 20px;
-    min-width: 10px;
+    gap: 10px;
 }
 
 .recommend-input {
-    font-family: 'Inria Sans', sans-serif;
     flex: 1;
-    padding: 8px 12px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px 14px;
+    border: none;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-    transition: all 0.2s ease;
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.9);
 }
 
-.recommend-input:focus {
-    border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.25);
-}
-
-.recommend-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: var(--muted);
-    font-family: 'Inria Sans', sans-serif;
-}
-
-@media (max-width: 980px) {
+@media (max-width: 900px) {
     .riesgo-content {
         grid-template-columns: 1fr;
     }
 
-    .riesgo-edit-controls {
-        flex-direction: column;
-        align-items: stretch;
+    .riesgo-main {
+        padding: 20px 16px 40px;
     }
 
-    .riesgo-btn {
-        width: 100%;
-        justify-content: center;
+    .riesgo-title {
+        font-size: 28px;
     }
-}
-
-/* Migas de Pan */
-.breadcrumbs {
-    font-size: 26px;
-    margin-bottom: 26px;
-    color: #555;
-    font-family: 'Inria Sans', sans-serif;
-    /* Se encuentre en la izquierda */
-    text-align: left;
-}
-
-.breadcrumbs span {
-    cursor: pointer;
-    color: #1B9AA4;
-    font-weight: 600;
-    transition: 0.2s;
-}
-
-.breadcrumbs span:hover {
-    text-decoration: underline;
-}
-
-.breadcrumbs strong {
-    color: #000;
-    font-weight: 700;
 }

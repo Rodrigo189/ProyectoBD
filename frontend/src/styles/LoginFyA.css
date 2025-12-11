@@ -41,14 +41,14 @@ body,
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 32px 20px 56px;
+    justify-content: flex-start;
+    padding: 60px 20px 56px;
 }
 
 .funcionario-welcome-text {
     font-size: 34px;
     font-weight: 800;
-    margin: 12px 0 28px;
+    margin: 0 0 28px;
     color: #222;
     text-align: center;
 }
@@ -184,5 +184,9 @@ body,
 
     .funcionario-welcome-text {
         font-size: 28px;
+    }
+
+    .funcionario-main {
+        padding: 40px 16px 40px;
     }
 }

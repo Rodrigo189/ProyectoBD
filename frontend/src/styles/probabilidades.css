@@ -4,14 +4,14 @@
 }
 
 .prob-main {
-    max-width: 1380px;
+    max-width: 1500px;
     margin: 0 auto;
-    padding: 22px 24px 56px;
+    padding: 28px 32px 60px;
 }
 
 .prob-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -19,8 +19,8 @@
     font-family: 'Inria Sans', sans-serif;
     text-align: center;
     font-weight: 800;
-    font-size: 34px;
-    margin: 8px 0 6px;
+    font-size: 38px;
+    margin: 12px 0 8px;
 }
 
 .prob-subtitle {
@@ -28,37 +28,37 @@
     text-align: center;
     color: #0ea3a3;
     font-weight: 700;
-    font-size: 20px;
-    margin: 0 0 20px;
+    font-size: 22px;
+    margin: 0 0 28px;
 }
 
 .cuantity {
     font-family: 'Inria Sans', sans-serif;
     color: #5e6b6b;
-    font-size: 14px;
-    margin-bottom: 8px;
+    font-size: 15px;
+    margin-bottom: 10px;
 }
 
-/* AGREGAR: Contenedor de botones de edición */
+/* Contenedor de botones de edición */
 .prob-edit-controls {
     display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-/* AGREGAR: Estilos para botones de edición */
+/* Estilos para botones de edición */
 .prob-btn {
     font-family: 'Inria Sans', sans-serif;
-    padding: 10px 20px;
+    padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .prob-btn:hover {
@@ -94,20 +94,20 @@
 /* filtros */
 .prob-filter {
     display: flex;
-    gap: 10px;
-    margin-bottom: 28px;
+    gap: 12px;
+    margin-bottom: 32px;
     flex-wrap: wrap;
 }
 
 .prob-pill {
     font-family: 'Inria Sans', sans-serif;
-    padding: 9px 18px;
+    padding: 11px 22px;
     border: 2px solid #dce4e6;
     border-radius: 999px;
     background: #fff;
     color: #0b2733;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -126,19 +126,19 @@
 /* grid de tarjetas */
 .prob-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
     animation: fadeInGrid 0.4s ease;
 }
 
 .prob-item {
     background: #fff;
-    border-radius: 16px;
-    padding: 22px;
+    border-radius: 18px;
+    padding: 26px;
     box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -166,8 +166,8 @@
 
 /* avatar circular */
 .avatar {
-    width: 64px;
-    height: 64px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     background: linear-gradient(135deg, #0ea3a3, #0b8a8d);
     color: #fff;
@@ -176,8 +176,8 @@
     justify-content: center;
     font-family: 'Inria Sans', sans-serif;
     font-weight: 800;
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: 32px;
+    margin-bottom: 10px;
 }
 
 .meta {
@@ -187,35 +187,36 @@
 .name {
     font-family: 'Inria Sans', sans-serif;
     font-weight: 700;
-    font-size: 18px;
+    font-size: 20px;
     color: #0b2733;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .group {
     font-family: 'Inria Sans', sans-serif;
     color: #6b7b84;
-    font-size: 14px;
+    font-size: 15px;
 }
 
+/* barra de progreso */
 .progress-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
 .bar {
     flex: 1;
-    height: 12px;
-    background: #e8eaed;
-    border-radius: 999px;
+    height: 14px;
+    background: #e8eef0;
+    border-radius: 10px;
     overflow: hidden;
 }
 
 .fill {
     height: 100%;
-    border-radius: 999px;
-    transition: width 0.3s ease, background 0.3s ease;
+    border-radius: 10px;
+    transition: width 0.4s ease;
 }
 
 .pct {
@@ -227,23 +228,14 @@
     text-align: right;
 }
 
-/* AGREGAR: Estilos para inputs en modo edición */
 .prob-input-edit {
-    font-family: 'Inria Sans', sans-serif;
-    padding: 6px 10px;
-    font-size: 16px;
+    width: 70px;
+    padding: 8px;
+    border: 2px solid #0ea3a3;
+    border-radius: 6px;
+    font-size: 15px;
     font-weight: 700;
     text-align: center;
-    border: 2px solid #0ea3a3;
-    border-radius: 8px;
-    width: 60px;
-    outline: none;
-    transition: border-color 0.2s ease;
-}
-
-.prob-input-edit:focus {
-    border-color: #0c8a8a;
-    box-shadow: 0 0 0 3px rgba(14, 163, 163, 0.1);
 }
 
 .prob-empty {
@@ -251,53 +243,19 @@
     text-align: center;
     padding: 40px;
     color: #6b7b84;
-    font-family: 'Inria Sans', sans-serif;
+    font-size: 16px;
 }
 
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: #6b7b84;
-    font-family: 'Inria Sans', sans-serif;
-}
+@media (max-width: 700px) {
+    .prob-main {
+        padding: 20px 16px 40px;
+    }
 
-@media (max-width: 720px) {
+    .prob-title {
+        font-size: 28px;
+    }
+
     .prob-grid {
         grid-template-columns: 1fr;
     }
-
-    .prob-edit-controls {
-        flex-direction: column;
-    }
-
-    .prob-btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-/* Migas de Pan */
-.breadcrumbs {
-    font-size: 26px;
-    margin-bottom: 26px;
-    color: #555;
-    font-family: 'Inria Sans', sans-serif;
-    /* Se encuentre en la izquierda */
-    text-align: left;
-}
-
-.breadcrumbs span {
-    cursor: pointer;
-    color: #1B9AA4;
-    font-weight: 600;
-    transition: 0.2s;
-}
-
-.breadcrumbs span:hover {
-    text-decoration: underline;
-}
-
-.breadcrumbs strong {
-    color: #000;
-    font-weight: 700;
 }
