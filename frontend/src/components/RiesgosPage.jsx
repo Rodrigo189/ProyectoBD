@@ -5,11 +5,8 @@ import { useToast } from "./Toast";
 import Modal from "./Modal";
 import "../styles/riesgos.css";
 
-// Detectar automáticamente si estamos en producción (Render)
-const isProduction = window.location.hostname !== "localhost";
-const API_BASE = isProduction
-    ? "https://eleam-grupo14-backend.onrender.com"
-    : "http://localhost:5000";
+// Usar siempre el backend de Render
+const API_BASE = "https://eleam-grupo14-backend.onrender.com";
 
 // Iconos para cada categoría de riesgo
 const CATEGORY_ICONS = {

@@ -1,11 +1,8 @@
 import perfil from "../img/perfil.png";
 
 // --- Helpers de API ---
-// Detectar automáticamente si estamos en producción (Render)
-const isProduction = window.location.hostname !== "localhost";
-const API_BASE = isProduction
-    ? "https://eleam-grupo14-backend.onrender.com"
-    : "http://localhost:5000";
+// Usar siempre el backend de Render (funciona tanto local como en producción)
+const API_BASE = "https://eleam-grupo14-backend.onrender.com";
 const token = () => localStorage.getItem("token");
 const authHeaders = () => (token() ? { Authorization: `Bearer ${token()}` } : {});
 
