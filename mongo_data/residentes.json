@@ -1,77 +1,245 @@
 [
   {
-    "rut": "11111111-1",
+    "rut": "R0001",
     "nombre": "Ana García",
-    "fecha_nacimiento": "1950-05-15",
+    "fecha_nacimiento": "1951-05-15",
     "fecha_ingreso": "2024-01-01",
     "medico_tratante": "Dr. Martínez",
-    "proximo_control": "2025-10-15",
-    "diagnostico": "Hipertensión",
-    "medicamentos":[ 
-    {
+    "proximo_control": "2025-12-15",
+    "diagnostico": "Hipertensión arterial",
+    "medicamentos": [
+      {
         "nombre": "Losartán",
         "dosis": "50mg cada 12 horas",
         "caso_sos": false,
         "medico_indicador": "Dr. Martínez",
         "fecha_inicio": "2024-01-01",
         "fecha_termino": null
-    }],
-    "signos_vitales": [
-      {
-        "fecha": "2024-10-01",
-        "hora": "08:00",
-        "presionSistolica": 140,
-        "presionDiastolica": 90
       },
       {
-        "fecha": "2024-10-10",
+        "nombre": "Aspirina",
+        "dosis": "100mg diario",
+        "caso_sos": false,
+        "medico_indicador": "Dr. Martínez",
+        "fecha_inicio": "2024-03-15",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Paracetamol",
+        "dosis": "500mg SOS",
+        "caso_sos": true,
+        "medico_indicador": "Dr. Martínez",
+        "fecha_inicio": "2024-01-01",
+        "fecha_termino": null
+      }
+    ],
+    "signos_vitales": [
+      {
+        "fecha": "2025-12-01",
+        "hora": "08:00",
+        "presionSistolica": 142,
+        "presionDiastolica": 88
+      },
+      {
+        "fecha": "2025-12-05",
         "hora": "09:15",
-        "presionSistolica": 135,
+        "presionSistolica": 138,
         "presionDiastolica": 85
       },
       {
-        "fecha": "2024-10-20",
-        "hora": "08:45",
-        "presionSistolica": 138,
-        "presionDiastolica": 88
+        "fecha": "2025-12-10",
+        "hora": "08:30",
+        "presionSistolica": 135,
+        "presionDiastolica": 82
       }
     ]
   },
-
   {
-    "rut": "22222222-2",
+    "rut": "R0002",
     "nombre": "Carlos Rodríguez",
-    "fecha_nacimiento": "1945-08-20",
+    "fecha_nacimiento": "1946-08-20",
     "fecha_ingreso": "2024-02-01",
     "medico_tratante": "Dra. Sánchez",
-    "proximo_control": "2025-10-20",
-    "diagnostico": "Diabetes tipo 2",
-    "medicamentos":[ {
+    "proximo_control": "2025-12-20",
+    "diagnostico": "Diabetes Mellitus tipo 2",
+    "medicamentos": [
+      {
         "nombre": "Metformina",
         "dosis": "850mg cada 8 horas",
         "caso_sos": false,
         "medico_indicador": "Dra. Sánchez",
         "fecha_inicio": "2024-02-01",
         "fecha_termino": null
-    }],
+      },
+      {
+        "nombre": "Glibenclamida",
+        "dosis": "5mg diario",
+        "caso_sos": false,
+        "medico_indicador": "Dra. Sánchez",
+        "fecha_inicio": "2024-06-01",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Atorvastatina",
+        "dosis": "20mg noche",
+        "caso_sos": false,
+        "medico_indicador": "Dra. Sánchez",
+        "fecha_inicio": "2024-02-15",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Omeprazol",
+        "dosis": "20mg en ayunas",
+        "caso_sos": false,
+        "medico_indicador": "Dra. Sánchez",
+        "fecha_inicio": "2024-04-01",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Tramadol",
+        "dosis": "50mg SOS",
+        "caso_sos": true,
+        "medico_indicador": "Dra. Sánchez",
+        "fecha_inicio": "2024-08-01",
+        "fecha_termino": null
+      }
+    ],
     "signos_vitales": [
       {
-        "fecha": "2024-10-01",
+        "fecha": "2025-12-01",
+        "hora": "07:30",
+        "presionSistolica": 128,
+        "presionDiastolica": 78,
+        "glicemia": 145
+      },
+      {
+        "fecha": "2025-12-08",
+        "hora": "07:45",
+        "presionSistolica": 132,
+        "presionDiastolica": 80,
+        "glicemia": 138
+      }
+    ]
+  },
+  {
+    "rut": "R0003",
+    "nombre": "María Fernández",
+    "fecha_nacimiento": "1943-02-10",
+    "fecha_ingreso": "2023-06-15",
+    "medico_tratante": "Dr. López",
+    "proximo_control": "2025-12-12",
+    "diagnostico": "Demencia moderada, Osteoporosis",
+    "medicamentos": [
+      {
+        "nombre": "Memantina",
+        "dosis": "10mg cada 12 horas",
+        "caso_sos": false,
+        "medico_indicador": "Dr. López",
+        "fecha_inicio": "2023-06-15",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Donepezilo",
+        "dosis": "10mg noche",
+        "caso_sos": false,
+        "medico_indicador": "Dr. López",
+        "fecha_inicio": "2023-07-01",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Calcio + Vitamina D",
+        "dosis": "1 comprimido diario",
+        "caso_sos": false,
+        "medico_indicador": "Dra. Muñoz",
+        "fecha_inicio": "2023-08-01",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Alendronato",
+        "dosis": "70mg semanal",
+        "caso_sos": false,
+        "medico_indicador": "Dra. Muñoz",
+        "fecha_inicio": "2023-08-01",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Quetiapina",
+        "dosis": "25mg noche",
+        "caso_sos": false,
+        "medico_indicador": "Dr. López",
+        "fecha_inicio": "2024-01-15",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Risperidona",
+        "dosis": "0.5mg SOS",
+        "caso_sos": true,
+        "medico_indicador": "Dr. López",
+        "fecha_inicio": "2024-02-01",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Lorazepam",
+        "dosis": "1mg SOS",
+        "caso_sos": true,
+        "medico_indicador": "Dr. López",
+        "fecha_inicio": "2024-03-01",
+        "fecha_termino": null
+      },
+      {
+        "nombre": "Paracetamol",
+        "dosis": "500mg SOS",
+        "caso_sos": true,
+        "medico_indicador": "Dra. Muñoz",
+        "fecha_inicio": "2023-06-15",
+        "fecha_termino": null
+      }
+    ],
+    "signos_vitales": [
+      {
+        "fecha": "2025-12-05",
         "hora": "08:00",
-        "presionSistolica": 140,
-        "presionDiastolica": 90
+        "presionSistolica": 118,
+        "presionDiastolica": 72
       },
       {
-        "fecha": "2024-10-10",
-        "hora": "09:15",
-        "presionSistolica": 135,
-        "presionDiastolica": 85
+        "fecha": "2025-12-10",
+        "hora": "08:15",
+        "presionSistolica": 122,
+        "presionDiastolica": 75
+      }
+    ]
+  },
+  {
+    "rut": "R0004",
+    "nombre": "José Muñoz",
+    "fecha_nacimiento": "1957-11-25",
+    "fecha_ingreso": "2025-03-01",
+    "medico_tratante": "Dra. Vega",
+    "proximo_control": "2026-03-01",
+    "diagnostico": "Artrosis leve",
+    "medicamentos": [
+      {
+        "nombre": "Glucosamina",
+        "dosis": "1500mg diario",
+        "caso_sos": false,
+        "medico_indicador": "Dra. Vega",
+        "fecha_inicio": "2025-03-01",
+        "fecha_termino": null
+      }
+    ],
+    "signos_vitales": [
+      {
+        "fecha": "2025-12-01",
+        "hora": "09:00",
+        "presionSistolica": 125,
+        "presionDiastolica": 78
       },
       {
-        "fecha": "2024-10-20",
-        "hora": "08:45",
-        "presionSistolica": 138,
-        "presionDiastolica": 88
+        "fecha": "2025-12-08",
+        "hora": "09:30",
+        "presionSistolica": 122,
+        "presionDiastolica": 76
       }
     ]
   }

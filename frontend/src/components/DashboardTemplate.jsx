@@ -39,6 +39,7 @@ export default function FuncionarioDashboard({
     const [activeTab, setActiveTab] = useState("resumen");
     const [menuOpen, setMenuOpen] = useState(false);
     const [month, setMonth] = useState(null);
+    const [year, setYear] = useState(new Date().getFullYear());
     const [resumen, setResumen] = useState(null);
     const [resumenLoading, setResumenLoading] = useState(false);
     const [historial, setHistorial] = useState([]);
@@ -344,7 +345,7 @@ export default function FuncionarioDashboard({
                                 {resumenLoading ? (
                                     <p>Cargando resumen...</p>
                                 ) : editingResumen ? (
-                                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                                    <div className="summary-cards-row">
                                         {[
                                             { key: "diasTrabajados", label: "Días trabajados" },
                                             { key: "horas", label: "Horas trabajadas" },
@@ -365,7 +366,7 @@ export default function FuncionarioDashboard({
                                         ))}
                                     </div>
                                 ) : resumen && Object.values(resumen).some((v) => v !== 0) ? (
-                                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                                    <div className="summary-cards-row">
                                         <div className="summary-card"><strong>{resumen?.diasTrabajados ?? 0}</strong><div>Días trabajados</div></div>
                                         <div className="summary-card"><strong>{resumen?.horas ?? 0}</strong><div>Horas trabajadas</div></div>
                                         <div className="summary-card"><strong>{resumen?.turnosExtra ?? 0}</strong><div>Turnos extra</div></div>
@@ -384,13 +385,13 @@ export default function FuncionarioDashboard({
                             <div className="calendario-panel">
                                 {canEdit && <p style={{ color: "#008f8f", marginBottom: 8 }}>💡 Haz clic en un día para agregar un turno</p>}
                                 <Calendario
-                                    year={new Date().getFullYear()}
+                                    year={year}
                                     month={month || new Date().getMonth() + 1}
                                     entries={historial}
                                     firstDayMonday={true}
                                     onDayClick={handleDayClick}
                                     onMonthChange={(m) => setMonth(m)}
-                                    onYearChange={() => { }}
+                                    onYearChange={(y) => setYear(y)}
                                 />
                             </div>
                         )}

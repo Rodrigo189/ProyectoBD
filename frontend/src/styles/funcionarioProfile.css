@@ -206,8 +206,26 @@
     border-color: rgba(0, 0, 0, 0.08);
 }
 
+.summary-cards-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.summary-cards-row::-webkit-scrollbar {
+    height: 6px;
+}
+
+.summary-cards-row::-webkit-scrollbar-thumb {
+    background: #1aa7a7;
+    border-radius: 3px;
+}
+
 .summary-card {
-    min-width: 160px;
+    min-width: 140px;
+    flex: 0 0 auto;
     background: #fff;
     padding: 16px;
     border-radius: 10px;
@@ -286,8 +304,13 @@
         width: 100%;
     }
 
+    .summary-cards-row {
+        gap: 10px;
+    }
+
     .summary-card {
-        flex: 1 1 calc(50% - 12px);
+        min-width: 120px;
+        padding: 12px;
     }
 
     .tab-menu.open {

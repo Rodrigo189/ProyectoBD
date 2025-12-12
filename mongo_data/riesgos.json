@@ -1,6 +1,6 @@
 [
     {
-        "rut": "11111111-1",
+        "rut": "R0001",
         "nombre": "Ana García",
         "edad": 74,
         "habitacion": "101-A",
@@ -74,7 +74,7 @@
         ]
     },
     {
-        "rut": "22222222-2",
+        "rut": "R0002",
         "nombre": "Carlos Rodríguez",
         "edad": 79,
         "habitacion": "102-B",
@@ -162,7 +162,7 @@
         ]
     },
     {
-        "rut": "33333333-3",
+        "rut": "R0003",
         "nombre": "María Fernández",
         "edad": 82,
         "habitacion": "103-A",
@@ -269,7 +269,7 @@
         ]
     },
     {
-        "rut": "44444444-4",
+        "rut": "R0004",
         "nombre": "José Muñoz",
         "edad": 68,
         "habitacion": "104-B",
