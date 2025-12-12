@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
+import { useToast } from "./Toast";
 import "../styles/probabilidades.css";
 import { fetchProbabilidadesMedicamentosByUser, updateProbabilidades } from "./funcionariosApi";
 
@@ -21,6 +22,9 @@ export default function ProbTemplate() {
     const [editMode, setEditMode] = useState(false);
     const [editData, setEditData] = useState({});
     const [saving, setSaving] = useState(false);
+
+    // Toast para notificaciones
+    const { showToast, ToastComponent } = useToast();
 
     const normalize = (rows) => {
         const raw = Array.isArray(rows)
@@ -75,10 +79,10 @@ export default function ProbTemplate() {
             await updateProbabilidades(userId, updated);
             setItems(updated);
             setEditMode(false);
-            alert("Guardado exitosamente");
+            showToast("Guardado exitosamente", "success");
         } catch (e) {
             console.error("Error al guardar:", e);
-            alert("Error al guardar");
+            showToast("Error al guardar", "error");
         } finally {
             setSaving(false);
         }
@@ -101,6 +105,7 @@ export default function ProbTemplate() {
     return (
         <div className="prob-bg">
             <Header onBack={() => navigate(-1)} title="Probabilidades de medicamentos" />
+            <ToastComponent />
             <main className="prob-main">
                 <h1 className="prob-title">Análisis de Interacciones</h1>
                 <h1 className="prob-subtitle">Cantidad de Medicamentos</h1>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
+import { useToast } from "./Toast";
 import "../styles/riesgos.css";
 import { fetchRiesgosByUser, fetchFuncionarioById, updateRiesgos } from "./funcionariosApi";
 
@@ -75,6 +76,9 @@ export default function RiskTemplate() {
     const [recomendaciones, setRecomendaciones] = useState([]);
     const [editRecomendaciones, setEditRecomendaciones] = useState([]);
 
+    // Toast para notificaciones
+    const { showToast, ToastComponent } = useToast();
+
     useEffect(() => {
         let mounted = true;
         setLoading(true);
@@ -127,10 +131,10 @@ export default function RiskTemplate() {
             setItems(editData);
             setRecomendaciones([...editRecomendaciones]);
             setEditMode(false);
-            alert("Guardado exitosamente");
+            showToast("Guardado exitosamente", "success");
         } catch (e) {
             console.error("Error al guardar:", e);
-            alert("Error al guardar");
+            showToast("Error al guardar", "error");
         } finally {
             setSaving(false);
         }
@@ -142,6 +146,7 @@ export default function RiskTemplate() {
     return (
         <div className="riesgo-bg">
             <Header onBack={() => navigate(-1)} />
+            <ToastComponent />
             <main className="riesgo-main">
                 <h1 className="riesgo-title">Análisis de Riesgo</h1>
 

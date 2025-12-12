@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "./Header";
+import { useToast } from "./Toast";
 import "../styles/funcionarioProfile.css";
 import perfilDefault from "../img/perfil.png";
 import { fetchFuncionarioById, updateRemuneracion } from "./funcionariosApi";
@@ -21,6 +22,9 @@ export default function PerfilFuncionarioDetail() {
     const [edit, setEdit] = useState(false);
     const [saving, setSaving] = useState(false);
     const [msg, setMsg] = useState("");
+
+    // Toast para notificaciones
+    const { showToast, ToastComponent } = useToast();
 
     // Detectar si es el propio perfil (no puede editar su sueldo)
     const isOwnProfile = data?.rut === currentUserRut;
@@ -61,10 +65,9 @@ export default function PerfilFuncionarioDetail() {
             if (!res.ok) throw res.data;
             setData((d) => ({ ...d, ...payload }));
             setEdit(false);
-            setMsg("Cambios guardados.");
-            setTimeout(() => setMsg(""), 2500);
+            showToast("Cambios guardados correctamente", "success");
         } catch (e) {
-            setMsg("No se pudo guardar. Revisa la consola.");
+            showToast("No se pudo guardar. Revisa la consola.", "error");
             console.error("updateRemuneracion error:", e);
         } finally {
             setSaving(false);
@@ -94,9 +97,9 @@ export default function PerfilFuncionarioDetail() {
     return (
         <div className="perfil-bg">
             <Header onBack={() => navigate(-1)} />
+            <ToastComponent />
             <main className="perfil-main">
                 <div className="perfil-frame">
-                    {msg && <div style={{ marginBottom: 8, color: "#0a6" }}>{msg}</div>}
 
                     <section className="perfil-card">
                         <div className="perfil-left">

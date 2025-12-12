@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
+import { useToast } from "./Toast";
 import "../styles/sistema.css";
 import { fetchSisByRut, updateSistema } from "./funcionariosApi";
 
@@ -19,6 +20,9 @@ export default function SisTemplate() {
     const [editMode, setEditMode] = useState(false);
     const [editData, setEditData] = useState({});
     const [saving, setSaving] = useState(false);
+
+    // Toast para notificaciones
+    const { showToast, ToastComponent } = useToast();
 
     useEffect(() => {
         let mounted = true;
@@ -58,10 +62,10 @@ export default function SisTemplate() {
             await updateSistema(userId, editData);
             setData(editData);
             setEditMode(false);
-            alert("Datos guardados correctamente");
+            showToast("Datos guardados correctamente", "success");
         } catch (e) {
             console.error("Error al guardar:", e);
-            alert("Error al guardar los datos");
+            showToast("Error al guardar los datos", "error");
         } finally {
             setSaving(false);
         }
@@ -72,6 +76,7 @@ export default function SisTemplate() {
     return (
         <div className="sis-bg">
             <Header onBack={() => navigate(-1)} title="Sistema" />
+            <ToastComponent />
             <main className="sis-main">
                 <h1 className="sis-heading">Información del Sistema</h1>
 

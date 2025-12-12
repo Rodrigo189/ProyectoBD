@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import Calendario from "./Calendar";
+import Modal from "./Modal";
+import { useToast } from "./Toast";
 import {
     fetchFuncionarioById,
     fetchResumenByUserMonth,
@@ -28,6 +30,9 @@ export default function FuncionarioDashboard({
 
     const shouldShowFuncionarios = !!showFuncionariosButton && !id;
     const navigate = useNavigate();
+
+    // Toast para notificaciones
+    const { showToast, ToastComponent } = useToast();
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -142,9 +147,9 @@ export default function FuncionarioDashboard({
             await updateSistema(data.id, updatedSis);
             setResumen(editedResumen);
             setEditingResumen(false);
-            alert("Resumen guardado correctamente");
+            showToast("Resumen guardado correctamente", "success");
         } catch (e) {
-            alert("Error al guardar: " + (e.error || e.message || "Error desconocido"));
+            showToast("Error al guardar: " + (e.error || e.message || "Error desconocido"), "error");
         } finally {
             setSaving(false);
         }
@@ -177,9 +182,9 @@ export default function FuncionarioDashboard({
             setHistorial(registrosActualizados);
             setShowTurnoModal(false);
             setNuevoTurno({ turno: "Mañana", horaInicio: "08:00", horaFin: "16:00", observaciones: "" });
-            alert("Turno agregado correctamente");
+            showToast("Turno agregado correctamente", "success");
         } catch (e) {
-            alert("Error al agregar turno: " + (e.error || e.message || "Error desconocido"));
+            showToast("Error al agregar turno: " + (e.error || e.message || "Error desconocido"), "error");
         } finally {
             setSaving(false);
         }
@@ -205,9 +210,9 @@ export default function FuncionarioDashboard({
             setHistorial(registrosActualizados);
             setShowHistorialModal(false);
             setNuevoRegistro({ fecha: "", turno: "Mañana", horaInicio: "08:00", horaFin: "16:00", horas: 8, observaciones: "" });
-            alert("Registro agregado correctamente");
+            showToast("Registro agregado correctamente", "success");
         } catch (e) {
-            alert("Error al agregar registro: " + (e.error || e.message || "Error desconocido"));
+            showToast("Error al agregar registro: " + (e.error || e.message || "Error desconocido"), "error");
         } finally {
             setSaving(false);
         }
@@ -263,6 +268,7 @@ export default function FuncionarioDashboard({
     return (
         <div className="perfil-bg">
             <Header onBack={() => navigate(-1)} />
+            <ToastComponent />
             <main className="perfil-main">
                 <div className="perfil-frame">
                     {/* Info del funcionario */}
@@ -429,84 +435,142 @@ export default function FuncionarioDashboard({
             </main>
 
             {/* Modal para agregar turno desde calendario */}
-            {showTurnoModal && (
-                <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-                    <div style={{ background: "white", padding: 24, borderRadius: 12, minWidth: 320 }}>
-                        <h3 style={{ marginTop: 0 }}>Agregar Turno - {selectedDate}</h3>
-                        <div style={{ marginBottom: 12 }}>
-                            <label>Turno:</label>
-                            <select value={nuevoTurno.turno} onChange={(e) => setNuevoTurno({ ...nuevoTurno, turno: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4 }}>
-                                <option value="Mañana">Mañana</option>
-                                <option value="Tarde">Tarde</option>
-                                <option value="Noche">Noche</option>
-                                <option value="Largo">Largo</option>
-                            </select>
-                        </div>
-                        <div style={{ marginBottom: 12, display: "flex", gap: 12 }}>
-                            <div style={{ flex: 1 }}>
-                                <label>Hora inicio:</label>
-                                <input type="time" value={nuevoTurno.horaInicio} onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4 }} />
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <label>Hora fin:</label>
-                                <input type="time" value={nuevoTurno.horaFin} onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4 }} />
-                            </div>
-                        </div>
-                        <div style={{ marginBottom: 12 }}>
-                            <label>Observaciones:</label>
-                            <textarea value={nuevoTurno.observaciones} onChange={(e) => setNuevoTurno({ ...nuevoTurno, observaciones: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4, minHeight: 60 }} />
-                        </div>
-                        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                            <button className="tab-btn" onClick={() => setShowTurnoModal(false)}>Cancelar</button>
-                            <button className="estad-link-btn" onClick={handleAddTurno} disabled={saving}>{saving ? "Guardando..." : "Guardar"}</button>
-                        </div>
+            <Modal
+                show={showTurnoModal}
+                onClose={() => setShowTurnoModal(false)}
+                title={`Agregar Turno - ${selectedDate}`}
+                size="md"
+            >
+                <div style={{ marginBottom: 16 }}>
+                    <label className="modal-label">Turno:</label>
+                    <select
+                        value={nuevoTurno.turno}
+                        onChange={(e) => setNuevoTurno({ ...nuevoTurno, turno: e.target.value })}
+                        className="modal-select"
+                    >
+                        <option value="Mañana">Mañana</option>
+                        <option value="Tarde">Tarde</option>
+                        <option value="Noche">Noche</option>
+                        <option value="Largo">Largo</option>
+                    </select>
+                </div>
+                <div className="modal-row" style={{ marginBottom: 16 }}>
+                    <div>
+                        <label className="modal-label">Hora inicio:</label>
+                        <input
+                            type="time"
+                            value={nuevoTurno.horaInicio}
+                            onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaInicio: e.target.value })}
+                            className="modal-input"
+                            style={{ marginBottom: 0 }}
+                        />
+                    </div>
+                    <div>
+                        <label className="modal-label">Hora fin:</label>
+                        <input
+                            type="time"
+                            value={nuevoTurno.horaFin}
+                            onChange={(e) => setNuevoTurno({ ...nuevoTurno, horaFin: e.target.value })}
+                            className="modal-input"
+                            style={{ marginBottom: 0 }}
+                        />
                     </div>
                 </div>
-            )}
+                <div style={{ marginBottom: 16 }}>
+                    <label className="modal-label">Observaciones:</label>
+                    <textarea
+                        value={nuevoTurno.observaciones}
+                        onChange={(e) => setNuevoTurno({ ...nuevoTurno, observaciones: e.target.value })}
+                        className="modal-textarea"
+                        style={{ marginBottom: 0 }}
+                    />
+                </div>
+                <div className="modal-actions">
+                    <button className="modal-btn modal-btn-cancel" onClick={() => setShowTurnoModal(false)}>Cancelar</button>
+                    <button className="modal-btn modal-btn-primary" onClick={handleAddTurno} disabled={saving}>
+                        {saving ? "Guardando..." : "Guardar"}
+                    </button>
+                </div>
+            </Modal>
 
             {/* Modal para agregar registro en historial */}
-            {showHistorialModal && (
-                <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-                    <div style={{ background: "white", padding: 24, borderRadius: 12, minWidth: 320 }}>
-                        <h3 style={{ marginTop: 0 }}>Agregar Registro</h3>
-                        <div style={{ marginBottom: 12 }}>
-                            <label>Fecha:</label>
-                            <input type="date" value={nuevoRegistro.fecha} onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, fecha: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4 }} />
-                        </div>
-                        <div style={{ marginBottom: 12 }}>
-                            <label>Turno:</label>
-                            <select value={nuevoRegistro.turno} onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, turno: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4 }}>
-                                <option value="Mañana">Mañana</option>
-                                <option value="Tarde">Tarde</option>
-                                <option value="Noche">Noche</option>
-                                <option value="Largo">Largo</option>
-                            </select>
-                        </div>
-                        <div style={{ marginBottom: 12, display: "flex", gap: 12 }}>
-                            <div style={{ flex: 1 }}>
-                                <label>Hora inicio:</label>
-                                <input type="time" value={nuevoRegistro.horaInicio} onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, horaInicio: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4 }} />
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <label>Hora fin:</label>
-                                <input type="time" value={nuevoRegistro.horaFin} onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, horaFin: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4 }} />
-                            </div>
-                        </div>
-                        <div style={{ marginBottom: 12 }}>
-                            <label>Horas:</label>
-                            <input type="number" value={nuevoRegistro.horas} onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, horas: Number(e.target.value) })} style={{ width: "100%", padding: 8, marginTop: 4 }} />
-                        </div>
-                        <div style={{ marginBottom: 12 }}>
-                            <label>Observaciones:</label>
-                            <textarea value={nuevoRegistro.observaciones} onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, observaciones: e.target.value })} style={{ width: "100%", padding: 8, marginTop: 4, minHeight: 60 }} />
-                        </div>
-                        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                            <button className="tab-btn" onClick={() => setShowHistorialModal(false)}>Cancelar</button>
-                            <button className="estad-link-btn" onClick={handleAddRegistro} disabled={saving || !nuevoRegistro.fecha}>{saving ? "Guardando..." : "Guardar"}</button>
-                        </div>
+            <Modal
+                show={showHistorialModal}
+                onClose={() => setShowHistorialModal(false)}
+                title="Agregar Registro"
+                size="md"
+            >
+                <div style={{ marginBottom: 16 }}>
+                    <label className="modal-label">Fecha:</label>
+                    <input
+                        type="date"
+                        value={nuevoRegistro.fecha}
+                        onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, fecha: e.target.value })}
+                        className="modal-input"
+                        style={{ marginBottom: 0 }}
+                    />
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                    <label className="modal-label">Turno:</label>
+                    <select
+                        value={nuevoRegistro.turno}
+                        onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, turno: e.target.value })}
+                        className="modal-select"
+                    >
+                        <option value="Mañana">Mañana</option>
+                        <option value="Tarde">Tarde</option>
+                        <option value="Noche">Noche</option>
+                        <option value="Largo">Largo</option>
+                    </select>
+                </div>
+                <div className="modal-row" style={{ marginBottom: 16 }}>
+                    <div>
+                        <label className="modal-label">Hora inicio:</label>
+                        <input
+                            type="time"
+                            value={nuevoRegistro.horaInicio}
+                            onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, horaInicio: e.target.value })}
+                            className="modal-input"
+                            style={{ marginBottom: 0 }}
+                        />
+                    </div>
+                    <div>
+                        <label className="modal-label">Hora fin:</label>
+                        <input
+                            type="time"
+                            value={nuevoRegistro.horaFin}
+                            onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, horaFin: e.target.value })}
+                            className="modal-input"
+                            style={{ marginBottom: 0 }}
+                        />
                     </div>
                 </div>
-            )}
+                <div style={{ marginBottom: 16 }}>
+                    <label className="modal-label">Horas:</label>
+                    <input
+                        type="number"
+                        value={nuevoRegistro.horas}
+                        onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, horas: Number(e.target.value) })}
+                        className="modal-input"
+                        style={{ marginBottom: 0 }}
+                    />
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                    <label className="modal-label">Observaciones:</label>
+                    <textarea
+                        value={nuevoRegistro.observaciones}
+                        onChange={(e) => setNuevoRegistro({ ...nuevoRegistro, observaciones: e.target.value })}
+                        className="modal-textarea"
+                        style={{ marginBottom: 0 }}
+                    />
+                </div>
+                <div className="modal-actions">
+                    <button className="modal-btn modal-btn-cancel" onClick={() => setShowHistorialModal(false)}>Cancelar</button>
+                    <button className="modal-btn modal-btn-primary" onClick={handleAddRegistro} disabled={saving || !nuevoRegistro.fecha}>
+                        {saving ? "Guardando..." : "Guardar"}
+                    </button>
+                </div>
+            </Modal>
         </div>
     );
 }
