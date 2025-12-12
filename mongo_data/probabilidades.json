@@ -1,7 +1,31 @@
 [
     {
-        "rut": "R0001",
-        "nombre": "Ana García",
+        "rut": "11111111-1",
+        "nombre": "Juanito Pérez",
+        "medicamentos": [
+            {
+                "id": 1,
+                "nombre": "Ibuprofeno",
+                "grupo": "Analgésicos",
+                "pct": 85
+            },
+            {
+                "id": 2,
+                "nombre": "Paracetamol",
+                "grupo": "Analgésicos",
+                "pct": 92
+            },
+            {
+                "id": 3,
+                "nombre": "Omeprazol",
+                "grupo": "Gastrointestinales",
+                "pct": 78
+            }
+        ]
+    },
+    {
+        "rut": "22222222-2",
+        "nombre": "María González",
         "medicamentos": [
             {
                 "id": 1,
@@ -13,115 +37,73 @@
                 "id": 2,
                 "nombre": "Aspirina",
                 "grupo": "Cardíacos",
-                "pct": 90
+                "pct": 88
             },
             {
                 "id": 3,
-                "nombre": "Paracetamol",
-                "grupo": "Analgésicos",
-                "pct": 25
+                "nombre": "Metformina",
+                "grupo": "Antidiabéticos",
+                "pct": 90
+            },
+            {
+                "id": 4,
+                "nombre": "Atorvastatina",
+                "grupo": "Cardíacos",
+                "pct": 82
             }
         ]
     },
     {
-        "rut": "R0002",
-        "nombre": "Carlos Rodríguez",
+        "rut": "33333333-3",
+        "nombre": "Pedro Soto",
         "medicamentos": [
             {
                 "id": 1,
-                "nombre": "Metformina",
-                "grupo": "Antidiabéticos",
+                "nombre": "Diazepam",
+                "grupo": "Ansiolíticos",
+                "pct": 70
+            },
+            {
+                "id": 2,
+                "nombre": "Alprazolam",
+                "grupo": "Ansiolíticos",
+                "pct": 65
+            },
+            {
+                "id": 3,
+                "nombre": "Tramadol",
+                "grupo": "Analgésicos",
+                "pct": 45
+            }
+        ]
+    },
+    {
+        "rut": "44444444-4",
+        "nombre": "Sofía Rojas",
+        "medicamentos": [
+            {
+                "id": 1,
+                "nombre": "Levotiroxina",
+                "grupo": "Hormonales",
                 "pct": 98
             },
             {
                 "id": 2,
-                "nombre": "Glibenclamida",
-                "grupo": "Antidiabéticos",
-                "pct": 92
+                "nombre": "Vitamina D",
+                "grupo": "Suplementos",
+                "pct": 75
             },
             {
                 "id": 3,
-                "nombre": "Atorvastatina",
-                "grupo": "Cardíacos",
-                "pct": 88
+                "nombre": "Calcio",
+                "grupo": "Suplementos",
+                "pct": 80
             },
             {
                 "id": 4,
-                "nombre": "Omeprazol",
-                "grupo": "Digestivos",
-                "pct": 95
-            },
-            {
-                "id": 5,
-                "nombre": "Tramadol",
-                "grupo": "Analgésicos",
-                "pct": 15
-            }
-        ]
-    },
-    {
-        "rut": "R0003",
-        "nombre": "María Fernández",
-        "medicamentos": [
-            {
-                "id": 1,
-                "nombre": "Memantina",
-                "grupo": "Neurológicos",
-                "pct": 100
-            },
-            {
-                "id": 2,
-                "nombre": "Donepezilo",
-                "grupo": "Neurológicos",
-                "pct": 100
-            },
-            {
-                "id": 3,
-                "nombre": "Calcio + Vitamina D",
+                "nombre": "Hierro",
                 "grupo": "Suplementos",
-                "pct": 95
-            },
-            {
-                "id": 4,
-                "nombre": "Alendronato",
-                "grupo": "Óseos",
-                "pct": 100
-            },
-            {
-                "id": 5,
-                "nombre": "Quetiapina",
-                "grupo": "Sedantes",
-                "pct": 85
-            },
-            {
-                "id": 6,
-                "nombre": "Risperidona",
-                "grupo": "Sedantes",
-                "pct": 20
-            },
-            {
-                "id": 7,
-                "nombre": "Lorazepam",
-                "grupo": "Sedantes",
-                "pct": 30
-            },
-            {
-                "id": 8,
-                "nombre": "Paracetamol",
-                "grupo": "Analgésicos",
-                "pct": 40
-            }
-        ]
-    },
-    {
-        "rut": "R0004",
-        "nombre": "José Muñoz",
-        "medicamentos": [
-            {
-                "id": 1,
-                "nombre": "Glucosamina",
-                "grupo": "Suplementos",
-                "pct": 90
+                "pct": 60
             }
         ]
     }

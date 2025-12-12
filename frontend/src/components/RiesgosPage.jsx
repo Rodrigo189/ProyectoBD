@@ -5,7 +5,11 @@ import { useToast } from "./Toast";
 import Modal from "./Modal";
 import "../styles/riesgos.css";
 
-const API_BASE = "http://localhost:5000/api";
+// Detectar automáticamente si estamos en producción (Render)
+const isProduction = window.location.hostname !== "localhost";
+const API_BASE = isProduction
+    ? "https://eleam-grupo14-backend.onrender.com"
+    : "http://localhost:5000";
 
 // Iconos para cada categoría de riesgo
 const CATEGORY_ICONS = {
@@ -62,7 +66,7 @@ export default function RiesgosPage() {
     useEffect(() => {
         const fetchRiesgos = async () => {
             try {
-                const res = await fetch(`${API_BASE}/riesgos-residentes`);
+                const res = await fetch(`${API_BASE}/api/riesgos-residentes`);
                 if (res.ok) {
                     const data = await res.json();
                     setResidentes(data);

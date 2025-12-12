@@ -49,21 +49,10 @@
 
 /* ===== Panel de Resumen ===== */
 .resumen-panel {
-    display: flex;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-bottom: 28px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-}
-
-.resumen-panel::-webkit-scrollbar {
-    height: 6px;
-}
-
-.resumen-panel::-webkit-scrollbar-thumb {
-    background: var(--riesgo-primary);
-    border-radius: 3px;
 }
 
 .resumen-card {
@@ -77,8 +66,6 @@
     text-align: center;
     border-left: 5px solid;
     transition: transform 0.2s ease;
-    min-width: 180px;
-    flex: 1;
 }
 
 .resumen-card:hover {
@@ -764,12 +751,7 @@
 
 @media (max-width: 900px) {
     .resumen-panel {
-        gap: 12px;
-    }
-    
-    .resumen-card {
-        min-width: 150px;
-        padding: 16px 18px;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -783,16 +765,7 @@
     }
 
     .resumen-panel {
-        gap: 10px;
-    }
-    
-    .resumen-card {
-        min-width: 130px;
-        padding: 14px 12px;
-    }
-    
-    .resumen-numero {
-        font-size: 2rem;
+        grid-template-columns: 1fr;
     }
 
     .detalle-header {
