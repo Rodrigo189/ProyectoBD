@@ -762,6 +762,19 @@ def api_probabilidades(user_id):
     # Buscar "medicamentos" o "items"
     return jsonify(doc.get("medicamentos", doc.get("items", []))) if doc else jsonify([])
 
+@api_bp.get("/riesgos-residentes")
+def api_riesgos_residentes():
+    """Obtiene todos los riesgos de residentes para el nuevo sistema de evaluación"""
+    try:
+        docs = list(mongo.db.riesgos.find({}))
+        result = []
+        for doc in docs:
+            d = _to_doc(doc)
+            result.append(d)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @api_bp.get("/riesgos/<user_id>")
 def api_riesgos(user_id):
     f = _find_funcionario(user_id)

@@ -1,242 +1,374 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { useToast } from "./Toast";
+import Modal from "./Modal";
 import "../styles/riesgos.css";
-import { fetchRiesgosByUser, fetchFuncionarioById, updateRiesgos } from "./funcionariosApi";
+
+const API_BASE = "http://localhost:5000/api";
+
+// Iconos para cada categoría de riesgo
+const CATEGORY_ICONS = {
+    caidas: "🚶",
+    ulceras: "🛏️",
+    nutricion: "🍽️",
+    cognitivo: "🧠",
+    polifarmacia: "💊"
+};
+
+const CATEGORY_NAMES = {
+    caidas: "Riesgo de Caídas",
+    ulceras: "Úlceras por Presión",
+    nutricion: "Estado Nutricional",
+    cognitivo: "Estado Cognitivo",
+    polifarmacia: "Polifarmacia"
+};
+
+const CATEGORY_SCALES = {
+    caidas: "Escala de Downton",
+    ulceras: "Escala de Norton",
+    nutricion: "Mini Nutritional Assessment",
+    cognitivo: "Mini Mental State",
+    polifarmacia: "Nº Medicamentos"
+};
 
 const levelClass = (nivel) => {
     const n = String(nivel || "").toLowerCase();
-    if (n.includes("alto")) return "red";
-    if (n.includes("medio")) return "yellow";
-    return "green";
+    if (n.includes("alto") || n.includes("critico")) return "alto";
+    if (n.includes("medio")) return "medio";
+    return "bajo";
 };
 
-const getAge = (dob) => {
-    if (!dob) return "—";
-    const d = new Date(dob);
-    if (Number.isNaN(d.getTime())) return "—";
-    const diff = Date.now() - d.getTime();
-    const ageDate = new Date(diff);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+const prioridadClass = (prioridad) => {
+    const p = String(prioridad || "").toLowerCase();
+    if (p.includes("critica")) return "critica";
+    if (p.includes("alta")) return "alta";
+    return "media";
 };
 
-// Datos personales únicos por usuario
-const datosPersonales = {
-    "11111111-1": { peso: "65KG", alergias: "Ninguna conocida" },
-    "22222222-2": { peso: "78KG", alergias: "Ibuprofeno" },
-    "33333333-3": { peso: "70KG", alergias: "Penicilina" },
-    "44444444-4": { peso: "82KG", alergias: "Látex" }
-};
-
-// Recomendaciones únicas por usuario
-const recomendacionesPorUsuario = {
-    "11111111-1": [
-        "Realizar pausas activas cada 2 horas",
-        "Uso obligatorio de faja lumbar en movilizaciones",
-        "Actualizar registros diariamente",
-        "Capacitación en manejo de cargas"
-    ],
-    "22222222-2": [
-        "Revisar stock de EPP semanalmente",
-        "Protocolo de primeros auxilios actualizado",
-        "Ejercicios de estiramiento cada turno",
-        "Evitar exposición prolongada sin protección"
-    ],
-    "33333333-3": [
-        "Técnicas de movilización segura obligatorias",
-        "Apoyo psicológico mensual disponible",
-        "Completar protocolos antes de turno",
-        "Uso de barreras de protección en todo momento"
-    ],
-    "44444444-4": [
-        "Priorizar documentación pendiente",
-        "Programar auditoría para próximo mes",
-        "Revisar procesos administrativos",
-        "Actualizar sistema de gestión"
-    ]
-};
-
-export default function RiskTemplate() {
+export default function RiesgosPage() {
     const navigate = useNavigate();
-    const { id: routeId } = useParams();
-    const userId = routeId || window.localStorage.getItem("currentUserId") || null;
-    const currentUserRut = localStorage.getItem("currentUserId") || "";
-    const currentUserRole = localStorage.getItem("currentUserRole") || "";
-
-    const isOwnProfile = userId === currentUserRut;
-    const canEdit = currentUserRole === "admin" && !isOwnProfile;
-
-    const [user, setUser] = useState(null);
-    const [items, setItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [editMode, setEditMode] = useState(false);
-    const [editData, setEditData] = useState([]);
-    const [saving, setSaving] = useState(false);
-    const [recomendaciones, setRecomendaciones] = useState([]);
-    const [editRecomendaciones, setEditRecomendaciones] = useState([]);
-
-    // Toast para notificaciones
     const { showToast, ToastComponent } = useToast();
 
+    const [residentes, setResidentes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedResidente, setSelectedResidente] = useState(null);
+    const [filtroNivel, setFiltroNivel] = useState("todos");
+    const [busqueda, setBusqueda] = useState("");
+    const [showDetalleModal, setShowDetalleModal] = useState(false);
+    const [categoriaDetalle, setCategoriaDetalle] = useState(null);
+
+    // Cargar datos de riesgos
     useEffect(() => {
-        let mounted = true;
-        setLoading(true);
-        if (!userId) {
-            setUser(null);
-            setItems([]);
-            setLoading(false);
-            return;
-        }
+        const fetchRiesgos = async () => {
+            try {
+                const res = await fetch(`${API_BASE}/riesgos-residentes`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setResidentes(data);
+                    if (data.length > 0) {
+                        setSelectedResidente(data[0]);
+                    }
+                }
+            } catch (error) {
+                console.error("Error cargando riesgos:", error);
+                showToast("Error al cargar datos de riesgos", "error");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchRiesgos();
+    }, []);
 
-        // Cargar recomendaciones específicas del usuario
-        const recsUsuario = recomendacionesPorUsuario[userId] || [
-            "Sin recomendaciones específicas"
-        ];
-        setRecomendaciones(recsUsuario);
-
-        Promise.all([fetchFuncionarioById(userId), fetchRiesgosByUser(userId)])
-            .then(([u, r]) => {
-                if (!mounted) return;
-                setUser(u || null);
-                const risks = Array.isArray(r) ? r : [];
-                setItems(risks);
-                setEditData(JSON.parse(JSON.stringify(risks)));
-            })
-            .finally(() => mounted && setLoading(false));
-
-        return () => { mounted = false; };
-    }, [userId]);
-
-    const nacimiento = user?.nacimiento || user?.fechaNacimiento || null;
-    const edad = getAge(nacimiento);
-    const datosUser = datosPersonales[userId] || { peso: "—", alergias: "—" };
-
-    const handleNivelChange = (idx, newNivel) => {
-        const updated = [...editData];
-        updated[idx].nivel = newNivel;
-        setEditData(updated);
+    // Calcular resumen general
+    const calcularResumen = () => {
+        let criticos = 0, altos = 0, alertasTotal = 0;
+        residentes.forEach(r => {
+            Object.values(r.evaluaciones || {}).forEach(ev => {
+                if (ev.nivel === "Alto") altos++;
+            });
+            alertasTotal += (r.alertas_activas || []).filter(a =>
+                a.prioridad === "critica" || a.prioridad === "alta"
+            ).length;
+            if ((r.alertas_activas || []).some(a => a.prioridad === "critica")) {
+                criticos++;
+            }
+        });
+        return { criticos, altos, alertasTotal };
     };
 
-    const handleRecomendacionChange = (idx, value) => {
-        const updated = [...editRecomendaciones];
-        updated[idx] = value;
-        setEditRecomendaciones(updated);
+    const resumen = calcularResumen();
+
+    // Filtrar residentes
+    const residentesFiltrados = residentes.filter(r => {
+        const matchBusqueda = r.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+            r.habitacion.toLowerCase().includes(busqueda.toLowerCase());
+
+        if (filtroNivel === "todos") return matchBusqueda;
+
+        const tieneNivel = Object.values(r.evaluaciones || {}).some(ev =>
+            ev.nivel.toLowerCase() === filtroNivel
+        );
+        return matchBusqueda && tieneNivel;
+    });
+
+    // Abrir detalle de categoría
+    const abrirDetalle = (categoria) => {
+        setCategoriaDetalle(categoria);
+        setShowDetalleModal(true);
     };
 
-    const handleSave = async () => {
-        setSaving(true);
-        try {
-            await updateRiesgos(userId, editData);
-            setItems(editData);
-            setRecomendaciones([...editRecomendaciones]);
-            setEditMode(false);
-            showToast("Guardado exitosamente", "success");
-        } catch (e) {
-            console.error("Error al guardar:", e);
-            showToast("Error al guardar", "error");
-        } finally {
-            setSaving(false);
-        }
+    // Obtener nivel general del residente
+    const getNivelGeneral = (residente) => {
+        const niveles = Object.values(residente.evaluaciones || {}).map(e => e.nivel);
+        if (niveles.includes("Alto")) return "Alto";
+        if (niveles.includes("Medio")) return "Medio";
+        return "Bajo";
     };
-
-    const displayItems = editMode ? editData : items;
-    const displayRecomendaciones = editMode ? editRecomendaciones : recomendaciones;
 
     return (
-        <div className="riesgo-bg">
+        <div className="riesgos-bg">
             <Header onBack={() => navigate(-1)} />
             <ToastComponent />
-            <main className="riesgo-main">
-                <h1 className="riesgo-title">Análisis de Riesgo</h1>
 
-                {canEdit && (
-                    <div className="riesgo-edit-controls">
-                        {!editMode ? (
-                            <button className="riesgo-btn riesgo-btn-edit" onClick={() => {
-                                setEditMode(true);
-                                setEditRecomendaciones([...recomendaciones]);
-                            }}>
-                                ✏️ Editar Riesgos
-                            </button>
-                        ) : (
-                            <>
-                                <button className="riesgo-btn riesgo-btn-save" onClick={handleSave} disabled={saving}>
-                                    {saving ? "Guardando..." : "💾 Guardar"}
-                                </button>
-                                <button className="riesgo-btn riesgo-btn-cancel" onClick={() => setEditMode(false)}>
-                                    ❌ Cancelar
-                                </button>
-                            </>
-                        )}
+            <main className="riesgos-main">
+                <div className="riesgos-header">
+                    <h1>🏥 Evaluación de Riesgos de Residentes</h1>
+                    <p className="riesgos-subtitle">Sistema de monitoreo clínico - Red ELEAM</p>
+                </div>
+
+                {/* Panel de Resumen */}
+                <section className="resumen-panel">
+                    <div className="resumen-card critico">
+                        <span className="resumen-numero">{resumen.criticos}</span>
+                        <span className="resumen-label">Residentes Críticos</span>
                     </div>
-                )}
+                    <div className="resumen-card alto">
+                        <span className="resumen-numero">{resumen.altos}</span>
+                        <span className="resumen-label">Riesgos Altos</span>
+                    </div>
+                    <div className="resumen-card alertas">
+                        <span className="resumen-numero">{resumen.alertasTotal}</span>
+                        <span className="resumen-label">Alertas Activas</span>
+                    </div>
+                    <div className="resumen-card total">
+                        <span className="resumen-numero">{residentes.length}</span>
+                        <span className="resumen-label">Total Residentes</span>
+                    </div>
+                </section>
 
                 {loading ? (
-                    <p className="loading">Cargando...</p>
+                    <div className="loading-container">
+                        <div className="loading-spinner"></div>
+                        <p>Cargando evaluaciones...</p>
+                    </div>
                 ) : (
-                    <section className="riesgo-content">
-                        <div className="riesgo-list">
-                            {displayItems.map((r, idx) => (
-                                <div key={r.id || `${r.tipo}-${r.detalle || ""}-${idx}`} className="riesgo-item">
-                                    <div className="r-title">
-                                        {r.detalle ? `${r.tipo} + ${r.detalle}` : r.tipo}
-                                    </div>
-                                    {editMode ? (
-                                        <select
-                                            value={r.nivel}
-                                            onChange={(e) => handleNivelChange(idx, e.target.value)}
-                                            className="riesgo-select"
-                                        >
-                                            <option value="Bajo">Bajo</option>
-                                            <option value="Medio">Medio</option>
-                                            <option value="Alto">Alto</option>
-                                        </select>
-                                    ) : (
-                                        <span className={`riesgo-pill ${levelClass(r.nivel)}`}>{r.nivel}</span>
-                                    )}
-                                </div>
-                            ))}
-                            {displayItems.length === 0 && (
-                                <div className="empty">Sin riesgos registrados para este funcionario.</div>
-                            )}
-                        </div>
-
-                        <div className="right-col">
-                            <div className="patient-card">
-                                <div><strong>Paciente:</strong> {user ? `${user.nombre} ${user.apellido}` : "—"}</div>
-                                <div><strong>Edad:</strong> {edad} años <span className="sep">|</span> <strong>Peso:</strong> {datosUser.peso}</div>
-                                <div><strong>Alergias:</strong> {datosUser.alergias}</div>
+                    <div className="riesgos-content">
+                        {/* Lista de Residentes */}
+                        <aside className="residentes-sidebar">
+                            <div className="sidebar-header">
+                                <h2>Residentes</h2>
+                                <input
+                                    type="text"
+                                    placeholder="Buscar..."
+                                    value={busqueda}
+                                    onChange={(e) => setBusqueda(e.target.value)}
+                                    className="busqueda-input"
+                                />
+                                <select
+                                    value={filtroNivel}
+                                    onChange={(e) => setFiltroNivel(e.target.value)}
+                                    className="filtro-select"
+                                >
+                                    <option value="todos">Todos los niveles</option>
+                                    <option value="alto">🔴 Riesgo Alto</option>
+                                    <option value="medio">🟡 Riesgo Medio</option>
+                                    <option value="bajo">🟢 Riesgo Bajo</option>
+                                </select>
                             </div>
 
-                            <aside className="recommend-card">
-                                <h3>Recomendaciones</h3>
-                                {editMode ? (
-                                    <div className="recommend-edit">
-                                        {editRecomendaciones.map((rec, idx) => (
-                                            <div key={idx} className="recommend-item-edit">
-                                                <span>•</span>
-                                                <input
-                                                    type="text"
-                                                    value={rec}
-                                                    onChange={(e) => handleRecomendacionChange(idx, e.target.value)}
-                                                    className="recommend-input"
-                                                />
+                            <div className="residentes-list">
+                                {residentesFiltrados.map(r => (
+                                    <div
+                                        key={r.rut}
+                                        className={`residente-item ${selectedResidente?.rut === r.rut ? "selected" : ""} ${levelClass(getNivelGeneral(r))}`}
+                                        onClick={() => setSelectedResidente(r)}
+                                    >
+                                        <div className="residente-info">
+                                            <span className="residente-nombre">{r.nombre}</span>
+                                            <span className="residente-hab">Hab. {r.habitacion}</span>
+                                        </div>
+                                        <div className="residente-badges">
+                                            {(r.alertas_activas || []).length > 0 && (
+                                                <span className="badge-alertas">
+                                                    ⚠️ {r.alertas_activas.length}
+                                                </span>
+                                            )}
+                                            <span className={`nivel-badge ${levelClass(getNivelGeneral(r))}`}>
+                                                {getNivelGeneral(r)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </aside>
+
+                        {/* Detalle del Residente */}
+                        {selectedResidente && (
+                            <section className="residente-detalle">
+                                {/* Cabecera del residente */}
+                                <div className="detalle-header">
+                                    <div className="residente-avatar">
+                                        {selectedResidente.nombre.charAt(0)}
+                                    </div>
+                                    <div className="residente-datos">
+                                        <h2>{selectedResidente.nombre}</h2>
+                                        <p>
+                                            <span>📍 Habitación {selectedResidente.habitacion}</span>
+                                            <span>🎂 {selectedResidente.edad} años</span>
+                                            <span>🆔 {selectedResidente.rut}</span>
+                                        </p>
+                                    </div>
+                                    <div className={`nivel-general ${levelClass(getNivelGeneral(selectedResidente))}`}>
+                                        Riesgo {getNivelGeneral(selectedResidente)}
+                                    </div>
+                                </div>
+
+                                {/* Alertas activas */}
+                                {(selectedResidente.alertas_activas || []).length > 0 && (
+                                    <div className="alertas-section">
+                                        <h3>⚠️ Alertas Activas</h3>
+                                        <div className="alertas-grid">
+                                            {selectedResidente.alertas_activas.map(alerta => (
+                                                <div key={alerta.id} className={`alerta-card ${prioridadClass(alerta.prioridad)}`}>
+                                                    <span className="alerta-icon">{CATEGORY_ICONS[alerta.tipo]}</span>
+                                                    <div className="alerta-content">
+                                                        <span className="alerta-mensaje">{alerta.mensaje}</span>
+                                                        <span className="alerta-fecha">{alerta.fecha}</span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Evaluaciones por categoría */}
+                                <div className="evaluaciones-section">
+                                    <h3>📋 Evaluaciones de Riesgo</h3>
+                                    <div className="evaluaciones-grid">
+                                        {Object.entries(selectedResidente.evaluaciones || {}).map(([key, eval_data]) => (
+                                            <div
+                                                key={key}
+                                                className={`evaluacion-card ${levelClass(eval_data.nivel)}`}
+                                                onClick={() => abrirDetalle(key)}
+                                            >
+                                                <div className="eval-header">
+                                                    <span className="eval-icon">{CATEGORY_ICONS[key]}</span>
+                                                    <span className="eval-name">{CATEGORY_NAMES[key]}</span>
+                                                </div>
+                                                <div className="eval-body">
+                                                    <div className="eval-score">
+                                                        <span className="score-value">
+                                                            {key === "polifarmacia" ? eval_data.cantidad_medicamentos : eval_data.puntaje}
+                                                        </span>
+                                                        <span className="score-scale">{CATEGORY_SCALES[key]}</span>
+                                                    </div>
+                                                    <span className={`eval-nivel ${levelClass(eval_data.nivel)}`}>
+                                                        {eval_data.nivel}
+                                                    </span>
+                                                </div>
+                                                <div className="eval-footer">
+                                                    <span>📅 {eval_data.ultima_evaluacion}</span>
+                                                    <span className="ver-detalle">Ver detalle →</span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
-                                ) : (
-                                    <ul>
-                                        {displayRecomendaciones.map((rec, idx) => (
-                                            <li key={idx}>{rec}</li>
-                                        ))}
-                                    </ul>
+                                </div>
+
+                                {/* Historial de incidentes */}
+                                {(selectedResidente.historial_incidentes || []).length > 0 && (
+                                    <div className="historial-section">
+                                        <h3>📜 Historial de Incidentes</h3>
+                                        <div className="historial-timeline">
+                                            {selectedResidente.historial_incidentes.map((inc, idx) => (
+                                                <div key={idx} className="historial-item">
+                                                    <div className="historial-fecha">{inc.fecha}</div>
+                                                    <div className="historial-content">
+                                                        <span className="historial-tipo">{inc.tipo}</span>
+                                                        <p className="historial-desc">{inc.descripcion}</p>
+                                                        <p className="historial-acciones">
+                                                            <strong>Acciones:</strong> {inc.acciones}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 )}
-                            </aside>
-                        </div>
-                    </section>
+                            </section>
+                        )}
+                    </div>
                 )}
             </main>
+
+            {/* Modal de detalle de evaluación */}
+            <Modal
+                isOpen={showDetalleModal}
+                onClose={() => setShowDetalleModal(false)}
+                title={`${CATEGORY_ICONS[categoriaDetalle]} ${CATEGORY_NAMES[categoriaDetalle] || ""}`}
+                size="md"
+            >
+                {selectedResidente && categoriaDetalle && selectedResidente.evaluaciones[categoriaDetalle] && (
+                    <div className="modal-evaluacion-detalle">
+                        <div className="detalle-info-grid">
+                            <div className="detalle-info-item">
+                                <label>Puntaje</label>
+                                <span className="info-value">
+                                    {categoriaDetalle === "polifarmacia"
+                                        ? selectedResidente.evaluaciones[categoriaDetalle].cantidad_medicamentos + " medicamentos"
+                                        : selectedResidente.evaluaciones[categoriaDetalle].puntaje + " pts"
+                                    }
+                                </span>
+                            </div>
+                            <div className="detalle-info-item">
+                                <label>Nivel de Riesgo</label>
+                                <span className={`info-nivel ${levelClass(selectedResidente.evaluaciones[categoriaDetalle].nivel)}`}>
+                                    {selectedResidente.evaluaciones[categoriaDetalle].nivel}
+                                </span>
+                            </div>
+                            <div className="detalle-info-item">
+                                <label>Última Evaluación</label>
+                                <span>{selectedResidente.evaluaciones[categoriaDetalle].ultima_evaluacion}</span>
+                            </div>
+                            <div className="detalle-info-item">
+                                <label>Próxima Evaluación</label>
+                                <span>{selectedResidente.evaluaciones[categoriaDetalle].proxima_evaluacion}</span>
+                            </div>
+                        </div>
+
+                        <div className="detalle-factores">
+                            <h4>Factores de Riesgo Identificados</h4>
+                            <ul>
+                                {(selectedResidente.evaluaciones[categoriaDetalle].factores || []).map((f, i) => (
+                                    <li key={i}>{f}</li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="modal-actions">
+                            <button
+                                className="btn-actualizar"
+                                onClick={() => {
+                                    showToast("Función de actualización en desarrollo", "info");
+                                }}
+                            >
+                                📝 Actualizar Evaluación
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 }

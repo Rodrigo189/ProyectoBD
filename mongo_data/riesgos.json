@@ -1,100 +1,330 @@
 [
     {
         "rut": "11111111-1",
-        "items": [
+        "nombre": "Ana García",
+        "edad": 74,
+        "habitacion": "101-A",
+        "evaluaciones": {
+            "caidas": {
+                "puntaje": 7,
+                "nivel": "Alto",
+                "factores": [
+                    "Historial de caída previa",
+                    "Uso de medicamentos sedantes",
+                    "Déficit sensorial visual"
+                ],
+                "ultima_evaluacion": "2025-11-15",
+                "proxima_evaluacion": "2025-12-15"
+            },
+            "ulceras": {
+                "puntaje": 14,
+                "nivel": "Medio",
+                "factores": [
+                    "Movilidad limitada",
+                    "Incontinencia ocasional"
+                ],
+                "ultima_evaluacion": "2025-11-20",
+                "proxima_evaluacion": "2025-12-20"
+            },
+            "nutricion": {
+                "puntaje": 22,
+                "nivel": "Bajo",
+                "factores": [
+                    "Peso estable últimos 3 meses"
+                ],
+                "ultima_evaluacion": "2025-11-10",
+                "proxima_evaluacion": "2026-01-10"
+            },
+            "cognitivo": {
+                "puntaje": 24,
+                "nivel": "Bajo",
+                "factores": [
+                    "Orientación temporal adecuada"
+                ],
+                "ultima_evaluacion": "2025-10-01",
+                "proxima_evaluacion": "2026-01-01"
+            },
+            "polifarmacia": {
+                "cantidad_medicamentos": 3,
+                "nivel": "Medio",
+                "factores": [
+                    "3 medicamentos activos",
+                    "Posible interacción Losartán-AINE"
+                ],
+                "ultima_evaluacion": "2025-12-01",
+                "proxima_evaluacion": "2026-01-01"
+            }
+        },
+        "alertas_activas": [
             {
                 "id": 1,
-                "tipo": "Ergonomía",
-                "detalle": "Sobrecarga lumbar",
-                "nivel": "Medio"
-            },
+                "tipo": "caidas",
+                "mensaje": "Evaluación de caídas vence en 3 días",
+                "prioridad": "alta",
+                "fecha": "2025-12-12"
+            }
+        ],
+        "historial_incidentes": [
             {
-                "id": 2,
-                "tipo": "Proceso",
-                "detalle": "Registro atrasado",
-                "nivel": "Bajo"
-            },
-            {
-                "id": 3,
-                "tipo": "Químico",
-                "detalle": "Exposición a desinfectantes",
-                "nivel": "Bajo"
+                "fecha": "2025-09-15",
+                "tipo": "Caída",
+                "descripcion": "Caída leve en baño, sin lesiones",
+                "acciones": "Instalación de barras de apoyo"
             }
         ]
     },
     {
         "rut": "22222222-2",
-        "items": [
+        "nombre": "Carlos Rodríguez",
+        "edad": 79,
+        "habitacion": "102-B",
+        "evaluaciones": {
+            "caidas": {
+                "puntaje": 4,
+                "nivel": "Medio",
+                "factores": [
+                    "Marcha inestable",
+                    "Uso de bastón"
+                ],
+                "ultima_evaluacion": "2025-11-25",
+                "proxima_evaluacion": "2025-12-25"
+            },
+            "ulceras": {
+                "puntaje": 18,
+                "nivel": "Bajo",
+                "factores": [
+                    "Movilidad conservada"
+                ],
+                "ultima_evaluacion": "2025-11-25",
+                "proxima_evaluacion": "2026-02-25"
+            },
+            "nutricion": {
+                "puntaje": 17,
+                "nivel": "Medio",
+                "factores": [
+                    "Pérdida de peso 2kg último mes",
+                    "Apetito disminuido"
+                ],
+                "ultima_evaluacion": "2025-12-01",
+                "proxima_evaluacion": "2025-12-15"
+            },
+            "cognitivo": {
+                "puntaje": 19,
+                "nivel": "Medio",
+                "factores": [
+                    "Olvidos frecuentes",
+                    "Desorientación temporal ocasional"
+                ],
+                "ultima_evaluacion": "2025-11-01",
+                "proxima_evaluacion": "2025-12-01"
+            },
+            "polifarmacia": {
+                "cantidad_medicamentos": 5,
+                "nivel": "Alto",
+                "factores": [
+                    "5 medicamentos activos",
+                    "Interacción Metformina-contraste yodado",
+                    "Requiere revisión farmacológica"
+                ],
+                "ultima_evaluacion": "2025-12-05",
+                "proxima_evaluacion": "2025-12-20"
+            }
+        },
+        "alertas_activas": [
             {
                 "id": 1,
-                "tipo": "Bioseguridad",
-                "detalle": "Guantes incompletos",
-                "nivel": "Bajo"
+                "tipo": "cognitivo",
+                "mensaje": "Evaluación cognitiva vencida",
+                "prioridad": "alta",
+                "fecha": "2025-12-01"
             },
             {
                 "id": 2,
-                "tipo": "Accidente",
-                "detalle": "Corte leve",
-                "nivel": "Medio"
+                "tipo": "nutricion",
+                "mensaje": "Control nutricional próximo",
+                "prioridad": "media",
+                "fecha": "2025-12-15"
+            }
+        ],
+        "historial_incidentes": [
+            {
+                "fecha": "2025-08-20",
+                "tipo": "Confusión",
+                "descripcion": "Episodio de desorientación nocturna",
+                "acciones": "Luz nocturna, supervisión aumentada"
             },
             {
-                "id": 3,
-                "tipo": "Ergonomía",
-                "detalle": "Postura prolongada",
-                "nivel": "Alto"
-            },
-            {
-                "id": 4,
-                "tipo": "Químico",
-                "detalle": "Manejo medicamentos",
-                "nivel": "Medio"
+                "fecha": "2025-10-10",
+                "tipo": "Nutricional",
+                "descripcion": "Rechazo alimentario 2 días",
+                "acciones": "Consulta nutricionista, ajuste menú"
             }
         ]
     },
     {
         "rut": "33333333-3",
-        "items": [
+        "nombre": "María Fernández",
+        "edad": 82,
+        "habitacion": "103-A",
+        "evaluaciones": {
+            "caidas": {
+                "puntaje": 9,
+                "nivel": "Alto",
+                "factores": [
+                    "2 caídas previas último año",
+                    "Uso de silla de ruedas",
+                    "Déficit visual severo",
+                    "Medicación múltiple"
+                ],
+                "ultima_evaluacion": "2025-12-01",
+                "proxima_evaluacion": "2025-12-15"
+            },
+            "ulceras": {
+                "puntaje": 10,
+                "nivel": "Alto",
+                "factores": [
+                    "Postrada en silla",
+                    "Incontinencia urinaria",
+                    "Nutrición deficiente"
+                ],
+                "ultima_evaluacion": "2025-12-05",
+                "proxima_evaluacion": "2025-12-12"
+            },
+            "nutricion": {
+                "puntaje": 14,
+                "nivel": "Alto",
+                "factores": [
+                    "IMC bajo (17.5)",
+                    "Disfagia leve",
+                    "Pérdida peso >5% trimestre"
+                ],
+                "ultima_evaluacion": "2025-12-01",
+                "proxima_evaluacion": "2025-12-08"
+            },
+            "cognitivo": {
+                "puntaje": 12,
+                "nivel": "Alto",
+                "factores": [
+                    "Demencia moderada diagnosticada",
+                    "Desorientación frecuente",
+                    "Requiere supervisión constante"
+                ],
+                "ultima_evaluacion": "2025-11-15",
+                "proxima_evaluacion": "2025-12-15"
+            },
+            "polifarmacia": {
+                "cantidad_medicamentos": 8,
+                "nivel": "Alto",
+                "factores": [
+                    "8 medicamentos activos",
+                    "Alto riesgo interacciones",
+                    "Revisión farmacológica urgente"
+                ],
+                "ultima_evaluacion": "2025-11-20",
+                "proxima_evaluacion": "2025-12-05"
+            }
+        },
+        "alertas_activas": [
             {
                 "id": 1,
-                "tipo": "Ergonomía",
-                "detalle": "Levantamiento pacientes",
-                "nivel": "Alto"
+                "tipo": "ulceras",
+                "mensaje": "Evaluación de úlceras HOY",
+                "prioridad": "critica",
+                "fecha": "2025-12-12"
             },
             {
                 "id": 2,
-                "tipo": "Proceso",
-                "detalle": "Protocolo incompleto",
-                "nivel": "Medio"
+                "tipo": "polifarmacia",
+                "mensaje": "Revisión farmacológica VENCIDA",
+                "prioridad": "critica",
+                "fecha": "2025-12-05"
             },
             {
                 "id": 3,
-                "tipo": "Psicosocial",
-                "detalle": "Carga emocional",
-                "nivel": "Medio"
+                "tipo": "nutricion",
+                "mensaje": "Control nutricional VENCIDO",
+                "prioridad": "alta",
+                "fecha": "2025-12-08"
+            }
+        ],
+        "historial_incidentes": [
+            {
+                "fecha": "2025-06-10",
+                "tipo": "Caída",
+                "descripcion": "Caída desde silla de ruedas",
+                "acciones": "Cinturón de seguridad, supervisión"
             },
             {
-                "id": 4,
-                "tipo": "Biológico",
-                "detalle": "Contacto fluidos",
-                "nivel": "Bajo"
+                "fecha": "2025-09-05",
+                "tipo": "Caída",
+                "descripcion": "Caída al transferir a cama",
+                "acciones": "Protocolo de transferencia segura"
+            },
+            {
+                "fecha": "2025-11-01",
+                "tipo": "Úlcera",
+                "descripcion": "Eritema sacro grado I",
+                "acciones": "Cambios posturales c/2h, colchón antiescaras"
             }
         ]
     },
     {
         "rut": "44444444-4",
-        "items": [
-            {
-                "id": 1,
-                "tipo": "Administrativo",
-                "detalle": "Documentación pendiente",
-                "nivel": "Bajo"
+        "nombre": "José Muñoz",
+        "edad": 68,
+        "habitacion": "104-B",
+        "evaluaciones": {
+            "caidas": {
+                "puntaje": 2,
+                "nivel": "Bajo",
+                "factores": [
+                    "Marcha estable",
+                    "Sin historial de caídas"
+                ],
+                "ultima_evaluacion": "2025-11-01",
+                "proxima_evaluacion": "2026-02-01"
             },
-            {
-                "id": 2,
-                "tipo": "Proceso",
-                "detalle": "Auditoría atrasada",
-                "nivel": "Medio"
+            "ulceras": {
+                "puntaje": 19,
+                "nivel": "Bajo",
+                "factores": [
+                    "Totalmente móvil",
+                    "Continente"
+                ],
+                "ultima_evaluacion": "2025-11-01",
+                "proxima_evaluacion": "2026-02-01"
+            },
+            "nutricion": {
+                "puntaje": 26,
+                "nivel": "Bajo",
+                "factores": [
+                    "Buen apetito",
+                    "Peso estable"
+                ],
+                "ultima_evaluacion": "2025-11-15",
+                "proxima_evaluacion": "2026-02-15"
+            },
+            "cognitivo": {
+                "puntaje": 28,
+                "nivel": "Bajo",
+                "factores": [
+                    "Funciones cognitivas conservadas"
+                ],
+                "ultima_evaluacion": "2025-10-01",
+                "proxima_evaluacion": "2026-04-01"
+            },
+            "polifarmacia": {
+                "cantidad_medicamentos": 1,
+                "nivel": "Bajo",
+                "factores": [
+                    "Solo 1 medicamento",
+                    "Sin interacciones"
+                ],
+                "ultima_evaluacion": "2025-12-01",
+                "proxima_evaluacion": "2026-03-01"
             }
-        ]
+        },
+        "alertas_activas": [],
+        "historial_incidentes": []
     }
 ]
