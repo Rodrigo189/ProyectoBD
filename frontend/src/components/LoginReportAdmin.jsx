@@ -14,7 +14,7 @@ export default function LoginReportesAdministrador() {
     const handleLogin = async ({ run, password }) => {
         setError("");
         try {
-            const API_BASE = "https://eleam-grupo14-backend.onrender.com";
+            const API_BASE = "https://eleam-grupo14.onrender.com";
             const r = await fetch(`${API_BASE}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

@@ -2,7 +2,7 @@ import perfil from "../img/perfil.png";
 
 // --- Helpers de API ---
 // Usar siempre el backend de Render (funciona tanto local como en producción)
-const API_BASE = "https://eleam-grupo14-backend.onrender.com";
+const API_BASE = "https://eleam-grupo14.onrender.com";
 const token = () => localStorage.getItem("token");
 const authHeaders = () => (token() ? { Authorization: `Bearer ${token()}` } : {});
 

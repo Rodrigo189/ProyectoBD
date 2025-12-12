@@ -6,7 +6,7 @@ import Modal from "./Modal";
 import "../styles/riesgos.css";
 
 // Usar siempre el backend de Render
-const API_BASE = "https://eleam-grupo14-backend.onrender.com";
+const API_BASE = "https://eleam-grupo14.onrender.com";
 
 // Iconos para cada categoría de riesgo
 const CATEGORY_ICONS = {
