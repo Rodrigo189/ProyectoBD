@@ -132,16 +132,18 @@ export default function Calendario({
                         {monthNames.map((mn, i) => <option key={i} value={i + 1}>{mn}</option>)}
                     </select>
 
-                    <input
-                        className="year-input"
-                        type="number"
+                    <select
+                        className="year-select"
                         value={displayYear}
                         onChange={(e) => {
-                            const y = Number(e.target.value) || displayYear;
+                            const y = Number(e.target.value);
                             changeTo(y, displayMonth);
                         }}
-                        style={{ width: 72, marginLeft: 8 }}
-                    />
+                    >
+                        {Array.from({ length: 11 }, (_, i) => today.getFullYear() - 2 + i).map(y => (
+                            <option key={y} value={y}>{y}</option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="cal-nav">

@@ -68,6 +68,14 @@
     border: 1px solid #cfd8dc;
 }
 
+.year-select {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    font-weight: 700;
+    cursor: pointer;
+}
+
 /* cuadrícula principal */
 .g14-calendar {
     display: grid;
