@@ -136,21 +136,21 @@ def listar_o_crear_funcionarios():
             return jsonify({"error": str(e)}), 500
 
 
-# Actualiza o elimina un funcionario en el boton "Eliminar".
-@app.route("/api/funcionarios/<rut>", methods=["PUT", "DELETE"]) # Actualizar o eliminar un funcionario por RUT
-def actualizar_o_eliminar_funcionario(rut): # Maneja la actualizacion y eliminacion de un funcionario
-    if request.method == "PUT": # Actualizar datos del funcionario
+# Actualiza o elimina un funcionario por RUT (GET está en el Blueprint api_bp)
+@app.route("/api/funcionarios/<rut>", methods=["PUT", "DELETE"])
+def actualizar_o_eliminar_funcionario(rut):
+    if request.method == "PUT":  # Actualizar datos del funcionario
         data = request.get_json().copy()
         data.pop("_id", None)  # Evitar problemas con MongoDB
         if "asistencia" in data:
-            data["asistencia"] = bool(data["asistencia"]) # Asegurar tipo booleano
+            data["asistencia"] = bool(data["asistencia"])
         result = funcionarios_col.update_one({"rut": rut}, {"$set": data})
         if result.matched_count == 0:
             return jsonify({"error": "Funcionario no encontrado"}), 404
         return jsonify({"message": "Funcionario actualizado correctamente"})
-    elif request.method == "DELETE": # Eliminar funcionario
+    elif request.method == "DELETE":  # Eliminar funcionario
         result = funcionarios_col.delete_one({"rut": rut})
-        if result.deleted_count == 0: # Si no se encontro el funcionario
+        if result.deleted_count == 0:
             return jsonify({"error": "Funcionario no encontrado"}), 404
         return jsonify({"message": "Funcionario eliminado correctamente"})
 

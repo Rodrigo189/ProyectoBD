@@ -14,7 +14,7 @@ export default function LoginPagosFuncionario() {
     const handleLogin = async ({ run, password }) => {
         setError("");
         try {
-            const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+            const API_BASE = "https://eleam-grupo14-backend.onrender.com";
             const r = await fetch(`${API_BASE}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
